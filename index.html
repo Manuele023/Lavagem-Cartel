@@ -76,55 +76,35 @@ button:hover{opacity:0.9;}
     color:#ddd;
 }
 
-/* 🔥 FIX DEFINITIVO TOM SELECT (SEM FUNDO BRANCO) */
-.ts-wrapper{
-    width:100%;
-}
-
+/* 🔥 FIX TOM SELECT */
+.ts-wrapper{width:100%;}
 .ts-control{
     background:#2a2a2a !important;
     border:1px solid #333 !important;
     border-radius:8px !important;
     color:white !important;
     padding:12px !important;
-    box-shadow:none !important;
 }
-
-.ts-control input{
-    color:white !important;
-    background:transparent !important;
-}
-
-.ts-control input::placeholder{
-    color:#aaa !important;
-}
-
 .ts-dropdown{
     background:#2a2a2a !important;
     border:1px solid #333 !important;
     color:white !important;
 }
-
 .ts-dropdown .option{
     background:#2a2a2a !important;
     color:white !important;
 }
-
 .ts-dropdown .option:hover{
     background:#3a3a3a !important;
-    color:white !important;
 }
 
-/* filtro lado a lado */
+/* filtros */
 .filtro-linha{
     display:flex;
     gap:10px;
     margin-top:10px;
 }
-
-.filtro-linha div{
-    flex:1;
-}
+.filtro-linha div{flex:1;}
 
 /* semanas */
 .semana-box{
@@ -199,7 +179,6 @@ button:hover{opacity:0.9;}
 <div class="painel">
 
 <div class="filtro-linha">
-
 <div>
 <label>Mês</label>
 <select id="filtroMes" onchange="atualizarPainel()"></select>
@@ -209,7 +188,6 @@ button:hover{opacity:0.9;}
 <label>Ano</label>
 <select id="filtroAno" onchange="atualizarPainel()"></select>
 </div>
-
 </div>
 
 <br>
@@ -254,7 +232,7 @@ function obterSemanaDoMes(data){
     return Math.ceil(d.getDate()/7);
 }
 
-// webhook (mantenha seu link aqui)
+// webhook
 function enviarDiscord(r){
     fetch("https://discord.com/api/webhooks/1519147289036193972/WreVR0l-ZJ7GbI7xiGUMdi-2k6P64hem0GmnH4dyGHGvlt0neVrf88mAIzaciy2Frjsm",{
         method:"POST",
@@ -310,11 +288,8 @@ function calcular(){
     };
 
     registros.push(registro);
-
     localStorage.setItem("registros",JSON.stringify(registros));
-
     enviarDiscord(registro);
-
     atualizarTudo();
 }
 
@@ -338,7 +313,7 @@ function atualizarLista(){
         div.className="lavagem-card";
 
         div.innerHTML=
-`🧾Solicitação de Lavagem Nº ${r.numero}<br>
+`🧾 Solicitação de Lavagem Nº ${r.numero}<br>
 📅 Data e hora: ${r.data}<br>
 🔫 Facção Solicitante: ${r.faccao}<br>
 💵 Valor Sujo: ${formatar(r.valorSujo)}<br>
@@ -449,7 +424,15 @@ function atualizarPainel(){
 
     filtrado.slice().reverse().forEach(r=>{
         let div=document.createElement("div");
-        div.innerHTML=`📅 ${r.data}<br>🔫 ${r.faccao}<br>💵 ${formatar(r.valorSujo)}<br><br>`;
+        div.className="lavagem-card";
+
+        div.innerHTML=
+`🧾 Solicitação de Lavagem Nº ${r.numero}<br>
+📅 Data e hora: ${r.data}<br>
+🔫 Facção Solicitante: ${r.faccao}<br>
+💵 Valor Sujo: ${formatar(r.valorSujo)}<br>
+💸 Valor Limpo: ${formatar(r.valorLimpo)}<br><br>`;
+
         listaM.appendChild(div);
     });
 
