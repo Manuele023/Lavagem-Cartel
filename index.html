@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema de Lavagem do Cartel</title>
+<title>Cartel - Sistema de Lavagem do Cartel</title>
 
 <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
@@ -54,38 +54,8 @@ button:hover{opacity:0.9;}
     border-left:4px solid #2ecc71;
 }
 
-.lavagem-num{
-    font-weight:bold;
-    margin-bottom:8px;
-}
-
-/* SELECT */
-.ts-control{
-    background:#2a2a2a !important;
-    border:none !important;
-    border-radius:8px !important;
-    color:white !important;
-    padding:12px !important;
-}
-
-.ts-dropdown{
-    background:#2a2a2a !important;
-    border:none !important;
-    color:white !important;
-}
-
-.ts-dropdown .option{
-    background:#2a2a2a !important;
-    color:white !important;
-}
-
-.ts-dropdown .option:hover{
-    background:#3a3a3a !important;
-}
-
-/* HISTÓRICO */
 #lista{
-    max-height:400px;
+    max-height:350px;
     overflow-y:auto;
     background:#1f1f1f;
     padding:10px;
@@ -93,12 +63,11 @@ button:hover{opacity:0.9;}
     border:1px solid #333;
 }
 
-/* PAINEL */
 .painel{
     background:#2a2a2a;
     padding:15px;
     border-radius:12px;
-    margin-bottom:15px;
+    margin-top:20px;
     border:1px solid #333;
 }
 
@@ -116,7 +85,7 @@ button:hover{opacity:0.9;}
 <label>Número da Lavagem</label>
 <input id="numeroLavagemInput" type="number" placeholder="Ex: 26">
 
-<label>Facção</label>
+<label>Facção solicitante</label>
 <select id="faccao">
 <option value="">Selecione</option>
 <option>4M</option>
@@ -139,8 +108,8 @@ button:hover{opacity:0.9;}
 <option>YOLO</option>
 </select>
 
-<label>Passaporte</label>
-<input id="passaporte" placeholder="Passaporte para pagamento">
+<label>Passaporte para pagamento</label>
+<input id="passaporte" placeholder="Digite o passaporte">
 
 <label>Valor sujo</label>
 <input id="valor" type="text" placeholder="Ex: 100.000">
@@ -163,34 +132,38 @@ button:hover{opacity:0.9;}
 <script>
 new TomSelect("#faccao",{create:false});
 
-// dados
 let registros = JSON.parse(localStorage.getItem("registros")) || [];
 let numero = localStorage.getItem("numeroLavagem");
 numero = numero ? Number(numero) : 26;
 
-// converter
-function converterValor(v){
+// formatar número com ponto
+function converter(v){
     return Number(v.replace(/\./g,""));
 }
 
-// formatar
 function formatar(v){
     return Number(v).toLocaleString("pt-BR");
 }
 
-// Discord
+// DISCORD WEBHOOK (EMBED)
 function enviarDiscord(r){
-    fetch("URL_DO_WEBHOOK_AQUI",{
+
+    fetch("https://discord.com/api/webhooks/1519147289036193972/WreVR0l-ZJ7GbI7xiGUMdi-2k6P64hem0GmnH4dyGHGvlt0neVrf88mAIzaciy2Frjsm", {
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
-            content:
-`🧾 Solicitação de Lavagem Nº ${r.numero}
-
-Facção solicitante: ${r.faccao}
-Passaporte para pagamento: ${r.passaporte}
-Valor sujo: ${formatar(r.valorSujo)}
-Valor limpo: ${formatar(r.valorLimpo)}`
+            embeds:[{
+                title:`🧾 Solicitação de Lavagem Nº ${r.numero}`,
+                color: 0x2ecc71,
+                fields:[
+                    {name:"Facção solicitante", value:r.faccao || "—"},
+                    {name:"Passaporte para pagamento", value:String(r.passaporte), inline:true},
+                    {name:"Valor sujo", value:formatar(r.valorSujo), inline:true},
+                    {name:"Valor limpo", value:formatar(r.valorLimpo), inline:true}
+                ],
+                footer:{text:"Sistema de Lavagem do Cartel"},
+                timestamp:new Date().toISOString()
+            }]
         })
     });
 }
@@ -200,15 +173,15 @@ function calcular(){
 
     let faccao = document.getElementById("faccao").value;
     let passaporte = document.getElementById("passaporte").value.trim();
-    let valorInput = document.getElementById("valor").value;
+    let valor = document.getElementById("valor").value;
     let numInput = document.getElementById("numeroLavagemInput").value;
 
-    if(!faccao || !passaporte || !valorInput){
+    if(!faccao || !passaporte || !valor){
         alert("Preencha todos os campos.");
         return;
     }
 
-    let valorSujo = converterValor(valorInput);
+    let valorSujo = converter(valor);
     let valorLimpo = valorSujo * 0.80;
 
     let numFinal;
@@ -222,7 +195,7 @@ function calcular(){
     }
 
     let registro = {
-        numero: numFinal,
+        numero:numFinal,
         faccao,
         passaporte,
         valorSujo,
@@ -237,60 +210,33 @@ function calcular(){
 
     atualizarTudo();
 
-    // limpa campos
-    document.getElementById("numeroLavagemInput").value = "";
-    document.getElementById("passaporte").value = "";
-    document.getElementById("valor").value = "";
+    document.getElementById("numeroLavagemInput").value="";
+    document.getElementById("passaporte").value="";
+    document.getElementById("valor").value="";
 }
 
 // excluir
-function excluir(index){
+function excluir(i){
+    if(!confirm("Excluir lavagem?")) return;
 
-    if(!confirm("Tem certeza?")) return;
-
-    registros.splice(index,1);
-
-    localStorage.setItem("registros", JSON.stringify(registros));
+    registros.splice(i,1);
+    localStorage.setItem("registros",JSON.stringify(registros));
 
     atualizarTudo();
-}
-
-// painel
-function atualizarPainel(){
-
-    document.getElementById("totalLavagens").innerText = registros.length;
-
-    let total = registros.reduce((a,b)=>a+(b.valorSujo||0),0);
-
-    document.getElementById("totalDinheiro").innerText =
-        total.toLocaleString("pt-BR");
-
-    let ranking = {};
-
-    registros.forEach(r=>{
-        ranking[r.faccao] = (ranking[r.faccao]||0)+(r.valorSujo||0);
-    });
-
-    let ordenado = Object.entries(ranking).sort((a,b)=>b[1]-a[1]);
-
-    document.getElementById("ranking").innerHTML =
-        ordenado.length
-        ? ordenado.map((r,i)=>`${i+1}. ${r[0]} — ${r[1].toLocaleString("pt-BR")}`).join("<br>")
-        : "Sem dados ainda";
 }
 
 // histórico
 function atualizarLista(){
 
     let lista = document.getElementById("lista");
-    lista.innerHTML = "";
+    lista.innerHTML="";
 
     [...registros].reverse().forEach(r=>{
 
-        let div = document.createElement("div");
-        div.className = "lavagem-card";
+        let div=document.createElement("div");
+        div.className="lavagem-card";
 
-        div.innerHTML =
+        div.innerHTML=
 `🧾 Solicitação de Lavagem Nº ${r.numero}<br><br>
 
 Facção solicitante: ${r.faccao}<br>
@@ -304,7 +250,30 @@ Valor limpo: ${formatar(r.valorLimpo)}<br><br>
     });
 }
 
-// tudo
+// painel
+function atualizarPainel(){
+
+    document.getElementById("totalLavagens").innerText = registros.length;
+
+    let total = registros.reduce((a,b)=>a+(b.valorSujo||0),0);
+
+    document.getElementById("totalDinheiro").innerText =
+        total.toLocaleString("pt-BR");
+
+    let ranking={};
+
+    registros.forEach(r=>{
+        ranking[r.faccao]=(ranking[r.faccao]||0)+(r.valorSujo||0);
+    });
+
+    let ordenado=Object.entries(ranking).sort((a,b)=>b[1]-a[1]);
+
+    document.getElementById("ranking").innerHTML =
+        ordenado.length
+        ? ordenado.map((r,i)=>`${i+1}. ${r[0]} — ${r[1].toLocaleString("pt-BR")}`).join("<br>")
+        : "Sem dados ainda";
+}
+
 function atualizarTudo(){
     atualizarLista();
     atualizarPainel();
