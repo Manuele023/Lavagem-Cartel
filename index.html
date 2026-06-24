@@ -76,7 +76,7 @@ button:hover{opacity:0.9;}
     color:#ddd;
 }
 
-/* FIX TOM SELECT */
+/* TOM SELECT */
 .ts-wrapper{width:100%;}
 .ts-control{
     background:#2a2a2a !important;
@@ -90,30 +90,32 @@ button:hover{opacity:0.9;}
     border:1px solid #333 !important;
     color:white !important;
 }
-.ts-dropdown .option{
-    background:#2a2a2a !important;
-    color:white !important;
-}
 .ts-dropdown .option:hover{
     background:#3a3a3a !important;
 }
 
-/* filtros */
+/* SEMANAL GRID */
+.semana-grid{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:10px;
+    margin-top:10px;
+}
+
+.semana-box{
+    background:#2a2a2a;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #333;
+}
+
+/* FILTRO MENSAL */
 .filtro-linha{
     display:flex;
     gap:10px;
     margin-top:10px;
 }
 .filtro-linha div{flex:1;}
-
-/* semanas */
-.semana-box{
-    background:#2a2a2a;
-    padding:10px;
-    border-radius:10px;
-    margin-bottom:10px;
-    border:1px solid #333;
-}
 </style>
 </head>
 
@@ -122,11 +124,10 @@ button:hover{opacity:0.9;}
 <h1>🧾 Sistema de Lavagem</h1>
 
 <label>Número da Lavagem</label>
-<input id="numeroLavagemInput" type="number" placeholder="Ex: 26">
+<input id="numeroLavagemInput" type="number">
 
 <label>Facção solicitante</label>
 <select id="faccao">
-<option value="">Selecione</option>
 <option>4M</option>
 <option>B13</option>
 <option>Blacklist</option>
@@ -147,26 +148,22 @@ button:hover{opacity:0.9;}
 <option>Yolo</option>
 </select>
 
-<label>Passaporte para pagamento</label>
-<input id="passaporte" placeholder="Digite o passaporte">
+<label>Passaporte</label>
+<input id="passaporte">
 
 <label>Valor sujo</label>
-<input id="valor" type="text" placeholder="Ex: 100.000">
+<input id="valor">
 
 <button onclick="calcular()">Registrar Lavagem</button>
 
 <h2>📜 Histórico de Lavagens</h2>
 <div id="lista"></div>
 
-<h2>📊 Painel de Controle do Cartel</h2>
-
+<h2>📊 Painel de Controle</h2>
 <div class="painel">
-📜 Total de lavagens: <span id="totalLavagens">0</span><br><br>
-💰 Total lavado: <span id="totalDinheiro">0</span><br><br>
-💸 Lucro total: <span id="lucroTotal">0</span><br><br>
-
-<strong>🏴 Ranking geral de facções</strong>
-<div id="ranking" class="ranking"></div>
+📜 Total de lavagens: <span id="totalLavagens">0</span><br>
+💰 Valor total lavado: <span id="totalDinheiro">0</span><br>
+💸 Lucro: <span id="lucroTotal">0</span><br>
 </div>
 
 <h2>📊 Registro Semanal</h2>
@@ -175,25 +172,24 @@ button:hover{opacity:0.9;}
 </div>
 
 <h2>📆 Registro Mensal</h2>
-
 <div class="painel">
 
 <div class="filtro-linha">
 <div>
 <label>Mês</label>
-<select id="filtroMes" onchange="atualizarPainel()"></select>
+<select id="filtroMes" onchange="atualizarTudo()"></select>
 </div>
 
 <div>
 <label>Ano</label>
-<select id="filtroAno" onchange="atualizarPainel()"></select>
+<select id="filtroAno" onchange="atualizarTudo()"></select>
 </div>
 </div>
 
 <br>
 
-📅 Mês selecionado: <span id="mesAtual"></span><br><br>
-💰 Valor total lavado mensal: <span id="totalMensal"></span><br><br>
+📅 Mês: <span id="mesAtual"></span><br><br>
+💰 Total lavado mensal: <span id="totalMensal"></span><br><br>
 💸 Lucro mensal: <span id="lucroMensal"></span><br><br>
 
 <strong>🏴 Ranking mensal de facções</strong>
@@ -201,16 +197,8 @@ button:hover{opacity:0.9;}
 
 <br>
 
-<strong>📜 Lavagens do período</strong>
-<div id="listaMensal" style="
-max-height:250px;
-overflow-y:auto;
-margin-top:10px;
-padding:10px;
-background:#1f1f1f;
-border-radius:10px;
-border:1px solid #333;
-"></div>
+<strong>📜 Lavagens do mês</strong>
+<div id="listaMensal"></div>
 
 </div>
 
@@ -218,90 +206,38 @@ border:1px solid #333;
 new TomSelect("#faccao",{create:false});
 
 let registros = JSON.parse(localStorage.getItem("registros")) || [];
-let numero = localStorage.getItem("numeroLavagem");
-numero = numero ? Number(numero) : 26;
+let numero = 26;
 
 function converter(v){ return Number(v.replace(/\./g,"")); }
 function formatar(v){ return Number(v).toLocaleString("pt-BR"); }
 
-function obterMes(){ return String(new Date().getMonth()+1).padStart(2,"0"); }
-function obterAno(){ return String(new Date().getFullYear()); }
-
-function obterSemanaDoMes(data){
-    let d = new Date(data);
-    return Math.ceil(d.getDate()/7);
-}
-
-// webhook
-function enviarDiscord(r){
-    fetch("https://discord.com/api/webhooks/SEU_WEBHOOK",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-            embeds:[{
-                title:`🧾 Solicitação de Lavagem Nº ${r.numero}`,
-                color:0x2ecc71,
-                description:
-`**Facção solicitante:** ${r.faccao}
-**Passaporte:** ${r.passaporte}
-
-💰 **Valores**
-
-**Valor sujo:** ${formatar(r.valorSujo)}
-**Valor limpo:** ${formatar(r.valorLimpo)}`,
-                timestamp:new Date().toISOString()
-            }]
-        })
-    });
-}
-
-// registrar
 function calcular(){
 
     let faccao=document.getElementById("faccao").value;
-    let passaporte=document.getElementById("passaporte").value.trim();
+    let passaporte=document.getElementById("passaporte").value;
     let valor=document.getElementById("valor").value;
-    let numInput=document.getElementById("numeroLavagemInput").value;
-
-    if(!faccao||!passaporte||!valor){
-        alert("Preencha tudo");
-        return;
-    }
 
     let valorSujo=converter(valor);
     let valorLimpo=valorSujo*0.80;
 
-    let numFinal=numInput?Number(numInput):numero++;
-
     let data=new Date();
 
-    let registro={
-        numero:numFinal,
+    registros.push({
+        numero:numero++,
         faccao,
         passaporte,
         valorSujo,
         valorLimpo,
-        data:data.toLocaleString("pt-BR"),
+        semana:Math.ceil(data.getDate()/7),
         mes:String(data.getMonth()+1).padStart(2,"0"),
-        ano:String(data.getFullYear()),
-        semana:obterSemanaDoMes(data)
-    };
+        ano:String(data.getFullYear())
+    });
 
-    registros.push(registro);
-    localStorage.setItem("registros",JSON.stringify(registros));
-    enviarDiscord(registro);
-    atualizarTudo();
-}
-
-// excluir
-function excluir(i){
-    if(!confirm("Excluir?")) return;
-    registros.splice(i,1);
     localStorage.setItem("registros",JSON.stringify(registros));
     atualizarTudo();
 }
 
-// histórico
+/* HISTÓRICO */
 function atualizarLista(){
 
     let lista=document.getElementById("lista");
@@ -312,73 +248,53 @@ function atualizarLista(){
         let div=document.createElement("div");
         div.className="lavagem-card";
 
-        div.innerHTML=
-`🧾 Solicitação de Lavagem Nº ${r.numero}<br>
-📅 Data e hora: ${r.data}<br>
-🔫 Facção Solicitante: ${r.faccao}<br>
-💵 Valor Sujo: ${formatar(r.valorSujo)}<br>
-💸 Valor Limpo: ${formatar(r.valorLimpo)}<br><br>
-
-<button onclick="excluir(${registros.indexOf(r)})" style="background:#e74c3c;">Excluir</button>`;
+        div.innerHTML=`
+🧾 Solicitação de lavagem Nº ${r.numero}<br>
+🔫 Facção solicitante: ${r.faccao}<br>
+💵 Valor sujo: ${formatar(r.valorSujo)}<br>
+💸 Valor limpo: ${formatar(r.valorLimpo)}
+`;
 
         lista.appendChild(div);
     });
 }
 
-// 🔥 ALTERADO: SEMANAS 1-2 / 3-4 / 5
-function atualizarSemanas(filtrado){
+/* SEMANAL GRID */
+function atualizarSemanas(){
 
     let container=document.getElementById("semanasContainer");
-    container.innerHTML="";
 
-    let grupos={
-        "1-2":[],
-        "3-4":[],
-        "5":[]
-    };
+    function box(lista,titulo){
 
-    filtrado.forEach(r=>{
-        if(r.semana<=2) grupos["1-2"].push(r);
-        else if(r.semana<=4) grupos["3-4"].push(r);
-        else grupos["5"].push(r);
-    });
-
-    function render(nome,dados){
-
-        let total=dados.reduce((a,b)=>a+b.valorSujo,0);
+        let total=lista.reduce((a,b)=>a+b.valorSujo,0);
         let lucro=total*0.10;
 
-        let ranking={};
-
-        dados.forEach(r=>{
-            ranking[r.faccao]=(ranking[r.faccao]||0)+r.valorSujo;
-        });
-
-        let rankText=Object.entries(ranking)
-        .sort((a,b)=>b[1]-a[1])
-        .map((r,i)=>`${i+1}. ${r[0]} — ${formatar(r[1])}`)
-        .join("<br>") || "Sem dados";
-
-        container.innerHTML+=`
+        return `
 <div class="semana-box">
-<strong>📅 Semana ${nome}</strong><br><br>
-
-💰 Valor total lavado: ${formatar(total)}<br>
-💸 Lucro semanal: ${formatar(lucro)}<br><br>
-
-<strong>🏴 Ranking</strong><br>
-${rankText}
-</div>
-`;
+<strong>Semana ${titulo}</strong><br><br>
+💰 Valor lavado: ${formatar(total)}<br>
+💸 Lucro semanal: ${formatar(lucro)}
+</div>`;
     }
 
-    render("1-2",grupos["1-2"]);
-    render("3-4",grupos["3-4"]);
-    render("5",grupos["5"]);
+    let s1=registros.filter(r=>r.semana===1);
+    let s2=registros.filter(r=>r.semana===2);
+    let s3=registros.filter(r=>r.semana===3);
+    let s4=registros.filter(r=>r.semana===4);
+    let s5=registros.filter(r=>r.semana===5);
+
+    container.innerHTML=`
+<div class="semana-grid">
+${box(s1,1)}
+${box(s2,2)}
+${box(s3,3)}
+${box(s4,4)}
+${box(s5,5)}
+</div>`;
 }
 
-// painel
-function atualizarPainel(){
+/* MENSAL */
+function atualizarMensal(){
 
     let mes=document.getElementById("filtroMes").value;
     let ano=document.getElementById("filtroAno").value;
@@ -388,66 +304,37 @@ function atualizarPainel(){
     document.getElementById("mesAtual").innerText=`${mes}/${ano}`;
 
     let total=filtrado.reduce((a,b)=>a+b.valorSujo,0);
-    let lucro=total*0.10;
 
     document.getElementById("totalMensal").innerText=formatar(total);
-    document.getElementById("lucroMensal").innerText=formatar(lucro);
+    document.getElementById("lucroMensal").innerText=formatar(total*0.10);
 
-    atualizarSemanas(filtrado);
+    let lista=document.getElementById("listaMensal");
+    lista.innerHTML="";
 
-    let ranking={};
-
-    filtrado.forEach(r=>{
-        ranking[r.faccao]=(ranking[r.faccao]||0)+r.valorSujo;
+    filtrado.reverse().forEach(r=>{
+        lista.innerHTML+=`
+🧾 Solicitação de lavagem Nº ${r.numero}<br>
+🔫 Facção solicitante: ${r.faccao}<br>
+💵 Valor sujo: ${formatar(r.valorSujo)}<br>
+💸 Valor limpo: ${formatar(r.valorLimpo)}<br><br>`;
     });
-
-    document.getElementById("rankingMensal").innerHTML=
-    Object.entries(ranking)
-    .sort((a,b)=>b[1]-a[1])
-    .map((r,i)=>`${i+1}. ${r[0]} — ${formatar(r[1])}`)
-    .join("<br>") || "Sem dados";
-
-    let listaM=document.getElementById("listaMensal");
-    listaM.innerHTML="";
-
-    filtrado.slice().reverse().forEach(r=>{
-        let div=document.createElement("div");
-        div.className="lavagem-card";
-
-        div.innerHTML=
-`🧾 Solicitação de Lavagem Nº ${r.numero}<br>
-📅 Data e hora: ${r.data}<br>
-🔫 Facção Solicitante: ${r.faccao}<br>
-💵 Valor Sujo: ${formatar(r.valorSujo)}<br>
-💸 Valor Limpo: ${formatar(r.valorLimpo)}<br><br>`;
-
-        listaM.appendChild(div);
-    });
-
-    let totalGeral=registros.reduce((a,b)=>a+b.valorSujo,0);
-
-    document.getElementById("totalDinheiro").innerText=formatar(totalGeral);
-    document.getElementById("lucroTotal").innerText=formatar(totalGeral*0.10);
-
-    let rankG={};
-
-    registros.forEach(r=>{
-        rankG[r.faccao]=(rankG[r.faccao]||0)+r.valorSujo;
-    });
-
-    document.getElementById("ranking").innerHTML=
-    Object.entries(rankG)
-    .sort((a,b)=>b[1]-a[1])
-    .map((r,i)=>`${i+1}. ${r[0]} — ${formatar(r[1])}`)
-    .join("<br>");
 }
 
+/* TOTAL */
 function atualizarTudo(){
+
+    document.getElementById("totalLavagens").innerText=registros.length;
+
+    let total=registros.reduce((a,b)=>a+b.valorSujo,0);
+
+    document.getElementById("totalDinheiro").innerText=formatar(total);
+    document.getElementById("lucroTotal").innerText=formatar(total*0.10);
+
     atualizarLista();
-    atualizarPainel();
+    atualizarSemanas();
+    atualizarMensal();
 }
 
-initFiltros();
 atualizarTudo();
 </script>
 
