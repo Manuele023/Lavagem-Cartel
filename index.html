@@ -14,32 +14,16 @@
 }
 
 .hero h1{
+    width: 100%;
+    text-align: center;
     font-size: 42px;
     font-weight: 800;
     color: #fff;
     letter-spacing: 2px;
-    text-transform: uppercase;
     margin-bottom: 20px;
+    text-transform: uppercase;
 }
 
-.historico{
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.6s ease;
-}
-
-.painel-de-controle{
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.6s ease;
-}
-
-.registro-mensal{
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.6s ease;
-}
-    
 body{
     font-family:Arial;
     color:#fff;
@@ -177,31 +161,24 @@ button{
 
 </div>
 
-<div class="historico">
     
 <h2>📜 Histórico de Lavagens</h2>
 <div id="lista"></div>
+
     
-</div>
-
-<div class="painel-de-controle">
-
 <h2>📊 Painel de Controle</h2>
 <div class="painel">
 📜 Nº total de lavagens: <span id="totalLavagens"></span><br>
 💰 Valor total lavado: <span id="totalDinheiro"></span><br>
 💸 Lucro total: <span id="lucroTotal"></span>
-    
-</div>
 
-<div class="registro-mensal">
     
 <h2>📆 Registro Mensal</h2>
 <div class="painel">
 <div class="filtro-linha">
 <div><label>Mês</label><select id="filtroMes" onchange="atualizarTudo()"></select></div>
 <div><label>Ano</label><select id="filtroAno" onchange="atualizarTudo()"></select></div>
-</div>
+
 
 <div id="semanasContainer" style="margin-top:15px"></div>
 
