@@ -339,11 +339,10 @@ function atualizarLista(){
 
         div.innerHTML=
 `🧾Solicitação de Lavagem Nº ${r.numero}<br>
-
-Data: ${r.data}<br>
-Facção Solicitante: ${r.faccao}<br>
-Valor Sujo: ${formatar(r.valorSujo)}<br>
-Valor Limpo: ${formatar(r.valorLimpo)}<br><br>
+📅 Data e hora: ${r.data}<br>
+🔫 Facção Solicitante: ${r.faccao}<br>
+💵 Valor Sujo: ${formatar(r.valorSujo)}<br>
+💸 Valor Limpo: ${formatar(r.valorLimpo)}<br><br>
 
 <button onclick="excluir(${registros.indexOf(r)})" style="background:#e74c3c;">Excluir</button>`;
 
