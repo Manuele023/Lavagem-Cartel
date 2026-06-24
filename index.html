@@ -338,11 +338,12 @@ function atualizarLista(){
         div.className="lavagem-card";
 
         div.innerHTML=
-`🧾 Nº ${r.numero}<br>
-📅 ${r.data}<br>
-🔫 ${r.faccao}<br>
-💵 ${formatar(r.valorSujo)}<br>
-💸 ${formatar(r.valorLimpo)}<br><br>
+`🧾Solicitação de Lavagem Nº ${r.numero}<br>
+
+Data: ${r.data}<br>
+Facção Solicitante: ${r.faccao}<br>
+Valor Sujo: ${formatar(r.valorSujo)}<br>
+Valor Limpo: ${formatar(r.valorLimpo)}<br><br>
 
 <button onclick="excluir(${registros.indexOf(r)})" style="background:#e74c3c;">Excluir</button>`;
 
