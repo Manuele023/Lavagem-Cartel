@@ -46,17 +46,7 @@ button{
 
 button:hover{opacity:0.9;}
 
-.extraBtn{
-    background:#3498db;
-}
-
-#resultado{
-    margin-top:20px;
-    background:#2a2a2a;
-    padding:15px;
-    border-radius:8px;
-    white-space:pre-line;
-}
+.extraBtn{background:#3498db;}
 
 .lavagem-card{
     background:#2a2a2a;
@@ -106,10 +96,8 @@ button:hover{opacity:0.9;}
 <label>Valor sujo</label>
 <input id="valor" type="number">
 
-<button onclick="calcular()">Registrar / Atualizar Lavagem</button>
-<button class="extraBtn" onclick="repostar()">Repostar último</button>
-
-<div id="resultado"></div>
+<button onclick="calcular()">Registrar Lavagem</button>
+<button class="extraBtn" onclick="repostar()">Repostar última lavagem</button>
 
 <h2>📜 Lavagens anteriores</h2>
 <div id="lista"></div>
@@ -117,18 +105,10 @@ button:hover{opacity:0.9;}
 <script>
 new TomSelect("#faccao",{create:false});
 
-// 🔢 contador começa em 26 e é salvo
+// 🔢 contador começa em 26
 let numero = localStorage.getItem("numeroLavagem");
-
-if(numero === null || numero === undefined){
-    numero = 26;
-} else {
-    numero = Number(numero);
-}
-
-if(isNaN(numero) || numero < 26){
-    numero = 26;
-}
+numero = numero ? Number(numero) : 26;
+if(isNaN(numero) || numero < 26) numero = 26;
 
 // 📦 registros
 let registros = JSON.parse(localStorage.getItem("registros")) || [];
@@ -151,7 +131,6 @@ function calcular(){
 
     let numFinal;
 
-    // ✏️ edição mantém número
     if(editandoIndex !== null){
         numFinal = registros[editandoIndex].numero;
     } else {
@@ -179,19 +158,8 @@ function calcular(){
 
     ultimoRegistro = registro;
 
-    mostrar(registro);
     enviarDiscord(registro);
     atualizarLista();
-}
-
-function mostrar(r){
-    document.getElementById("resultado").innerText =
-`🧾 Lavagem Nº ${r.numero}
-
-Facção: ${r.faccao}
-Passaporte: ${r.passaporte}
-Sujo: $${r.valorSujo}
-Limpo: $${r.valorLimpo}`;
 }
 
 function repostar(){
@@ -199,10 +167,10 @@ function repostar(){
         alert("Nenhum registro ainda.");
         return;
     }
-    mostrar(ultimoRegistro);
 }
 
 function editar(index){
+
     let r = registros[index];
 
     document.getElementById("faccao").value = r.faccao;
@@ -210,6 +178,17 @@ function editar(index){
     document.getElementById("valor").value = r.valorSujo;
 
     editandoIndex = index;
+}
+
+function excluir(index){
+
+    if(!confirm("Excluir esta solicitação?")) return;
+
+    registros.splice(index, 1);
+
+    localStorage.setItem("registros", JSON.stringify(registros));
+
+    atualizarLista();
 }
 
 function atualizarLista(){
@@ -225,12 +204,14 @@ function atualizarLista(){
         div.className = "lavagem-card";
 
         div.innerHTML =
-`<div class="lavagem-num">🧾 Lavagem Nº ${r.numero}</div>
-🏴 ${r.faccao}<br>
+`<div class="lavagem-num">🧾 Solicitação de Lavagem Nº ${r.numero}</div>
+🏴 ${r.faccao || "—"}<br>
 👤 ${r.passaporte}<br>
 💰 Sujo: $${r.valorSujo}<br>
 💵 Limpo: $${r.valorLimpo}<br><br>
-<button onclick="editar(${registros.indexOf(r)})">Editar</button>`;
+
+<button onclick="editar(${registros.indexOf(r)})">Editar</button>
+<button onclick="excluir(${registros.indexOf(r)})" style="background:#e74c3c;margin-top:5px;">Excluir</button>`;
 
         lista.appendChild(div);
     });
@@ -243,18 +224,16 @@ function enviarDiscord(r){
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
             content:
-`🧾 Lavagem Nº ${r.numero}
+`🧾 Solicitação de Lavagem Nº ${r.numero}
 
-🏴 Facção: ${r.faccao}
+🏴 Facção: ${r.faccao || "—"}
 👤 Passaporte: ${r.passaporte}
 💰 Sujo: $${r.valorSujo}
 💵 Limpo: $${r.valorLimpo}`
         })
     });
-
 }
 
-// inicializa lista ao abrir
 atualizarLista();
 </script>
 
