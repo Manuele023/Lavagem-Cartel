@@ -13,11 +13,11 @@ body{
     padding:20px;
 
     background:
-        linear-gradient(rgba(15,15,15,0.88), rgba(15,15,15,0.88)),
-        url("fundo-cartel.png");
+    linear-gradient(rgba(15,15,15,0.75), rgba(15,15,15,0.75)),
+    url("fundo-cartel.png");
 
     background-size: cover;
-    background-position: center;
+    background-position: center 20%;
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
@@ -44,10 +44,14 @@ button{
 }
 
 .painel,.lavagem-card{
-    background:#2a2a2a;
+    background:rgba(42,42,42,0.58);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
     padding:12px;
-    border-radius:10px;
-    margin-top:10px
+    border-radius:12px;
+    margin-top:10px;
+    border:1px solid rgba(255,255,255,0.08);
+    box-shadow:0 8px 20px rgba(0,0,0,0.25);
 }
 
 .lavagem-card{
@@ -57,9 +61,12 @@ button{
 #lista,#listaMensal{
     max-height:300px;
     overflow-y:auto;
-    background:#1f1f1f;
+    background:rgba(31,31,31,0.50);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
     padding:10px;
-    border-radius:10px
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.08);
 }
 
 .filtro-linha{
@@ -78,9 +85,12 @@ button{
 }
 
 .semana-box{
-    background:#1f1f1f;
+    background:rgba(31,31,31,0.50);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
     padding:10px;
-    border-radius:8px
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.08);
 }
 </style>
 <h1>🧾 Sistema de Lavagem</h1>
