@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cartel - Sistema de Lavagem do Cartel</title>
+<title>Cartel - Sistema de Lavagem</title>
 
 <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
@@ -76,7 +76,7 @@ button:hover{opacity:0.9;}
     color:#ddd;
 }
 
-/* Tom Select (cinza consistente) */
+/* Tom Select cinza */
 .ts-wrapper{width:100%;}
 
 .ts-control{
@@ -181,25 +181,16 @@ function enviarDiscord(r){
                 title:`🧾 Solicitação de Lavagem Nº ${r.numero}`,
                 color:0x2ecc71,
 
-                fields:[
-                    {
-                        name:"🏴 Facção solicitante",
-                        value:r.faccao || "—",
-                        inline:false
-                    },
-                    {
-                        name:"🪪 Passaporte para pagamento",
-                        value:String(r.passaporte),
-                        inline:false
-                    },
-                    {
-                        name:"💰 Valores",
-                        value:
-`💵 Sujo: ${formatar(r.valorSujo)}
-💸 Limpo: ${formatar(r.valorLimpo)}`,
-                        inline:false
-                    }
-                ],
+                description:
+`🔫 **Facção solicitante:** ${r.faccao || "—"}
+🪪 **Passaporte para pagamento:** ${r.passaporte}
+
+━━━━━━━━━━━━━━━━━━
+💰 **Valores**
+
+💵 Valor sujo: ${formatar(r.valorSujo)}
+
+💸 Valor limpo: ${formatar(r.valorLimpo)}`,
 
                 footer:{
                     text:"Sistema de Lavagem do Cartel"
