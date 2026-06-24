@@ -46,8 +46,6 @@ button{
 
 button:hover{opacity:0.9;}
 
-.extraBtn{background:#3498db;}
-
 .lavagem-card{
     background:#2a2a2a;
     margin-top:10px;
@@ -58,7 +56,7 @@ button:hover{opacity:0.9;}
 
 .lavagem-num{
     font-weight:bold;
-    margin-bottom:5px;
+    margin-bottom:8px;
 }
 
 /* SELECT */
@@ -68,7 +66,6 @@ button:hover{opacity:0.9;}
     border-radius:8px !important;
     color:white !important;
     padding:12px !important;
-    box-shadow:none !important;
 }
 
 .ts-dropdown{
@@ -104,6 +101,11 @@ button:hover{opacity:0.9;}
     margin-bottom:15px;
     border:1px solid #333;
 }
+
+.ranking{
+    font-size:13px;
+    color:#ddd;
+}
 </style>
 </head>
 
@@ -111,12 +113,11 @@ button:hover{opacity:0.9;}
 
 <h1>🧾 Sistema de Lavagem</h1>
 
-<!-- INPUT NÚMERO DA LAVAGEM -->
 <label>Número da Lavagem</label>
 <input id="numeroLavagemInput" type="number" placeholder="Ex: 26">
 
 <label>Facção</label>
-<select id="faccao" placeholder="Selecione a respectiva facção">
+<select id="faccao">
 <option value="">Selecione</option>
 <option>4M</option>
 <option>B13</option>
@@ -139,30 +140,24 @@ button:hover{opacity:0.9;}
 </select>
 
 <label>Passaporte</label>
-<input id="passaporte" placeholder="Passaporte para transferência do valor">
+<input id="passaporte" placeholder="Passaporte para pagamento">
 
 <label>Valor sujo</label>
 <input id="valor" type="text" placeholder="Ex: 100.000">
 
 <button onclick="calcular()">Registrar Lavagem</button>
-<button class="extraBtn" onclick="repostar()">Repostar última lavagem</button>
 
-<h2>📜 Lavagens anteriores</h2>
+<h2>📜 Histórico de Lavagens</h2>
 <div id="lista"></div>
 
-<!-- 📊 PAINEL EMBAIXO -->
 <h2>📊 Painel de Controle do Cartel</h2>
 
 <div class="painel">
     📜 Total de lavagens: <span id="totalLavagens">0</span><br><br>
-    💰 Total lavado: <span id="totalDinheiro">0</span>
-
-    <hr style="border:0;border-top:1px solid #444;margin:10px 0;">
+    💰 Total lavado: <span id="totalDinheiro">0</span><br><br>
 
     <strong>🏴 Ranking de Facções</strong>
-    <div id="ranking" style="font-size:13px;color:#ddd;margin-top:5px;">
-        Sem dados ainda
-    </div>
+    <div id="ranking" class="ranking">Sem dados ainda</div>
 </div>
 
 <script>
@@ -170,10 +165,6 @@ new TomSelect("#faccao",{create:false});
 
 // dados
 let registros = JSON.parse(localStorage.getItem("registros")) || [];
-let editandoIndex = null;
-let ultimoRegistro = null;
-
-// contador automático fallback
 let numero = localStorage.getItem("numeroLavagem");
 numero = numero ? Number(numero) : 26;
 
@@ -187,7 +178,7 @@ function formatar(v){
     return Number(v).toLocaleString("pt-BR");
 }
 
-// discord
+// Discord
 function enviarDiscord(r){
     fetch("URL_DO_WEBHOOK_AQUI",{
         method:"POST",
@@ -196,15 +187,15 @@ function enviarDiscord(r){
             content:
 `🧾 Solicitação de Lavagem Nº ${r.numero}
 
-🏴 Facção: ${r.faccao}
-👤 Passaporte: ${r.passaporte}
-💰 Sujo: ${formatar(r.valorSujo)}
-💵 Limpo: ${formatar(r.valorLimpo)}`
+Facção solicitante: ${r.faccao}
+Passaporte para pagamento: ${r.passaporte}
+Valor sujo: ${formatar(r.valorSujo)}
+Valor limpo: ${formatar(r.valorLimpo)}`
         })
     });
 }
 
-// salvar
+// registrar lavagem
 function calcular(){
 
     let faccao = document.getElementById("faccao").value;
@@ -224,8 +215,6 @@ function calcular(){
 
     if(numInput && !isNaN(numInput)){
         numFinal = Number(numInput);
-    }else if(editandoIndex !== null){
-        numFinal = registros[editandoIndex].numero;
     }else{
         numFinal = numero;
         numero++;
@@ -240,37 +229,18 @@ function calcular(){
         valorLimpo
     };
 
-    if(editandoIndex !== null){
-        registros[editandoIndex] = registro;
-        editandoIndex = null;
-    }else{
-        registros.push(registro);
-    }
-
-    ultimoRegistro = registro;
+    registros.push(registro);
 
     localStorage.setItem("registros", JSON.stringify(registros));
 
     enviarDiscord(registro);
-    atualizarLista();
-}
 
-// repostar
-function repostar(){
+    atualizarTudo();
 
-    if(registros.length === 0){
-        alert("Nenhuma lavagem ainda.");
-        return;
-    }
-
-    let ultimo = registros[registros.length - 1];
-
-    document.getElementById("faccao").value = ultimo.faccao;
-    document.getElementById("passaporte").value = ultimo.passaporte;
-    document.getElementById("valor").value = ultimo.valorSujo;
-
-    editandoIndex = registros.length - 1;
-    ultimoRegistro = ultimo;
+    // limpa campos
+    document.getElementById("numeroLavagemInput").value = "";
+    document.getElementById("passaporte").value = "";
+    document.getElementById("valor").value = "";
 }
 
 // excluir
@@ -280,9 +250,9 @@ function excluir(index){
 
     registros.splice(index,1);
 
-    localStorage.setItem("registros",JSON.stringify(registros));
+    localStorage.setItem("registros", JSON.stringify(registros));
 
-    atualizarLista();
+    atualizarTudo();
 }
 
 // painel
@@ -321,21 +291,26 @@ function atualizarLista(){
         div.className = "lavagem-card";
 
         div.innerHTML =
-`<div class="lavagem-num">🧾 Nº ${r.numero}</div>
-🏴 ${r.faccao}<br>
-👤 ${r.passaporte}<br>
-💰 Sujo: ${formatar(r.valorSujo)}<br>
-💵 Limpo: ${formatar(r.valorLimpo)}<br><br>
+`🧾 Solicitação de Lavagem Nº ${r.numero}<br><br>
+
+Facção solicitante: ${r.faccao}<br>
+Passaporte para pagamento: ${r.passaporte}<br>
+Valor sujo: ${formatar(r.valorSujo)}<br>
+Valor limpo: ${formatar(r.valorLimpo)}<br><br>
 
 <button onclick="excluir(${registros.indexOf(r)})" style="background:#e74c3c;">Excluir</button>`;
 
         lista.appendChild(div);
     });
+}
 
+// tudo
+function atualizarTudo(){
+    atualizarLista();
     atualizarPainel();
 }
 
-atualizarLista();
+atualizarTudo();
 </script>
 
 </body>
