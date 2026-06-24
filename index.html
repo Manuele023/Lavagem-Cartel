@@ -61,7 +61,7 @@ button:hover{opacity:0.9;}
     margin-bottom:5px;
 }
 
-/* 🔥 TOM SELECT IGUAL INPUTS */
+/* TomSelect igual inputs */
 .ts-control{
     background:#2a2a2a !important;
     border:none !important;
@@ -119,7 +119,7 @@ button:hover{opacity:0.9;}
 <input id="passaporte">
 
 <label>Valor sujo</label>
-<input id="valor" type="number">
+<input id="valor" type="text" placeholder="Ex: 100.000">
 
 <button onclick="calcular()">Registrar Lavagem</button>
 <button class="extraBtn" onclick="repostar()">Repostar última lavagem</button>
@@ -141,17 +141,23 @@ let registros = JSON.parse(localStorage.getItem("registros")) || [];
 let ultimoRegistro = null;
 let editandoIndex = null;
 
+// 🔥 converte "100.000" → 100000
+function converterValor(valor){
+    return Number(valor.replace(/\./g, ""));
+}
+
 function calcular(){
 
     let faccao = document.getElementById("faccao").value;
     let passaporte = document.getElementById("passaporte").value.trim();
-    let valorSujo = Number(document.getElementById("valor").value);
+    let valorInput = document.getElementById("valor").value;
 
-    if(!faccao || !passaporte || !valorSujo){
+    if(!faccao || !passaporte || !valorInput){
         alert("Preencha todos os campos.");
         return;
     }
 
+    let valorSujo = converterValor(valorInput);
     let valorLimpo = valorSujo * 0.80;
 
     let numFinal;
