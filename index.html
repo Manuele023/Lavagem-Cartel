@@ -52,7 +52,9 @@ button{background:#2ecc71;cursor:pointer}
 <label>Valor sujo</label>
 <input id="valor" placeholder="Ex.: 1.000.000">
 
-<button onclick="calcular()">Registrar Lavagem</button>
+<button onclick="calcular()" style="font-weight: bold;">
+    Registrar Lavagem
+</button>
 
 <h2>📜 Histórico de Lavagens</h2>
 <div id="lista"></div>
@@ -107,7 +109,7 @@ function enviarDiscord(r){
 **Valor Sujo:** ${formatar(r.valorSujo)}
 **Valor Limpo:** ${formatar(r.valorLimpo)}`,
                 footer:{
-                    text:"Sistema de Lavagem do Cartel"
+                      text: `Sistema de Lavagem do Cartel • ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR")}`
                 }
             }]
         })
@@ -156,7 +158,7 @@ function atualizarLista(){
 let lista=document.getElementById('lista'); lista.innerHTML='';
 [...registros].reverse().forEach(r=>{
 let idx=registros.indexOf(r);
-lista.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: ${formatar(r.valorSujo)}<br>💸 Valor limpo: ${formatar(r.valorLimpo)}<br><button onclick="excluir(${idx})">Excluir</button></div>`;
+lista.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: ${formatar(r.valorSujo)}<br>💸 Valor limpo: ${formatar(r.valorLimpo)}<br><button onclick="excluir(${idx})" style="font-weight: bold;">Excluir</button></div>`;
 });
 }
 
