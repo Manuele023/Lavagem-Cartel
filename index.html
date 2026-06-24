@@ -5,19 +5,76 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sistema de Lavagem</title>
 <style>
-body{font-family:Arial;background:#1b1b1b;color:#fff;max-width:900px;margin:auto;padding:20px}
-input,select,button{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:none;background:#2a2a2a;color:#fff;box-sizing:border-box}
-button{background:#2ecc71;cursor:pointer}
-.painel,.lavagem-card{background:#2a2a2a;padding:12px;border-radius:10px;margin-top:10px}
-.lavagem-card{border-left:4px solid #2ecc71}
-#lista,#listaMensal{max-height:300px;overflow-y:auto;background:#1f1f1f;padding:10px;border-radius:10px}
-.filtro-linha{display:flex;gap:10px}
-.filtro-linha div{flex:1}
-.semana-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.semana-box{background:#1f1f1f;padding:10px;border-radius:8px}
+body{
+    font-family:Arial;
+    background:#1b1b1b;
+    color:#fff;
+    max-width:900px;
+    margin:auto;
+    padding:20px
+}
+
+label{
+    display:block;
+    margin-top:12px;
+}
+
+input,select,button{
+    width:100%;
+    padding:10px;
+    margin-top:8px;
+    border-radius:8px;
+    border:none;
+    background:#2a2a2a;
+    color:#fff;
+    box-sizing:border-box
+}
+
+button{
+    background:#2ecc71;
+    cursor:pointer;
+}
+
+.painel,.lavagem-card{
+    background:#2a2a2a;
+    padding:12px;
+    border-radius:10px;
+    margin-top:10px
+}
+
+.lavagem-card{
+    border-left:4px solid #2ecc71
+}
+
+#lista,#listaMensal{
+    max-height:300px;
+    overflow-y:auto;
+    background:#1f1f1f;
+    padding:10px;
+    border-radius:10px
+}
+
+.filtro-linha{
+    display:flex;
+    gap:10px
+}
+
+.filtro-linha div{
+    flex:1
+}
+
+.semana-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:8px
+}
+
+.semana-box{
+    background:#1f1f1f;
+    padding:10px;
+    border-radius:8px
+}
 </style>
-</head>
-<body>
 <h1>🧾 Sistema de Lavagem</h1>
 
 <label>Número da Lavagem</label>
