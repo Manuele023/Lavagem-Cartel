@@ -32,12 +32,6 @@ input,select{
     box-sizing:border-box;
 }
 
-/* placeholder bonito */
-input::placeholder{
-    color:#aaa;
-}
-
-/* botões */
 button{
     width:100%;
     margin-top:12px;
@@ -67,7 +61,7 @@ button:hover{opacity:0.9;}
     margin-bottom:5px;
 }
 
-/* TomSelect igual inputs */
+/* SELECT */
 .ts-control{
     background:#2a2a2a !important;
     border:none !important;
@@ -92,7 +86,7 @@ button:hover{opacity:0.9;}
     background:#3a3a3a !important;
 }
 
-/* histórico com scroll */
+/* HISTÓRICO */
 #lista{
     max-height:400px;
     overflow-y:auto;
@@ -101,12 +95,60 @@ button:hover{opacity:0.9;}
     border-radius:10px;
     border:1px solid #333;
 }
+
+/* PAINEL */
+.painel{
+    background:#2a2a2a;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:15px;
+    border:1px solid #333;
+}
+
+.ranking{
+    font-size:13px;
+    color:#ddd;
+    margin-top:5px;
+}
 </style>
 </head>
 
 <body>
 
 <h1>🧾 Sistema de Lavagem</h1>
+
+<!-- 📊 PAINEL -->
+<div class="painel">
+
+    <div style="font-size:18px;font-weight:bold;">
+        📊 Cartel - Painel
+    </div>
+
+    <div style="margin-top:8px;">
+        📜 Lavagens: <span id="totalLavagens">0</span>
+    </div>
+
+    <div>
+        💰 Total lavado: <span id="totalDinheiro">0</span>
+    </div>
+
+    <hr style="border:0;border-top:1px solid #444;margin:10px 0;">
+
+    <div>
+        <strong>🏴 Ranking de Facções</strong>
+        <div id="ranking" class="ranking">Sem dados ainda</div>
+    </div>
+
+    <hr style="border:0;border-top:1px solid #444;margin:10px 0;">
+
+    <div>
+        🧾 Solicitação de Lavagem Nº<br>
+        <span style="font-size:12px;color:#aaa;">
+            Número de ordem da lavagem conforme o Discord
+        </span>
+    </div>
+
+</div>
 
 <label>Facção</label>
 <select id="faccao" placeholder="Selecione a respectiva facção">
@@ -144,10 +186,7 @@ button:hover{opacity:0.9;}
 <div id="lista"></div>
 
 <script>
-new TomSelect("#faccao",{
-    create:false,
-    placeholder:"Selecione a respectiva facção"
-});
+new TomSelect("#faccao",{create:false});
 
 // contador inicia em 26
 let numero = localStorage.getItem("numeroLavagem");
@@ -160,17 +199,17 @@ let registros = JSON.parse(localStorage.getItem("registros")) || [];
 let editandoIndex = null;
 let ultimoRegistro = null;
 
-// converter 100.000 → 100000
+// converter
 function converterValor(valor){
     return Number(valor.replace(/\./g, ""));
 }
 
-// formatar 100000 → 100.000
+// formatar
 function formatar(valor){
     return Number(valor).toLocaleString('pt-BR');
 }
 
-// discord
+// Discord
 function enviarDiscord(r){
     fetch("URL_DO_WEBHOOK_AQUI", {
         method:"POST",
@@ -239,7 +278,7 @@ function calcular(){
     atualizarLista();
 }
 
-// repostar última lavagem
+// repostar
 function repostar(){
 
     if(registros.length === 0){
@@ -270,6 +309,37 @@ function excluir(index){
     atualizarLista();
 }
 
+// 📊 painel
+function atualizarContador(){
+
+    document.getElementById("totalLavagens").innerText = registros.length;
+
+    let total = registros.reduce((acc,r)=>acc + (r.valorSujo||0),0);
+    document.getElementById("totalDinheiro").innerText =
+        total.toLocaleString('pt-BR');
+}
+
+// 🏴 ranking
+function atualizarRanking(){
+
+    let ranking = {};
+
+    registros.forEach(r=>{
+        if(!r.faccao) return;
+        ranking[r.faccao] = (ranking[r.faccao] || 0) + (r.valorSujo||0);
+    });
+
+    let ordenado = Object.entries(ranking)
+        .sort((a,b)=>b[1]-a[1]);
+
+    document.getElementById("ranking").innerHTML =
+        ordenado.length
+        ? ordenado.map((r,i)=>
+            `${i+1}. ${r[0]} — ${r[1].toLocaleString('pt-BR')}`
+          ).join("<br>")
+        : "Sem dados ainda";
+}
+
 // histórico
 function atualizarLista(){
 
@@ -278,25 +348,30 @@ function atualizarLista(){
 
     let reverso = [...registros].reverse();
 
-    reverso.forEach(r => {
+    reverso.forEach(r=>{
 
         let div = document.createElement("div");
         div.className = "lavagem-card";
 
         div.innerHTML =
-`<div class="lavagem-num">🧾 Solicitação de Lavagem Nº ${r.numero}</div>
+`<div class="lavagem-num">🧾 Nº ${r.numero}</div>
 🏴 ${r.faccao || "—"}<br>
 👤 ${r.passaporte}<br>
 💰 Sujo: ${formatar(r.valorSujo)}<br>
 💵 Limpo: ${formatar(r.valorLimpo)}<br><br>
 
-<button onclick="excluir(${registros.indexOf(r)})" style="background:#e74c3c;margin-top:5px;">Excluir</button>`;
+<button onclick="excluir(${registros.indexOf(r)})" style="background:#e74c3c;">Excluir</button>`;
 
         lista.appendChild(div);
     });
+
+    atualizarContador();
+    atualizarRanking();
 }
 
 atualizarLista();
+atualizarContador();
+atualizarRanking();
 </script>
 
 </body>
