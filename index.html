@@ -175,8 +175,8 @@ button{
 <h2>📊 Painel de Controle</h2>
 <div class="painel">
 📜 Nº total de lavagens: <span id="totalLavagens"></span><br>
-💰 Valor total lavado: <span id="totalDinheiro"></span><br>
-💸 Lucro total: <span id="lucroTotal"></span>
+💰 Valor total lavado: $ <span id="totalDinheiro"></span><br>
+💸 Lucro total: R$ <span id="lucroTotal"></span>
 </div>
 
 <h2>📆 Registro Mensal</h2>
@@ -189,8 +189,8 @@ button{
 <div id="semanasContainer" style="margin-top:15px"></div>
 
 <br>📅 Mês: <span id="mesAtual"></span><br><br>
-💰 Valor total lavado mensal: <span id="totalMensal"></span><br><br>
-💸 Lucro mensal: <span id="lucroMensal"></span><br><br>
+💰 Valor total lavado mensal: $ <span id="totalMensal"></span><br><br>
+💸 Lucro mensal: R$ <span id="lucroMensal"></span><br><br>
 
 <strong>🏴 Ranking mensal de facções</strong>
 <div id="rankingMensal"></div>
@@ -220,8 +220,8 @@ function enviarDiscord(r){
 **Passaporte:** ${r.passaporte}
 
 💰 **Valores**
-**Valor Sujo:** ${formatar(r.valorSujo)}
-**Valor Limpo:** ${formatar(r.valorLimpo)}`,
+**Valor Sujo:** $ ${formatar(r.valorSujo)}
+**Valor Limpo:** R$ ${formatar(r.valorLimpo)}`,
                 footer:{
                       text: `Sistema de Lavagem do Cartel • ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR")}`
                 }
@@ -272,7 +272,7 @@ function atualizarLista(){
 let lista=document.getElementById('lista'); lista.innerHTML='';
 [...registros].reverse().forEach(r=>{
 let idx=registros.indexOf(r);
-lista.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: ${formatar(r.valorSujo)}<br>💸 Valor limpo: ${formatar(r.valorLimpo)}<br><button onclick="excluir(${idx})" style="
+lista.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br><button onclick="excluir(${idx})" style="
 font-weight:bold;
 background:#8B1E1E;
 color:white;
@@ -296,7 +296,7 @@ lucroMensal.innerText=formatar(total*0.1);
 let semanas='';
 for(let s=1;s<=5;s++){
 let t=f.filter(r=>r.semana===s).reduce((a,b)=>a+b.valorSujo,0);
-semanas+=`<div class="semana-box"><strong>Semana ${s}</strong><br><br>💰 Lavado: ${formatar(t)}<br>💸 Lucro: ${formatar(t*0.1)}</div>`;
+semanas+=`<div class="semana-box"><strong>Semana ${s}</strong><br><br>💰 Lavado: $ ${formatar(t)}<br>💸 Lucro: R$ ${formatar(t*0.1)}</div>`;
 }
 semanasContainer.innerHTML=`<div class="semana-grid">${semanas}</div>`;
 
@@ -305,7 +305,7 @@ rankingMensal.innerHTML=Object.entries(rank).sort((a,b)=>b[1]-a[1]).map((r,i)=>`
 
 listaMensal.innerHTML='';
 [...f].reverse().forEach(r=>{
-listaMensal.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: ${formatar(r.valorSujo)}<br>💸 Valor limpo: ${formatar(r.valorLimpo)}</div>`;
+listaMensal.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>💸 Valor limpo: R$ ${formatar(r.valorLimpo)}</div>`;
 });
 }
 
