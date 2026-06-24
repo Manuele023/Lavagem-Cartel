@@ -13,11 +13,11 @@ body{
     padding:20px;
 
     background:
-    linear-gradient(rgba(15,15,15,0.75), rgba(15,15,15,0.75)),
+    linear-gradient(rgba(15,15,15,0.50), rgba(15,15,15,0.50)),
     url("fundo-cartel.png");
 
     background-size: cover;
-    background-position: center 30%;
+    background-position: center 50%;
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
@@ -44,12 +44,14 @@ button{
 }
 
 .painel,.lavagem-card{
-    background:rgba(42,42,42,0.45);
+    background:rgba(42,42,42,0.60);
     padding:12px;
-    border-radius:10px;
+    border-radius:12px;
     margin-top:10px;
-    backdrop-filter:blur(8px);
-    -webkit-backdrop-filter:blur(8px);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.08);
+    box-shadow:0 8px 20px rgba(0,0,0,0.25);
 }
 
 .lavagem-card{
@@ -59,11 +61,13 @@ button{
 #lista,#listaMensal{
     max-height:300px;
     overflow-y:auto;
-    background:rgba(31,31,31,0.35);
+    background:rgba(31,31,31,0.50);
     padding:10px;
-    border-radius:10px;
-    backdrop-filter:blur(8px);
-    -webkit-backdrop-filter:blur(8px);
+    border-radius:12px;
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.08);
+}
 }
 
 .filtro-linha{
@@ -82,7 +86,7 @@ button{
 }
 
 .semana-box{
-    background:rgba(31,31,31,0.25);
+    background:rgba(31,31,31,0.50);
     padding:10px;
     border-radius:10px;
     backdrop-filter:blur(8px);
