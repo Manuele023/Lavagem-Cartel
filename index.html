@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cartel - Sistema de Lavagem do Cartel</title>
+<title>Cartel - Sistema de Lavagem</title>
 
 <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
@@ -75,6 +75,31 @@ button:hover{opacity:0.9;}
     font-size:13px;
     color:#ddd;
 }
+
+/* 🔧 CORREÇÃO DO TOM SELECT (FACÇÃO CINZA) */
+.ts-control{
+    background:#2a2a2a !important;
+    border:none !important;
+    color:white !important;
+    border-radius:8px !important;
+    padding:12px !important;
+    box-sizing:border-box;
+}
+
+.ts-dropdown{
+    background:#2a2a2a !important;
+    color:white !important;
+    border:1px solid #333 !important;
+}
+
+.ts-dropdown .option{
+    background:#2a2a2a !important;
+    color:white !important;
+}
+
+.ts-dropdown .option:hover{
+    background:#3a3a3a !important;
+}
 </style>
 </head>
 
@@ -136,7 +161,6 @@ let registros = JSON.parse(localStorage.getItem("registros")) || [];
 let numero = localStorage.getItem("numeroLavagem");
 numero = numero ? Number(numero) : 26;
 
-// formatar número com ponto
 function converter(v){
     return Number(v.replace(/\./g,""));
 }
@@ -145,7 +169,6 @@ function formatar(v){
     return Number(v).toLocaleString("pt-BR");
 }
 
-// DISCORD WEBHOOK (EMBED)
 function enviarDiscord(r){
 
     fetch("https://discord.com/api/webhooks/1519147289036193972/WreVR0l-ZJ7GbI7xiGUMdi-2k6P64hem0GmnH4dyGHGvlt0neVrf88mAIzaciy2Frjsm", {
@@ -154,7 +177,7 @@ function enviarDiscord(r){
         body:JSON.stringify({
             embeds:[{
                 title:`🧾 Solicitação de Lavagem Nº ${r.numero}`,
-                color: 0x2ecc71,
+                color:0x2ecc71,
                 fields:[
                     {name:"Facção solicitante", value:r.faccao || "—"},
                     {name:"Passaporte para pagamento", value:String(r.passaporte), inline:true},
@@ -168,7 +191,6 @@ function enviarDiscord(r){
     });
 }
 
-// registrar lavagem
 function calcular(){
 
     let faccao = document.getElementById("faccao").value;
@@ -215,7 +237,6 @@ function calcular(){
     document.getElementById("valor").value="";
 }
 
-// excluir
 function excluir(i){
     if(!confirm("Excluir lavagem?")) return;
 
@@ -225,7 +246,6 @@ function excluir(i){
     atualizarTudo();
 }
 
-// histórico
 function atualizarLista(){
 
     let lista = document.getElementById("lista");
@@ -250,7 +270,6 @@ Valor limpo: ${formatar(r.valorLimpo)}<br><br>
     });
 }
 
-// painel
 function atualizarPainel(){
 
     document.getElementById("totalLavagens").innerText = registros.length;
