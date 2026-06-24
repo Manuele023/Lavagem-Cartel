@@ -61,7 +61,6 @@ button:hover{opacity:0.9;}
     margin-bottom:5px;
 }
 
-/* 🔥 SELECT IGUAL INPUTS */
 .ts-control{
     background:#2a2a2a !important;
     border:none !important;
@@ -86,7 +85,6 @@ button:hover{opacity:0.9;}
     background:#3a3a3a !important;
 }
 
-/* 📦 HISTÓRICO COM SCROLL */
 #lista{
     max-height:400px;
     overflow-y:auto;
@@ -94,15 +92,6 @@ button:hover{opacity:0.9;}
     padding:10px;
     border-radius:10px;
     border:1px solid #333;
-}
-
-#lista::-webkit-scrollbar{
-    width:8px;
-}
-
-#lista::-webkit-scrollbar-thumb{
-    background:#2ecc71;
-    border-radius:10px;
 }
 </style>
 </head>
@@ -134,8 +123,12 @@ button:hover{opacity:0.9;}
 <option>YOLO</option>
 </select>
 
+<small style="color:#aaa;">Selecione a respectiva facção</small>
+
 <label>Passaporte</label>
 <input id="passaporte">
+
+<small style="color:#aaa;">Passaporte para transferência do valor</small>
 
 <label>Valor sujo</label>
 <input id="valor" type="text" placeholder="Ex: 100.000">
@@ -156,8 +149,9 @@ if(isNaN(numero) || numero < 26) numero = 26;
 
 // 📦 dados
 let registros = JSON.parse(localStorage.getItem("registros")) || [];
-let ultimoRegistro = null;
+
 let editandoIndex = null;
+let ultimoRegistro = null;
 
 // 🔧 converter 100.000 → 100000
 function converterValor(valor){
@@ -169,6 +163,24 @@ function formatar(valor){
     return Number(valor).toLocaleString('pt-BR');
 }
 
+// 📩 Discord
+function enviarDiscord(r){
+    fetch("URL_DO_WEBHOOK_AQUI", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            content:
+`🧾 Solicitação de Lavagem Nº ${r.numero}
+
+🏴 Facção: ${r.faccao || "—"}
+👤 Passaporte: ${r.passaporte}
+💰 Sujo: ${formatar(r.valorSujo)}
+💵 Limpo: ${formatar(r.valorLimpo)}`
+        })
+    });
+}
+
+// 🧠 calcular / salvar
 function calcular(){
 
     let faccao = document.getElementById("faccao").value;
@@ -183,55 +195,63 @@ function calcular(){
     let valorSujo = converterValor(valorInput);
     let valorLimpo = valorSujo * 0.80;
 
-    let numFinal;
+    let registro;
 
     if(editandoIndex !== null){
-        numFinal = registros[editandoIndex].numero;
+
+        registros[editandoIndex].faccao = faccao;
+        registros[editandoIndex].passaporte = passaporte;
+        registros[editandoIndex].valorSujo = valorSujo;
+        registros[editandoIndex].valorLimpo = valorLimpo;
+
+        registro = registros[editandoIndex];
+
+        editandoIndex = null;
+
     } else {
-        numFinal = numero;
+
+        registro = {
+            numero: numero,
+            faccao,
+            passaporte,
+            valorSujo,
+            valorLimpo
+        };
+
+        registros.push(registro);
+
         numero++;
         localStorage.setItem("numeroLavagem", numero);
     }
 
-    let registro = {
-        numero: numFinal,
-        faccao,
-        passaporte,
-        valorSujo,
-        valorLimpo
-    };
-
-    if(editandoIndex !== null){
-        registros[editandoIndex] = registro;
-        editandoIndex = null;
-    } else {
-        registros.push(registro);
-    }
+    ultimoRegistro = registro;
 
     localStorage.setItem("registros", JSON.stringify(registros));
-
-    ultimoRegistro = registro;
 
     enviarDiscord(registro);
     atualizarLista();
 }
 
-// 🔵 repostar última lavagem (edita com mesmo número)
+// 🔁 repostar última lavagem (EDITA REALMENTE O ÚLTIMO REGISTRO)
 function repostar(){
 
-    if(!ultimoRegistro){
+    if(registros.length === 0){
         alert("Nenhuma lavagem ainda.");
         return;
     }
 
-    document.getElementById("faccao").value = ultimoRegistro.faccao;
-    document.getElementById("passaporte").value = ultimoRegistro.passaporte;
-    document.getElementById("valor").value = ultimoRegistro.valorSujo;
+    let ultimoIndex = registros.length - 1;
+    let ultimo = registros[ultimoIndex];
 
-    editandoIndex = registros.findIndex(r => r.numero === ultimoRegistro.numero);
+    document.getElementById("faccao").value = ultimo.faccao;
+    document.getElementById("passaporte").value = ultimo.passaporte;
+    document.getElementById("valor").value = ultimo.valorSujo;
+
+    editandoIndex = ultimoIndex;
+    ultimoRegistro = ultimo;
 }
 
-// 🗑 excluir 1 a 1
+// 🗑 excluir
 function excluir(index){
 
     if(!confirm("Tem certeza que deseja excluir?")) return;
@@ -263,29 +283,9 @@ function atualizarLista(){
 💰 Sujo: ${formatar(r.valorSujo)}<br>
 💵 Limpo: ${formatar(r.valorLimpo)}<br><br>
 
-<button onclick="excluir(${registros.indexOf(r)})" style="background:#e74c3c;margin-top:5px;">
-Excluir
-</button>`;
+<button onclick="excluir(${registros.indexOf(r)})" style="background:#e74c3c;margin-top:5px;">Excluir</button>`;
 
         lista.appendChild(div);
-    });
-}
-
-// 📩 discord
-function enviarDiscord(r){
-
-    fetch("URL_DO_WEBHOOK_AQUI", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-            content:
-`🧾 Solicitação de Lavagem Nº ${r.numero}
-
-🏴 Facção: ${r.faccao || "—"}
-👤 Passaporte: ${r.passaporte}
-💰 Sujo: ${formatar(r.valorSujo)}
-💵 Limpo: ${formatar(r.valorLimpo)}`
-        })
     });
 }
 
