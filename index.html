@@ -32,6 +32,12 @@ input,select{
     box-sizing:border-box;
 }
 
+/* placeholder bonito */
+input::placeholder{
+    color:#aaa;
+}
+
+/* botões */
 button{
     width:100%;
     margin-top:12px;
@@ -61,6 +67,7 @@ button:hover{opacity:0.9;}
     margin-bottom:5px;
 }
 
+/* TomSelect igual inputs */
 .ts-control{
     background:#2a2a2a !important;
     border:none !important;
@@ -85,6 +92,7 @@ button:hover{opacity:0.9;}
     background:#3a3a3a !important;
 }
 
+/* histórico com scroll */
 #lista{
     max-height:400px;
     overflow-y:auto;
@@ -101,7 +109,7 @@ button:hover{opacity:0.9;}
 <h1>🧾 Sistema de Lavagem</h1>
 
 <label>Facção</label>
-<select id="faccao">
+<select id="faccao" placeholder="Selecione a respectiva facção">
 <option value="">Selecione</option>
 <option>4M</option>
 <option>B13</option>
@@ -123,12 +131,8 @@ button:hover{opacity:0.9;}
 <option>YOLO</option>
 </select>
 
-<small style="color:#aaa;">Selecione a respectiva facção</small>
-
 <label>Passaporte</label>
-<input id="passaporte">
-
-<small style="color:#aaa;">Passaporte para transferência do valor</small>
+<input id="passaporte" placeholder="Passaporte para transferência do valor">
 
 <label>Valor sujo</label>
 <input id="valor" type="text" placeholder="Ex: 100.000">
@@ -140,30 +144,33 @@ button:hover{opacity:0.9;}
 <div id="lista"></div>
 
 <script>
-new TomSelect("#faccao",{create:false});
+new TomSelect("#faccao",{
+    create:false,
+    placeholder:"Selecione a respectiva facção"
+});
 
-// 🔢 contador inicia em 26
+// contador inicia em 26
 let numero = localStorage.getItem("numeroLavagem");
 numero = numero ? Number(numero) : 26;
 if(isNaN(numero) || numero < 26) numero = 26;
 
-// 📦 dados
+// dados
 let registros = JSON.parse(localStorage.getItem("registros")) || [];
 
 let editandoIndex = null;
 let ultimoRegistro = null;
 
-// 🔧 converter 100.000 → 100000
+// converter 100.000 → 100000
 function converterValor(valor){
     return Number(valor.replace(/\./g, ""));
 }
 
-// 💰 formatar 100000 → 100.000
+// formatar 100000 → 100.000
 function formatar(valor){
     return Number(valor).toLocaleString('pt-BR');
 }
 
-// 📩 Discord
+// discord
 function enviarDiscord(r){
     fetch("URL_DO_WEBHOOK_AQUI", {
         method:"POST",
@@ -180,7 +187,7 @@ function enviarDiscord(r){
     });
 }
 
-// 🧠 calcular / salvar
+// salvar
 function calcular(){
 
     let faccao = document.getElementById("faccao").value;
@@ -232,7 +239,7 @@ function calcular(){
     atualizarLista();
 }
 
-// 🔁 repostar última lavagem (EDITA REALMENTE O ÚLTIMO REGISTRO)
+// repostar última lavagem
 function repostar(){
 
     if(registros.length === 0){
@@ -251,7 +258,7 @@ function repostar(){
     ultimoRegistro = ultimo;
 }
 
-// 🗑 excluir
+// excluir
 function excluir(index){
 
     if(!confirm("Tem certeza que deseja excluir?")) return;
@@ -263,7 +270,7 @@ function excluir(index){
     atualizarLista();
 }
 
-// 📜 histórico
+// histórico
 function atualizarLista(){
 
     let lista = document.getElementById("lista");
