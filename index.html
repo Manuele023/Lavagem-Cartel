@@ -9,7 +9,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start; /* tudo à esquerda */
+    align-items: flex-start;
     padding: 40px 20px;
 }
 
@@ -20,24 +20,6 @@
     letter-spacing: 2px;
     text-transform: uppercase;
     margin-bottom: 20px;
-}
-
-.historico{
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.6s ease;
-}
-
-.painel-de-controle{
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.6s ease;
-}
-
-.registro-mensal{
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.6s ease;
 }
     
 body{
@@ -176,26 +158,17 @@ button{
 </button>
 
 </div>
-
-<div class="historico">
     
 <h2>📜 Histórico de Lavagens</h2>
 <div id="lista"></div>
-    
-</div>
-
-<div class="painel-de-controle">
 
 <h2>📊 Painel de Controle</h2>
 <div class="painel">
 📜 Nº total de lavagens: <span id="totalLavagens"></span><br>
 💰 Valor total lavado: <span id="totalDinheiro"></span><br>
 💸 Lucro total: <span id="lucroTotal"></span>
-    
 </div>
 
-<div class="registro-mensal">
-    
 <h2>📆 Registro Mensal</h2>
 <div class="painel">
 <div class="filtro-linha">
@@ -216,8 +189,6 @@ button{
 <div id="listaMensal"></div>
 </div>
 
-</div>
-    
 <script>
 let registros=JSON.parse(localStorage.getItem("registros"))||[];
 let numero=Number(localStorage.getItem("numeroLavagem"))||26;
