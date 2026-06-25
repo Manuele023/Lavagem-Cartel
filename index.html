@@ -205,7 +205,7 @@ button{
     
 </div>
 
-<h2>📜 Registro de lavagem mensal</h2>
+<h2>📜 Registros de lavagens mensais </h2>
 <div id="listaMensal"></div>
     
 <script>
@@ -310,7 +310,7 @@ function atualizarLista(){
             🔫 Facção solicitante: ${r.faccao}<br>
             💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>
             💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>
-            💰 Lucro: R$ ${formatar(lucro)} (${lucroPercent}%)<br>
+            💰 Lucro: R$ ${formatar(lucro)}<br>
 
             <button onclick="excluir(${idx})" style="
                 font-weight:bold;
@@ -336,6 +336,7 @@ function atualizarMensal(){
     totalMensal.innerText = formatar(total);
     lucroMensal.innerText = formatar(total * 0.1);
 
+    // SEMANAS
     let semanas = '';
 
     for (let s = 1; s <= 5; s++) {
@@ -356,33 +357,31 @@ function atualizarMensal(){
     }
 
     semanasContainer.innerHTML = `<div class="semana-grid">${semanas}</div>`;
-}
-let rank={}; f.forEach(r=>rank[r.faccao]=(rank[r.faccao]||0)+r.valorSujo);
-rankingMensal.innerHTML=Object.entries(rank).sort((a,b)=>b[1]-a[1]).map((r,i)=>`${i+1}. ${r[0]} — $ ${formatar(r[1])}`).join('<br>');
 
-listaMensal.innerHTML = '';
+    // LISTA MENSAL
+    listaMensal.innerHTML = '';
 
-[...f].reverse().forEach(r => {
+    [...f].reverse().forEach(r => {
 
-    let idx = f.indexOf(r);
+        let idx = registros.indexOf(r);
 
-    let lucroPercent = 0;
+        let lucroPercent = 0;
 
-    if (r.taxa == 20) lucroPercent = 10;
-    else if (r.taxa == 25) lucroPercent = 15;
-    else if (r.taxa == 30) lucroPercent = 20;
+        if (r.taxa == 20) lucroPercent = 10;
+        else if (r.taxa == 25) lucroPercent = 15;
+        else if (r.taxa == 30) lucroPercent = 20;
 
-    let lucro = r.valorSujo * (lucroPercent / 100);
+        let lucro = r.valorSujo * (lucroPercent / 100);
 
-    listaMensal.innerHTML += `
-    <div class="lavagem-card">
+        listaMensal.innerHTML += `
+        <div class="lavagem-card">
         🧾 Solicitação de lavagem Nº ${r.numero}<br>
         📅 Data e hora: ${r.data || '-'}<br>
         📋 Tipo de lavagem (Porcentagem): ${r.taxa}%<br>
         🔫 Facção solicitante: ${r.faccao}<br>
         💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>
         💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>
-        💰 Lucro: R$ ${formatar(lucro)} (${lucroPercent}%)<br>
+        💰 Lucro: R$ ${formatar(lucro)}<br>
 
         <button onclick="excluir(${idx})" style="
             font-weight:bold;
