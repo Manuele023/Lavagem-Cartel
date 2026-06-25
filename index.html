@@ -208,9 +208,42 @@ button{
 <h2>📜 Registros de lavagens mensais </h2>
 <div id="listaMensal"></div>
     
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD7-5DJY3dGOiq71vgcpWJQgbWM9HOA2Ek",
+  authDomain: "lavagem-cartel.firebaseapp.com",
+  projectId: "lavagem-cartel",
+  storageBucket: "lavagem-cartel.appspot.com",
+  messagingSenderId: "35926730423",
+  appId: "1:35926730423:web:2b7e72ee07fb76cd358f32"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.db = db;
+window.firestore = {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc
+};
+</script>
+    
 <script>
-let registros=JSON.parse(localStorage.getItem("registros"))||[];
-let numero=Number(localStorage.getItem("numeroLavagem"))||26;
+let registros = [];
+let numero = 0;
 
 function enviarDiscord(r){
 
@@ -251,7 +284,7 @@ mes.value=String(new Date().getMonth()+1).padStart(2,'0');
 document.getElementById('filtroAno').value=atual;
 }
 
-function calcular(){
+async function calcular(){
     let data = new Date();
 
     let tipo = Number(document.getElementById("tipoLavagem").value);
@@ -262,7 +295,7 @@ function calcular(){
     let r = {
         numero: document.getElementById('numeroLavagemInput').value || numero++,
         taxa: tipo,
-        faccao: document.getElementById('faccao').value,
+        faccao: document.getElementById('faccao').value || "Não informado",
         passaporte: document.getElementById('passaporte').value,
         valorSujo: valor,
         valorLimpo: valorLimpo,
@@ -272,27 +305,50 @@ function calcular(){
         semana: Math.ceil(data.getDate()/7)
     };
 
-    registros.push(r);
-    localStorage.setItem("registros", JSON.stringify(registros));
-    localStorage.setItem("numeroLavagem", numero);
+    // 🔥 SALVA NO FIREBASE
+    const docRef = await firestore.addDoc(
+    firestore.collection(db, "lavagens"),
+    r
+);
 
+registros.push({
+    id: docRef.id,
+    ...r
+});
     enviarDiscord(r);
     atualizarTudo();
 }
+async function carregar() {
+    const snap = await firestore.getDocs(
+        firestore.collection(db, "lavagens")
+    );
 
-function excluir(i){
-registros.splice(i,1);
-localStorage.setItem("registros",JSON.stringify(registros));
-atualizarTudo();
+    registros = [];
+
+    snap.forEach(d => {
+        registros.push({
+            id: d.id,
+            ...d.data()
+        });
+    });
+
+    atualizarTudo();
 }
+async function excluir(id){
 
+    await firestore.deleteDoc(
+        firestore.doc(db, "lavagens", id)
+    );
+
+    registros = registros.filter(r => r.id !== id);
+
+    atualizarTudo();
+}
 function atualizarLista(){
     let lista = document.getElementById('lista');
     lista.innerHTML = '';
 
     [...registros].reverse().forEach(r => {
-
-        let idx = registros.indexOf(r);
 
         let lucroPercent = 0;
 
@@ -312,7 +368,7 @@ function atualizarLista(){
             💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>
             💰 Lucro: R$ ${formatar(lucro)}<br>
 
-            <button onclick="excluir(${idx})" style="
+            <button onclick="excluir('${r.id}')" style="
                 font-weight:bold;
                 background:#8B1E1E;
                 color:white;
@@ -390,6 +446,7 @@ lucroTotal.innerText=formatar(total*0.1);
 atualizarLista();
 atualizarMensal();
 }
-initFiltros(); atualizarTudo();
+initFiltros();
+carregar();
 </script>
 </body></html>
