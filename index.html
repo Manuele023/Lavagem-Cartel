@@ -296,7 +296,17 @@ lucroMensal.innerText=formatar(total*0.1);
 let semanas='';
 for(let s=1;s<=5;s++){
 let t=f.filter(r=>r.semana===s).reduce((a,b)=>a+b.valorSujo,0);
-semanas+=`<div class="semana-box"><strong>Semana ${s}</strong><br><br>💰 Lavado: $ ${formatar(t)}<br>💸 Lucro: R$ ${formatar(t*0.1)}</div>`;
+ semanas += `
+    <div class="semana-box">
+        <strong>Semana ${s}</strong><br><br>
+
+        💰 Lavado:<br>
+        $ ${formatar(t)}<br><br>
+
+        💸 Lucro:<br>
+        R$ ${formatar(t * 0.1)}
+    </div>
+    `;
 }
 semanasContainer.innerHTML=`<div class="semana-grid">${semanas}</div>`;
 
