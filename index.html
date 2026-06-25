@@ -287,20 +287,43 @@ atualizarTudo();
 }
 
 function atualizarLista(){
-let lista=document.getElementById('lista'); lista.innerHTML='';
-[...registros].reverse().forEach(r=>{
-let idx=registros.indexOf(r);
-lista.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>📋 Tipo de lavagem (Porcentagem): ${r.taxa}%<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>💰 Lucro: R$ ${formatar(r.valorSujo - r.valorLimpo)}<br>
-</div><br><button onclick="excluir(${idx})" style="
-font-weight:bold;
-background:#8B1E1E;
-color:white;
-border:none;
-box-shadow:0 4px 12px rgba(139,30,30,.35);
-">
-Excluir
-</button></div>`;
-});
+    let lista = document.getElementById('lista');
+    lista.innerHTML = '';
+
+    [...registros].reverse().forEach(r => {
+
+        let idx = registros.indexOf(r);
+
+        let lucroPercent = 0;
+
+        if (r.taxa == 20) lucroPercent = 10;
+        else if (r.taxa == 25) lucroPercent = 15;
+        else if (r.taxa == 30) lucroPercent = 20;
+
+        let lucro = r.valorSujo * (lucroPercent / 100);
+
+        lista.innerHTML += `
+        <div class="lavagem-card">
+            🧾 Solicitação de lavagem Nº ${r.numero}<br>
+            📅 Data e hora: ${r.data || '-'}<br>
+            📋 Tipo de lavagem (Porcentagem): ${r.taxa}%<br>
+            🔫 Facção solicitante: ${r.faccao}<br>
+            💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>
+            💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>
+            💰 Lucro: R$ ${formatar(lucro)} (${lucroPercent}%)<br>
+
+            <button onclick="excluir(${idx})" style="
+                font-weight:bold;
+                background:#8B1E1E;
+                color:white;
+                border:none;
+                box-shadow:0 4px 12px rgba(139,30,30,.35);
+                margin-top:10px;
+            ">
+                Excluir
+            </button>
+        </div>`;
+    });
 }
 
 function atualizarMensal(){
@@ -332,12 +355,42 @@ semanasContainer.innerHTML=`<div class="semana-grid">${semanas}</div>`;
 let rank={}; f.forEach(r=>rank[r.faccao]=(rank[r.faccao]||0)+r.valorSujo);
 rankingMensal.innerHTML=Object.entries(rank).sort((a,b)=>b[1]-a[1]).map((r,i)=>`${i+1}. ${r[0]} — $ ${formatar(r[1])}`).join('<br>');
 
-listaMensal.innerHTML='';
-[...f].reverse().forEach(r=>{
-listaMensal.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>📋 Tipo de lavagem (Porcentagem): ${r.taxa}%<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>💰 Lucro: R$ ${formatar(r.valorSujo - r.valorLimpo)}<br>
-</div><br><button onclick="excluir(${idx})" style="</div>`;
+listaMensal.innerHTML = '';
+
+[...f].reverse().forEach(r => {
+
+    let idx = registros.indexOf(r); // ou f.indexOf(r) dependendo de onde vem
+
+    let lucroPercent = 0;
+
+    if (r.taxa == 20) lucroPercent = 10;
+    else if (r.taxa == 25) lucroPercent = 15;
+    else if (r.taxa == 30) lucroPercent = 20;
+
+    let lucro = r.valorSujo * (lucroPercent / 100);
+
+    listaMensal.innerHTML += `
+    <div class="lavagem-card">
+        🧾 Solicitação de lavagem Nº ${r.numero}<br>
+            📅 Data e hora: ${r.data || '-'}<br>
+            📋 Tipo de lavagem (Porcentagem): ${r.taxa}%<br>
+            🔫 Facção solicitante: ${r.faccao}<br>
+            💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>
+            💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>
+            💰 Lucro: R$ ${formatar(lucro)} (${lucroPercent}%)<br>
+
+        <button onclick="excluir(${idx})" style="
+            font-weight:bold;
+            background:#8B1E1E;
+            color:white;
+            border:none;
+            box-shadow:0 4px 12px rgba(139,30,30,.35);
+            margin-top:10px;
+        ">
+            Excluir
+        </button>
+    </div>`;
 });
-}
 
 function atualizarTudo(){
 totalLavagens.innerText=registros.length;
