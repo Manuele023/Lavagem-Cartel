@@ -129,11 +129,11 @@ button{
 <label>Número da Lavagem</label>
 <input id="numeroLavagemInput" type="number" placeholder="Ex: 26 (Confira o discord antes)">
 
-<label>Tipo de lavagem:</label>
+<label>Tipo de lavagem (Porcentagem):</label>
 <select id="tipoLavagem">
-    <option value="20" selected>20% ➜ Acima de 5kk</option>
-    <option value="25">25% ➜ De 2.5kk a 5kk</option>
-    <option value="30">30% ➜ Até 2.5kk</option>
+    <option value="20" selected>20% — Acima de 5kk</option>
+    <option value="25">25% — De 2.5kk a 5kk</option>
+    <option value="30">30% — Até 2.5kk</option>
 </select>
  
 <label>Facção solicitante</label>
@@ -251,25 +251,27 @@ document.getElementById('filtroAno').value=atual;
 }
 
 function calcular(){
-let data=new Date();
-let r={
-numero:document.getElementById('numeroLavagemInput').value||numero++,
-faccao:document.getElementById('faccao').value,
-passaporte:document.getElementById('passaporte').value,
-valorSujo:Number(document.getElementById('valor').value.replace(/\./g,'')),
-valorLimpo:Number(document.getElementById('valor').value.replace(/\./g,''))*0.8,
-data:data.toLocaleString('pt-BR'),
-mes:String(data.getMonth()+1).padStart(2,'0'),
-ano:String(data.getFullYear()),
-semana:Math.ceil(data.getDate()/7)
-};
-registros.push(r);
-localStorage.setItem("registros",JSON.stringify(registros));
-enviarDiscord(r);
-localStorage.setItem("numeroLavagem",numero);
-atualizarTudo();
-}
+let data = new Date();
 
+let tipo = Number(document.getElementById("tipoLavagem").value);
+
+let valor = Number(document.getElementById('valor').value.replace(/\./g,''));
+
+let valorLimpo = valor - (valor * tipo / 100);
+
+let r = {
+    numero: document.getElementById('numeroLavagemInput').value || numero++,
+    taxa: tipo,
+    faccao: document.getElementById('faccao').value,
+    passaporte: document.getElementById('passaporte').value,
+    valorSujo: valor,
+    valorLimpo: valorLimpo,
+    data: data.toLocaleString('pt-BR'),
+    mes: String(data.getMonth() + 1).padStart(2, '0'),
+    ano: String(data.getFullYear()),
+    semana: Math.ceil(data.getDate() / 7)
+};
+    
 function excluir(i){
 registros.splice(i,1);
 localStorage.setItem("registros",JSON.stringify(registros));
@@ -280,7 +282,7 @@ function atualizarLista(){
 let lista=document.getElementById('lista'); lista.innerHTML='';
 [...registros].reverse().forEach(r=>{
 let idx=registros.indexOf(r);
-lista.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br><button onclick="excluir(${idx})" style="
+lista.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>📋 Tipo de lavagem (Porcentagem): {r.tipoLavagem}<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br><button onclick="excluir(${idx})" style="
 font-weight:bold;
 background:#8B1E1E;
 color:white;
@@ -323,7 +325,7 @@ rankingMensal.innerHTML=Object.entries(rank).sort((a,b)=>b[1]-a[1]).map((r,i)=>`
 
 listaMensal.innerHTML='';
 [...f].reverse().forEach(r=>{
-listaMensal.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>💸 Valor limpo: R$ ${formatar(r.valorLimpo)}</div>`;
+listaMensal.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>📋 Tipo de lavagem (Porcentagem): {r.tipoLavagem}<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>💸 Valor limpo: R$ ${formatar(r.valorLimpo)}</div>`;
 });
 }
 
