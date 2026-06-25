@@ -290,7 +290,8 @@ function atualizarLista(){
 let lista=document.getElementById('lista'); lista.innerHTML='';
 [...registros].reverse().forEach(r=>{
 let idx=registros.indexOf(r);
-lista.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>📋 Tipo de lavagem (Porcentagem): ${r.taxa}%<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br><button onclick="excluir(${idx})" style="
+lista.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>📋 Tipo de lavagem (Porcentagem): ${r.taxa}%<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>💰 Lucro: R$ ${formatar(r.valorSujo - r.valorLimpo)}<br>
+</div><br><button onclick="excluir(${idx})" style="
 font-weight:bold;
 background:#8B1E1E;
 color:white;
@@ -333,7 +334,8 @@ rankingMensal.innerHTML=Object.entries(rank).sort((a,b)=>b[1]-a[1]).map((r,i)=>`
 
 listaMensal.innerHTML='';
 [...f].reverse().forEach(r=>{
-listaMensal.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>📋 Tipo de lavagem (Porcentagem): ${r.taxa}%<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>💸 Valor limpo: R$ ${formatar(r.valorLimpo)}</div>`;
+listaMensal.innerHTML+=`<div class="lavagem-card">🧾 Solicitação de lavagem Nº ${r.numero}<br>📅 Data e hora: ${r.data||'-'}<br>📋 Tipo de lavagem (Porcentagem): ${r.taxa}%<br>🔫 Facção solicitante: ${r.faccao}<br>💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>💰 Lucro: R$ ${formatar(r.valorSujo - r.valorLimpo)}<br>
+</div><br><button onclick="excluir(${idx})" style="</div>`;
 });
 }
 
