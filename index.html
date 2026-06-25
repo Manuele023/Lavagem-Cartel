@@ -325,7 +325,6 @@ function atualizarLista(){
         </div>`;
     });
 }
-
 function atualizarMensal(){
     let mes = filtroMes.value, ano = filtroAno.value;
     let f = registros.filter(r => r.mes === mes && r.ano === ano);
@@ -336,7 +335,6 @@ function atualizarMensal(){
     totalMensal.innerText = formatar(total);
     lucroMensal.innerText = formatar(total * 0.1);
 
-    // SEMANAS
     let semanas = '';
 
     for (let s = 1; s <= 5; s++) {
@@ -358,7 +356,6 @@ function atualizarMensal(){
 
     semanasContainer.innerHTML = `<div class="semana-grid">${semanas}</div>`;
 
-    // LISTA MENSAL
     listaMensal.innerHTML = '';
 
     [...f].reverse().forEach(r => {
@@ -375,27 +372,26 @@ function atualizarMensal(){
 
         listaMensal.innerHTML += `
         <div class="lavagem-card">
-        🧾 Solicitação de lavagem Nº ${r.numero}<br>
-        📅 Data e hora: ${r.data || '-'}<br>
-        📋 Tipo de lavagem (Porcentagem): ${r.taxa}%<br>
-        🔫 Facção solicitante: ${r.faccao}<br>
-        💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>
-        💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>
-        💰 Lucro: R$ ${formatar(lucro)}<br>
+            🧾 Solicitação de lavagem Nº ${r.numero}<br>
+            📅 Data e hora: ${r.data || '-'}<br>
+            📋 Tipo de lavagem (Porcentagem): ${r.taxa}%<br>
+            🔫 Facção solicitante: ${r.faccao}<br>
+            💵 Valor sujo: $ ${formatar(r.valorSujo)}<br>
+            💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>
+            💰 Lucro: R$ ${formatar(lucro)}<br>
 
-        <button onclick="excluir(${idx})" style="
-            font-weight:bold;
-            background:#8B1E1E;
-            color:white;
-            border:none;
-            box-shadow:0 4px 12px rgba(139,30,30,.35);
-            margin-top:10px;
-        ">
-            Excluir
-        </button>
-    </div>`;
-});
-
+            <button onclick="excluir(${idx})" style="
+                font-weight:bold;
+                background:#8B1E1E;
+                color:white;
+                border:none;
+                margin-top:10px;
+            ">
+                Excluir
+            </button>
+        </div>`;
+    });
+}
 function atualizarTudo(){
 totalLavagens.innerText=registros.length;
 let total=registros.reduce((a,b)=>a+b.valorSujo,0);
