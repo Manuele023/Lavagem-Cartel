@@ -430,9 +430,52 @@ function atualizarMensal(){
             💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>
             💰 Lucro: R$ ${formatar(lucro)}<br>
         </div>`;
+});
+
+/* ---------------- RANKING ---------------- */
+
+let ranking = {};
+
+f.forEach(r => {
+    if (!ranking[r.faccao]) {
+        ranking[r.faccao] = {
+            total: 0,
+            quantidade: 0
+        };
+    }
+
+    ranking[r.faccao].total += Number(r.valorSujo);
+    ranking[r.faccao].quantidade++;
+});
+
+const rankingOrdenado = Object.entries(ranking)
+    .sort((a, b) => b[1].total - a[1].total);
+
+rankingMensal.innerHTML = "";
+
+if (rankingOrdenado.length === 0) {
+    rankingMensal.innerHTML = "Nenhuma lavagem registrada neste período.";
+} else {
+
+    rankingOrdenado.forEach(([faccao, dados], index) => {
+
+        let classe = "lavagem-card";
+
+        if (index === 0) classe += " top1";
+        else if (index === 1) classe += " top2";
+        else if (index === 2) classe += " top3";
+
+        rankingMensal.innerHTML += `
+        <div class="${classe}">
+            <strong>${index + 1}º</strong> • ${faccao} →
+            ${dados.quantidade} ${dados.quantidade === 1 ? 'lavagem' : 'lavagens'} →
+            💰 $ ${formatar(dados.total)}
+        </div>
+        `;
     });
 }
 
+}
 /* ---------------- TUDO ---------------- */
 function atualizarTudo(){
     document.getElementById('totalLavagens').innerText = registros.length;
