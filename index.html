@@ -243,7 +243,6 @@ window.firestore = {
     
 <script>
 let registros = [];
-let numero = 0;
 
 function enviarDiscord(r){
 
@@ -287,36 +286,45 @@ document.getElementById('filtroAno').value=atual;
 async function calcular(){
     let data = new Date();
 
+    const numero = document.getElementById("numeroLavagemInput").value;
+    const faccao = document.getElementById("faccao").value;
+    const passaporte = document.getElementById("passaporte").value;
+    const valorTexto = document.getElementById("valor").value;
+
+    if (!numero || !faccao || !passaporte || !valorTexto) {
+        alert("⚠️ Todos os campos são obrigatórios para registrar a lavagem.");
+        return;
+    }
+
+    
     let tipo = Number(document.getElementById("tipoLavagem").value);
-    let valor = Number(document.getElementById('valor').value.replace(/\./g,''));
+    let valor = Number(valorTexto.replace(/\./g, ''));
 
     let valorLimpo = valor - (valor * tipo / 100);
 
     let r = {
-        numero: document.getElementById('numeroLavagemInput').value || numero++,
+        numero: numero,
         taxa: tipo,
-        faccao: document.getElementById('faccao').value || "Não informado",
-        passaporte: document.getElementById('passaporte').value,
+        faccao: faccao,
+        passaporte: passaporte,
         valorSujo: valor,
         valorLimpo: valorLimpo,
         data: data.toLocaleString('pt-BR'),
         mes: String(data.getMonth() + 1).padStart(2,'0'),
         ano: String(data.getFullYear()),
         semana: Math.ceil(data.getDate()/7)
-    };
+};
 
     // 🔥 SALVA NO FIREBASE
-    const docRef = await firestore.addDoc(
+await firestore.addDoc(
     firestore.collection(db, "lavagens"),
     r
 );
 
-registros.push({
-    id: docRef.id,
-    ...r
-});
-    enviarDiscord(r);
-    atualizarTudo();
+enviarDiscord(r);
+
+// Recarrega os dados do Firebase e atualiza toda a tela
+await carregar();
 }
 async function carregar() {
     const snap = await firestore.getDocs(
@@ -436,6 +444,36 @@ function atualizarMensal(){
             💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>
             💰 Lucro: R$ ${formatar(lucro)}<br>
         </div>`;
+    });
+// 🏴 Ranking mensal de facções
+let ranking = {};
+
+f.forEach(r => {
+    if (!ranking[r.faccao]) {
+        ranking[r.faccao] = {
+            total: 0,
+            quantidade: 0
+        };
+    }
+
+    ranking[r.faccao].total += r.valorSujo;
+    ranking[r.faccao].quantidade++;
+});
+
+const rankingOrdenado = Object.entries(ranking)
+    .sort((a, b) => b[1].total - a[1].total);
+
+rankingMensal.innerHTML = "";
+
+if (rankingOrdenado.length === 0) {
+    rankingMensal.innerHTML = "Nenhuma lavagem registrada neste período.";
+} else {
+    rankingOrdenado.forEach(([faccao, dados], index) => {
+        rankingMensal.innerHTML += `
+            <div class="lavagem-card">
+                <strong>${index + 1}º</strong> • ${faccao} → ${dados.quantidade} lavagem${dados.quantidade > 1 ? "ens" : ""} → 💰 $ ${formatar(dados.total)}
+            </div>
+        `;
     });
 }
 function atualizarTudo(){
