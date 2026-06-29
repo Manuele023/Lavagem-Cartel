@@ -231,26 +231,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-window.db = db;
-window.firestore = {
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc
-};
-</script>
-    
-<script>
 let registros = [];
 
+/* ---------------- DISCORD ---------------- */
 function enviarDiscord(r){
-
-    fetch("https://discord.com/api/webhooks/1519147289036193972/WreVR0l-ZJ7GbI7xiGUMdi-2k6P64hem0GmnH4dyGHGvlt0neVrf88mAIzaciy2Frjsm",{
+    fetch("https://discord.com/api/webhooks/SEU_WEBHOOK",{
         method:"POST",
-        headers:{
-            "Content-Type":"application/json"
-        },
+        headers:{ "Content-Type":"application/json" },
         body:JSON.stringify({
             embeds:[{
                 title:`🧾 Solicitação de Lavagem Nº ${r.numero}`,
@@ -264,97 +251,110 @@ function enviarDiscord(r){
 **Valor Sujo:** $ ${formatar(r.valorSujo)}
 **Valor Limpo:** R$ ${formatar(r.valorLimpo)}`,
                 footer:{
-                      text: `Sistema de Lavagem do Cartel • ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR")}`
+                    text:`Sistema • ${new Date().toLocaleString('pt-BR')}`
                 }
             }]
         })
     });
-
 }
-    
-function formatar(v){return Number(v).toLocaleString('pt-BR')}
 
+/* ---------------- FORMAT ---------------- */
+function formatar(v){
+    return Number(v).toLocaleString('pt-BR');
+}
+
+/* ---------------- FILTROS ---------------- */
 function initFiltros(){
-let mes=document.getElementById('filtroMes');
-for(let i=1;i<=12;i++) mes.innerHTML+=`<option value="${String(i).padStart(2,'0')}">${String(i).padStart(2,'0')}</option>`;
-let atual=new Date().getFullYear();
-for(let i=atual+10;i>=2020;i--) document.getElementById('filtroAno').innerHTML+=`<option>${i}</option>`;
-mes.value=String(new Date().getMonth()+1).padStart(2,'0');
-document.getElementById('filtroAno').value=atual;
+    const mes = document.getElementById('filtroMes');
+    const ano = document.getElementById('filtroAno');
+
+    for(let i=1;i<=12;i++){
+        mes.innerHTML += `<option value="${String(i).padStart(2,'0')}">${String(i).padStart(2,'0')}</option>`;
+    }
+
+    const atual = new Date().getFullYear();
+
+    for(let i=atual+10;i>=2020;i--){
+        ano.innerHTML += `<option>${i}</option>`;
+    }
+
+    mes.value = String(new Date().getMonth()+1).padStart(2,'0');
+    ano.value = atual;
 }
 
+/* ---------------- CALCULAR ---------------- */
 async function calcular(){
-    let data = new Date();
+    const data = new Date();
 
     const numero = document.getElementById("numeroLavagemInput").value;
     const faccao = document.getElementById("faccao").value;
     const passaporte = document.getElementById("passaporte").value;
     const valorTexto = document.getElementById("valor").value;
 
-    if (!numero || !faccao || !passaporte || !valorTexto) {
-        alert("⚠️ Todos os campos são obrigatórios para registrar a lavagem.");
+    if(!numero || !faccao || !passaporte || !valorTexto){
+        alert("⚠️ Preencha todos os campos");
         return;
     }
 
-    
-    let tipo = Number(document.getElementById("tipoLavagem").value);
-    let valor = Number(valorTexto.replace(/\./g, ''));
+    const tipo = Number(document.getElementById("tipoLavagem").value);
+    const valor = Number(valorTexto.replace(/\./g,''));
 
-    let valorLimpo = valor - (valor * tipo / 100);
+    const valorLimpo = valor - (valor * tipo / 100);
 
-    let r = {
-        numero: numero,
+    const r = {
+        numero,
         taxa: tipo,
-        faccao: faccao,
-        passaporte: passaporte,
+        faccao,
+        passaporte,
         valorSujo: valor,
-        valorLimpo: valorLimpo,
+        valorLimpo,
         data: data.toLocaleString('pt-BR'),
-        mes: String(data.getMonth() + 1).padStart(2,'0'),
+        mes: String(data.getMonth()+1).padStart(2,'0'),
         ano: String(data.getFullYear()),
         semana: Math.ceil(data.getDate()/7)
-};
+    };
 
-    // 🔥 SALVA NO FIREBASE
-await addDoc(collection(db, "lavagens"), r);
+    await addDoc(collection(db,"lavagens"), r);
 
-enviarDiscord(r);
-
-// Recarrega
-await carregar();
+    enviarDiscord(r);
+    await carregar();
 }
-async function carregar() {
-    const snap = await getDocs(collection(db, "lavagens"));
+
+window.calcular = calcular;
+/* ---------------- CARREGAR ---------------- */
+async function carregar(){
+    const snap = await getDocs(collection(db,"lavagens"));
 
     registros = [];
 
-    snap.forEach(d => {
-        registros.push({
-            id: d.id,
-            ...d.data()
-        });
+    snap.forEach(d=>{
+        registros.push({ id:d.id, ...d.data() });
     });
 
     atualizarTudo();
 }
-async function excluir(id){
-    await deleteDoc(doc(db, "lavagens", id));
 
+/* ---------------- EXCLUIR ---------------- */
+async function excluir(id){
+    await deleteDoc(doc(db,"lavagens",id));
     await carregar();
 }
+
+window.excluir = excluir;
+
+/* ---------------- LISTA ---------------- */
 function atualizarLista(){
-    let lista = document.getElementById('lista');
+    const lista = document.getElementById('lista');
     lista.innerHTML = '';
 
-    [...registros].reverse().forEach(r => {
-
+    [...registros].reverse().forEach(r=>{
         let lucroPercent = 0;
 
-        if (r.taxa == 20) lucroPercent = 10;
-        else if (r.taxa == 25) lucroPercent = 15;
-        else if (r.taxa == 30) lucroPercent = 20;
+        if(r.taxa==20) lucroPercent=10;
+        else if(r.taxa==25) lucroPercent=15;
+        else if(r.taxa==30) lucroPercent=20;
 
-        let lucro = r.valorSujo * (lucroPercent / 100);
+        const lucro = r.valorSujo * (lucroPercent/100);
 
         lista.innerHTML += `
         <div class="lavagem-card">
@@ -366,63 +366,59 @@ function atualizarLista(){
             💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>
             💰 Lucro: R$ ${formatar(lucro)}<br>
 
-            <button onclick="excluir('${r.id}')" style="
-                font-weight:bold;
-                background:#8B1E1E;
-                color:white;
-                border:none;
-                box-shadow:0 4px 12px rgba(139,30,30,.35);
-                margin-top:10px;
-            ">
-                Excluir
-            </button>
+            <button onclick="excluir('${r.id}')"
+            style="margin-top:10px;background:#8B1E1E;color:white;border:none;font-weight:bold;">
+            Excluir</button>
         </div>`;
     });
 }
+
+/* ---------------- MENSAL ---------------- */
 function atualizarMensal(){
-    let mes = filtroMes.value, ano = filtroAno.value;
-    let f = registros.filter(r => r.mes === mes && r.ano === ano);
+    const mes = document.getElementById('filtroMes').value;
+    const ano = document.getElementById('filtroAno').value;
+
+    const mesAtual = document.getElementById('mesAtual');
+    const totalMensal = document.getElementById('totalMensal');
+    const lucroMensal = document.getElementById('lucroMensal');
+    const semanasContainer = document.getElementById('semanasContainer');
+    const listaMensal = document.getElementById('listaMensal');
+
+    const f = registros.filter(r=>r.mes===mes && r.ano===ano);
 
     mesAtual.innerText = mes + '/' + ano;
 
-    let total = f.reduce((a,b) => a + b.valorSujo, 0);
+    const total = f.reduce((a,b)=>a+b.valorSujo,0);
+
     totalMensal.innerText = formatar(total);
-    lucroMensal.innerText = formatar(total * 0.1);
+    lucroMensal.innerText = formatar(total*0.1);
 
     let semanas = '';
 
-    for (let s = 1; s <= 5; s++) {
-        let t = f.filter(r => r.semana === s)
-                 .reduce((a,b) => a + b.valorSujo, 0);
+    for(let s=1;s<=5;s++){
+        const t = f.filter(r=>r.semana===s)
+                   .reduce((a,b)=>a+b.valorSujo,0);
 
         semanas += `
         <div class="semana-box">
-            <strong>Semana ${s}</strong><br><br>
-
-            💰 Lavado:<br>
-            $ ${formatar(t)}<br><br>
-
-            💸 Lucro:<br>
-            R$ ${formatar(t * 0.1)}
-        </div>
-        `;
+            <strong>Semana ${s}</strong><br>
+            💰 $ ${formatar(t)}<br>
+            💸 R$ ${formatar(t*0.1)}
+        </div>`;
     }
 
     semanasContainer.innerHTML = `<div class="semana-grid">${semanas}</div>`;
 
     listaMensal.innerHTML = '';
 
-    [...f].reverse().forEach(r => {
-
-        let idx = registros.indexOf(r);
-
+    [...f].reverse().forEach(r=>{
         let lucroPercent = 0;
 
-        if (r.taxa == 20) lucroPercent = 10;
-        else if (r.taxa == 25) lucroPercent = 15;
-        else if (r.taxa == 30) lucroPercent = 20;
+        if(r.taxa==20) lucroPercent=10;
+        else if(r.taxa==25) lucroPercent=15;
+        else if(r.taxa==30) lucroPercent=20;
 
-        let lucro = r.valorSujo * (lucroPercent / 100);
+        const lucro = r.valorSujo*(lucroPercent/100);
 
         listaMensal.innerHTML += `
         <div class="lavagem-card">
@@ -435,49 +431,26 @@ function atualizarMensal(){
             💰 Lucro: R$ ${formatar(lucro)}<br>
         </div>`;
     });
-// 🏴 Ranking mensal de facções
-let ranking = {};
-
-f.forEach(r => {
-    if (!ranking[r.faccao]) {
-        ranking[r.faccao] = {
-            total: 0,
-            quantidade: 0
-        };
-    }
-
-    ranking[r.faccao].total += r.valorSujo;
-    ranking[r.faccao].quantidade++;
-});
-
-const rankingOrdenado = Object.entries(ranking)
-    .sort((a, b) => b[1].total - a[1].total);
-
-rankingMensal.innerHTML = "";
-
-if (rankingOrdenado.length === 0) {
-    rankingMensal.innerHTML = "Nenhuma lavagem registrada neste período.";
-} else {
-    rankingOrdenado.forEach(([faccao, dados], index) => {
-        rankingMensal.innerHTML += `
-            <div class="lavagem-card">
-                <strong>${index + 1}º</strong> • ${faccao} → ${dados.quantidade} lavagem${dados.quantidade > 1 ? "s" : ""} → 💰 $ ${formatar(dados.total)}
-            </div>
-        `;
-    });
 }
 
-}
-
+/* ---------------- TUDO ---------------- */
 function atualizarTudo(){
-totalLavagens.innerText=registros.length;
-let total=registros.reduce((a,b)=>a+b.valorSujo,0);
-totalDinheiro.innerText=formatar(total);
-lucroTotal.innerText=formatar(total*0.1);
-atualizarLista();
-atualizarMensal();
+    document.getElementById('totalLavagens').innerText = registros.length;
+
+    const total = registros.reduce((a,b)=>a+b.valorSujo,0);
+
+    document.getElementById('totalDinheiro').innerText = formatar(total);
+    document.getElementById('lucroTotal').innerText = formatar(total*0.1);
+
+    atualizarLista();
+    atualizarMensal();
 }
+
+/* ---------------- INIT ---------------- */
 initFiltros();
 carregar();
+
+window.calcular = calcular;
 </script>
-</body></html>
+</body>
+</html>
