@@ -348,9 +348,8 @@ async function excluir(id){
         firestore.doc(db, "lavagens", id)
     );
 
-    registros = registros.filter(r => r.id !== id);
-
-    atualizarTudo();
+    
+    await carregar();
 }
 function atualizarLista(){
     let lista = document.getElementById('lista');
@@ -471,12 +470,10 @@ if (rankingOrdenado.length === 0) {
     rankingOrdenado.forEach(([faccao, dados], index) => {
         rankingMensal.innerHTML += `
             <div class="lavagem-card">
-                <strong>${index + 1}º</strong> • ${faccao} → ${dados.quantidade} lavagem${dados.quantidade > 1 ? "ens" : ""} → 💰 $ ${formatar(dados.total)}
+                <strong>${index + 1}º</strong> • ${faccao} → ${dados.quantidade} lavagem${dados.quantidade > 1 ? "s" : ""} → 💰 $ ${formatar(dados.total)}
             </div>
         `;
     });
-}
-
 }
 function atualizarTudo(){
 totalLavagens.innerText=registros.length;
