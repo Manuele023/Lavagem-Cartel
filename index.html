@@ -164,16 +164,20 @@ button{
 
 /* ---------------- RANKING ---------------- */
 #rankingMensal{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    /* 🔥 ESSENCIAL PRA NÃO ESTOURAR SCROLL */
+    min-height: 0;
 }
 
 #rankingMensal .lavagem-card{
-    margin:0;
-    width:100%;
-    box-sizing:border-box;
-    flex:0 0 auto;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+
+    flex: 0 0 auto; /* não estica */
 }
 </style>
 
