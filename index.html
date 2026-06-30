@@ -376,6 +376,34 @@ function initFiltros(){
     ano.value = atual;
 }
 
+/* ===== LAVAGEM PRÓPRIA ===== */
+
+const tipoLavagem = document.getElementById("tipoLavagem");
+const faccao = document.getElementById("faccao");
+
+const faccoesOriginais = faccao.innerHTML;
+
+tipoLavagem.addEventListener("change", () => {
+
+    if (tipoLavagem.value === "10") {
+
+        faccao.innerHTML = `
+            <option value="Cartel">Cartel</option>
+        `;
+
+        faccao.value = "Cartel";
+        faccao.disabled = true;
+
+    } else {
+
+        faccao.innerHTML = faccoesOriginais;
+        faccao.disabled = false;
+        faccao.value = "";
+
+    }
+
+});
+
 /* ---------------- CALCULAR ---------------- */
 async function calcular(){
     const data = new Date();
