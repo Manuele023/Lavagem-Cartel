@@ -210,27 +210,43 @@ button{
 <label>Facção solicitante</label>
 <select id="faccao">
     <option value="" selected disabled>Selecione a facção</option>
-    <option>4M</option>
-    <option>B13</option>
-    <option>Blacklist</option>
-    <option>Brothers</option>
-    <option>Coronel</option>
-    <option>Cross & Guerra</option>
-    <option>Dendê</option>
-    <option>Guerra</option>
-    <option>HPI</option>
-    <option>Hospício</option>
-    <option>Legacy</option>
-    <option>Lowprofile</option>
-    <option>Malta</option>
-    <option>Mandrágora</option>
-    <option>MDC</option>
-    <option>Medelin</option>
-    <option>RV</option>
-    <option>Yolo</option>
-    <option>Pista</option>
-    <option>Facção nova e/ou não listada (Informar a Manu o nome)</option>
-</select>
+   <option>Alemanha</option>
+   <option>B13</option>
+   <option>Blacklist</option>
+   <option>Colômbia</option>
+   <option>Coronel</option>
+   <option>Crias</option>
+   <option>Cross & Guerra</option>
+   <option>Dendê</option>
+   <option>Evo</option>
+   <option>França</option>
+   <option>Gênesis</option>
+   <option>Guerra</option>
+   <option>HPI</option>
+   <option>Hospício</option>
+   <option>Inxuga Jelo</option>
+   <option>Legacy</option>
+   <option>Lowprofile</option>
+   <option>Macallan</option>
+   <option>Macanm</option>
+   <option>Malta</option>
+   <option>Mandrágora</option>
+   <option>MDC</option>
+   <option>Medelín</option>
+   <option>Midnight</option>
+   <option>Motocross</option>
+   <option>Naty</option>
+   <option>NWK</option>
+   <option>Royal</option>
+   <option>RV</option>
+   <option>SIMED</option>
+   <option>The Brothers</option>
+   <option>Tropa do Russo</option>
+   <option>Vida Rasa</option>
+   <option>4M</option>
+   <option>Yolo</option>
+   <option>Pista</option>
+   <option>Facção nova e/ou não listada (Informar a Manu o nome)</option>
     
 <label>Passaporte</label>
 <input id="passaporte" placeholder="Insira o passaporte para pagamento">
@@ -587,10 +603,22 @@ for (let s = 1; s <= 5; s++) {
 function atualizarTudo(){
     document.getElementById('totalLavagens').innerText = registros.length;
 
-    const total = registros.reduce((a,b)=>a+b.valorSujo,0);
+    const total = registros.reduce((a,b)=>a + b.valorSujo,0);
 
     document.getElementById('totalDinheiro').innerText = formatar(total);
-    document.getElementById('lucroTotal').innerText = formatar(total*0.1);
+
+    // 💰 lucro total correto (por taxa)
+    const lucroTotalGeral = registros.reduce((a, r) => {
+        let lucroPercent = 0;
+
+        if (r.taxa == 20) lucroPercent = 10;
+        else if (r.taxa == 25) lucroPercent = 15;
+        else if (r.taxa == 30) lucroPercent = 20;
+
+        return a + (r.valorSujo * (lucroPercent / 100));
+    }, 0);
+
+    document.getElementById('lucroTotal').innerText = formatar(lucroTotalGeral);
 
     atualizarLista();
     atualizarMensal();
