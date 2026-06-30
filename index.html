@@ -107,11 +107,10 @@ button{
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.15) transparent;
 
-    /* 🔥 IMPORTANTE: impede bug de flex interno */
-    display: block;
+    display: block; /* 🔥 garante scroll real */
 }
 
-/* Chrome / Edge / Android */
+/* Scroll Chrome */
 #lista::-webkit-scrollbar,
 #listaMensal::-webkit-scrollbar,
 #rankingBox::-webkit-scrollbar{
@@ -164,20 +163,17 @@ button{
 
 /* ---------------- RANKING ---------------- */
 #rankingMensal{
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-
-    /* 🔥 ESSENCIAL PRA NÃO ESTOURAR SCROLL */
-    min-height: 0;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    width:100%;
 }
 
 #rankingMensal .lavagem-card{
-    margin: 0;
-    width: 100%;
-    box-sizing: border-box;
-
-    flex: 0 0 auto; /* não estica */
+    margin:0;
+    width:100%;
+    box-sizing:border-box;
+    flex:0 0 auto;
 }
 </style>
 
