@@ -211,8 +211,8 @@ button{
 <h2>📆 Registro Mensal</h2>
 <div class="painel">
 <div class="filtro-linha">
-<div><label>Mês</label><select id="filtroMes" onchange="atualizarTudo()"></select></div>
-<div><label>Ano</label><select id="filtroAno" onchange="atualizarTudo()"></select></div>
+<div><label>Mês</label><select id="filtroMes" onchange="atualizarMensal()"></select></div>
+<div><label>Ano</label><select id="filtroAno" onchange="atualizarMensal()"></select></div>
 </div>
 
 <div id="semanasContainer" style="margin-top:15px"></div>
@@ -408,8 +408,10 @@ function atualizarMensal(){
     const rankingMensal = document.getElementById('rankingMensal');
 
     // 🔥 FILTRO DO MÊS
-    const f = registros.filter(r => r.mes === mes && r.ano === ano);
-
+    const f = registros.filter(r =>
+    String(r.mes) === String(mes) &&
+    String(r.ano) === String(ano)
+);
     // 🔥 LIMPA TUDO SEMPRE
     listaMensal.innerHTML = '';
     rankingMensal.innerHTML = '';
