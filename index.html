@@ -181,17 +181,14 @@ button{
     scrollbar-color: rgba(255,255,255,0.12) transparent;
 }
 
-/* garante altura consistente dos cards no histórico */
 #lista .lavagem-card,
 #listaMensal .lavagem-card{
     margin: 0;
-}
+    padding: 10px;
 
-/* controla “2 cards visíveis” de forma correta */
-#lista,
-#listaMensal{
-    max-height: 220px; /* ajuste fino real */
-    overflow-y: auto;
+    height: 110px;   /* 🔥 controla tamanho real do card */
+    overflow: hidden;
+    box-sizing: border-box;
 }
 </style>
 
