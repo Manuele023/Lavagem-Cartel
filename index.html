@@ -399,47 +399,60 @@ function atualizarMensal(){
     const lucroMensal = document.getElementById('lucroMensal');
     const semanasContainer = document.getElementById('semanasContainer');
     const listaMensal = document.getElementById('listaMensal');
+    const rankingMensal = document.getElementById('rankingMensal');
 
-    const f = registros.filter(r=>r.mes===mes && r.ano===ano);
+    const f = registros.filter(r => r.mes === mes && r.ano === ano);
 
+    // 🔥 SEMPRE LIMPA PRIMEIRO
     listaMensal.innerHTML = '';
     rankingMensal.innerHTML = '';
     semanasContainer.innerHTML = '';
-    
+
     mesAtual.innerText = mes + '/' + ano;
 
+    // ❗ SE NÃO TIVER DADOS, PARA AQUI
+    if (f.length === 0) {
+        totalMensal.innerText = "0";
+        lucroMensal.innerText = "0";
+
+        listaMensal.innerHTML = `<div class="lavagem-card">📭 Sem registros para este mês</div>`;
+        rankingMensal.innerHTML = `<div class="lavagem-card">🏆 Sem ranking para este mês</div>`;
+        semanasContainer.innerHTML = `<div class="lavagem-card">📅 Sem dados disponíveis</div>`;
+        return;
+    }
+
+    // 💰 TOTAL
     const total = f.reduce((a,b)=>a+b.valorSujo,0);
-
     totalMensal.innerText = formatar(total);
-    lucroMensal.innerText = formatar(total*0.1);
+    lucroMensal.innerText = formatar(total * 0.1);
 
+    // 📅 SEMANAS
     let semanas = '';
 
-    for(let s=1;s<=5;s++){
-        const t = f.filter(r=>r.semana===s)
-                   .reduce((a,b)=>a+b.valorSujo,0);
+    for(let s = 1; s <= 5; s++){
+        const t = f
+            .filter(r => r.semana === s)
+            .reduce((a,b) => a + b.valorSujo, 0);
 
         semanas += `
         <div class="semana-box">
             <strong>Semana ${s}</strong><br>
-            💰 Lavado: $ 
-            ${formatar(t)}<br>
-            💸 Lucro: R$ ${formatar(t*0.1)}
+            💰 Lavado: $ ${formatar(t)}<br>
+            💸 Lucro: R$ ${formatar(t * 0.1)}
         </div>`;
     }
 
     semanasContainer.innerHTML = `<div class="semana-grid">${semanas}</div>`;
 
-    listaMensal.innerHTML = '';
-
-    [...f].reverse().forEach(r=>{
+    // 📜 LISTA
+    [...f].reverse().forEach(r => {
         let lucroPercent = 0;
 
         if(r.taxa==20) lucroPercent=10;
         else if(r.taxa==25) lucroPercent=15;
         else if(r.taxa==30) lucroPercent=20;
 
-        const lucro = r.valorSujo*(lucroPercent/100);
+        const lucro = r.valorSujo * (lucroPercent / 100);
 
         listaMensal.innerHTML += `
         <div class="lavagem-card">
@@ -451,51 +464,39 @@ function atualizarMensal(){
             💸 Valor limpo: R$ ${formatar(r.valorLimpo)}<br>
             💰 Lucro: R$ ${formatar(lucro)}<br>
         </div>`;
-});
+    });
 
-/* ---------------- RANKING ---------------- */
+    // 🏆 RANKING
+    let ranking = {};
 
-let ranking = {};
+    f.forEach(r => {
+        if (!ranking[r.faccao]) {
+            ranking[r.faccao] = { total: 0, quantidade: 0 };
+        }
 
-f.forEach(r => {
-    if (!ranking[r.faccao]) {
-        ranking[r.faccao] = {
-            total: 0,
-            quantidade: 0
-        };
-    }
+        ranking[r.faccao].total += Number(r.valorSujo);
+        ranking[r.faccao].quantidade++;
+    });
 
-    ranking[r.faccao].total += Number(r.valorSujo);
-    ranking[r.faccao].quantidade++;
-});
+    const rankingOrdenado = Object.entries(ranking)
+        .sort((a,b) => b[1].total - a[1].total);
 
-const rankingOrdenado = Object.entries(ranking)
-    .sort((a, b) => b[1].total - a[1].total);
+    rankingMensal.innerHTML = '';
 
-rankingMensal.innerHTML = "";
+    rankingOrdenado.forEach(([faccao, dados], index) => {
 
-rankingOrdenado.forEach(([faccao, dados], index) => {
+        let medalha = "";
+        if(index === 0) medalha = "🥇";
+        else if(index === 1) medalha = "🥈";
+        else if(index === 2) medalha = "🥉";
 
-    let classe = "lavagem-card";
-
-    if (index === 0) classe += " top1";
-    else if (index === 1) classe += " top2";
-    else if (index === 2) classe += " top3";
-
-    let medalha = "";
-    if (index === 0) medalha = "🥇";
-    else if (index === 1) medalha = "🥈";
-    else if (index === 2) medalha = "🥉";
-
-    rankingMensal.innerHTML += `
-        <div class="${classe}">
-            ${medalha} <strong>${index + 1}º</strong> — ${faccao} •
-            ${dados.quantidade} ${dados.quantidade === 1 ? 'lavagem' : 'lavagens'} →
+        rankingMensal.innerHTML += `
+        <div class="lavagem-card">
+            ${medalha} <strong>${index+1}º</strong> • ${faccao} →
+            ${dados.quantidade} ${dados.quantidade === 1 ? "lavagem" : "lavagens"} →
             💰 $ ${formatar(dados.total)}
-        </div>
-    `;
-});
-
+        </div>`;
+    });
 }
 /* ---------------- TUDO ---------------- */
 function atualizarTudo(){
