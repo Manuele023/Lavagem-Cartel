@@ -84,21 +84,17 @@ button{
 
 .lavagem-card{
     border-left: 4px solid #8B1E1E;
-    padding: 14px; /* mais espaço interno */
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
 }
 
 #lista,#listaMensal{
-    height: 340px; /* 🔥 2 cards visíveis */
-    overflow-y: auto;
-    background: rgba(31,31,31,0.50);
-    padding: 10px;
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.08);
+    max-height:300px;
+    overflow-y:auto;
+    background:rgba(31,31,31,0.50);
+    padding:10px;
+    border-radius:12px;
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.08);
 }
 
 .filtro-linha{
@@ -183,13 +179,6 @@ button{
 #rankingBox{
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.12) transparent;
-}
-
-#lista .lavagem-card,
-#listaMensal .lavagem-card{
-    margin: 0;
-    padding: 12px;
-    box-sizing: border-box;
 }
 </style>
 
