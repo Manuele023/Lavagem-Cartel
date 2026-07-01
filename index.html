@@ -225,7 +225,10 @@ button{
     transform:translateY(0);
 }
 </style>
+</head>
 
+<body>
+    
 <div class="hero">
 
 <h1>Sistema de Lavagem</h1>
@@ -483,17 +486,9 @@ document.getElementById("tipoLavagem").dispatchEvent(new Event("change"));
 
 document.getElementById("faccao").selectedIndex = 0;
 
-const toast = document.getElementById("toast");
-console.log(toast);
-
-toast.classList.add("show");
-console.log("Toast exibido");
-
-setTimeout(() => {
-    toast.classList.remove("show");
-}, 2500);
+mostrarToast();
 }
-
+    
 window.calcular = calcular;
 /* ---------------- CARREGAR ---------------- */
 async function carregar(){
