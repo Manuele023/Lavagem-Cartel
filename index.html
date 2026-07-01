@@ -483,7 +483,12 @@ document.getElementById("tipoLavagem").dispatchEvent(new Event("change"));
 
 document.getElementById("faccao").selectedIndex = 0;
 
-mostrarToast();
+const toast = document.getElementById("toast");
+toast.classList.add("show");
+
+setTimeout(() => {
+    toast.classList.remove("show");
+}, 2500);
 }
 
 window.calcular = calcular;
