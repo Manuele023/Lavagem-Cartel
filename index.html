@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cartel - Sistema de Lavagem</title>
+<meta name="description" content="Sistema oficial de controle de lavagens do Cartel.">
+<meta property="og:title" content="Cartel - Sistema de Lavagem">
+<meta property="og:description" content="Sistema oficial para registro e controle de lavagens do Cartel.">
+<meta property="og:image" content="https://manuele023.github.io/Lavagem-Cartel/logo.png">
+<meta property="og:url" content="https://manuele023.github.io/Lavagem-Cartel/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cartel - Sistema de Lavagem">
+<meta name="twitter:description" content="Sistema oficial para registro e controle de lavagens do Cartel.">
+<meta name="twitter:image" content="https://manuele023.github.io/Lavagem-Cartel/logo.png">
 <link rel="icon" href="logo.png" type="image/png">
 <link rel="shortcut icon" href="logo.png" type="image/png">
 <link rel="apple-touch-icon" href="logo.png">
@@ -194,6 +204,26 @@ button{
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.12) transparent;
 }
+
+.toast{
+    position:fixed;
+    top:20px;
+    right:20px;
+    background:#1e7e34;
+    color:#fff;
+    padding:14px 22px;
+    border-radius:10px;
+    font-weight:bold;
+    opacity:0;
+    transform:translateY(-20px);
+    transition:.3s;
+    z-index:99999;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateY(0);
+}
 </style>
 
 <div class="hero">
@@ -300,7 +330,11 @@ button{
     
 <h2>📜 Registros de lavagens mensais </h2>
 <div id="listaMensal"></div>
-    
+
+<div id="toast" class="toast">
+✅ Solicitação de lavagem registrada.
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 import {
@@ -439,6 +473,18 @@ async function calcular(){
 
     enviarDiscord(r);
     await carregar();
+
+document.getElementById("numeroLavagemInput").value = "";
+document.getElementById("passaporte").value = "";
+document.getElementById("valor").value = "";
+
+const tipo = document.getElementById("tipoLavagem");
+tipo.value = "20";
+tipo.dispatchEvent(new Event("change"));
+
+document.getElementById("faccao").selectedIndex = 0;
+
+mostrarToast();
 }
 
 window.calcular = calcular;
@@ -665,7 +711,15 @@ function atualizarTudo(){
     atualizarLista();
     atualizarMensal();
 }
+function mostrarToast() {
+    const toast = document.getElementById("toast");
 
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2500);
+}
 /* ---------------- INIT ---------------- */
 initFiltros();
 carregar();
