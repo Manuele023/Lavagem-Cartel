@@ -478,9 +478,8 @@ document.getElementById("numeroLavagemInput").value = "";
 document.getElementById("passaporte").value = "";
 document.getElementById("valor").value = "";
 
-const tipo = document.getElementById("tipoLavagem");
-tipo.value = "20";
-tipo.dispatchEvent(new Event("change"));
+document.getElementById("tipoLavagem").value = "20";
+document.getElementById("tipoLavagem").dispatchEvent(new Event("change"));
 
 document.getElementById("faccao").selectedIndex = 0;
 
