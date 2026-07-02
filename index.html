@@ -402,8 +402,9 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 let registros = [];
-
-let filtroModo = "faccao";
+    
+let modoLavagem = "faccao";
+let filtroModo = "todos";
 
 /* ---------------- DISCORD ---------------- */
 function enviarDiscord(r){
@@ -512,6 +513,7 @@ async function calcular(){
         mes: String(data.getMonth()+1).padStart(2,'0'),
         ano: String(data.getFullYear()),
         semana: Math.ceil(data.getDate()/7)
+        origem: modoLavagem,
     };
 
     const colecao = modo === "pista" ? "lavagens_pista" : "lavagens";
@@ -577,7 +579,10 @@ function atualizarLista(){
     lista.innerHTML = '';
 
     [...registros]
-    .filter(r => r.origem === filtroModo)
+    .filter(r => {
+    if(filtroModo === "todos") return true;
+    return r.origem === filtroModo;
+})
     .sort((a, b) => Number(b.numero) - Number(a.numero))
     .forEach(r => {
         let lucroPercent = 0;
@@ -622,7 +627,7 @@ function atualizarMensal(){
     const f = registros.filter(r =>
     String(r.mes) === String(mes) &&
     String(r.ano) === String(ano) &&
-    r.origem === filtroModo
+    filtroModo === "todos" || r.origem === filtroModo
 );
     // 🔥 LIMPA TUDO SEMPRE
     listaMensal.innerHTML = '';
@@ -786,12 +791,36 @@ function mostrarToast() {
     }, 2500);
 }
     
+function selecionarModo(modo){
+    modoLavagem = modo;
+
+    const faccao = document.getElementById("boxFaccao");
+    const pista = document.getElementById("boxPista");
+
+    if(modo === "faccao"){
+        faccao.style.border = "2px solid #8B1E1E";
+        faccao.style.opacity = "1";
+
+        pista.style.border = "2px solid transparent";
+        pista.style.opacity = "0.6";
+    } else {
+        pista.style.border = "2px solid #8B1E1E";
+        pista.style.opacity = "1";
+
+        faccao.style.border = "2px solid transparent";
+        faccao.style.opacity = "0.6";
+    }
+}
+
+window.selecionarModo = selecionarModo;
+
 function setFiltro(modo){
     filtroModo = modo;
 
     atualizarLista();
     atualizarMensal();
 
+    document.getElementById("btnTodos").style.opacity = modo === "todos" ? "1" : "0.5";
     document.getElementById("btnFaccao").style.opacity = modo === "faccao" ? "1" : "0.5";
     document.getElementById("btnPista").style.opacity = modo === "pista" ? "1" : "0.5";
 }
