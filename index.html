@@ -558,6 +558,7 @@ function atualizarLista(){
     [...registros]
     .filter(r => r.origem === filtroModo)
     .sort((a, b) => Number(b.numero) - Number(a.numero))
+    .forEach(r => {
         let lucroPercent = 0;
 
         if(r.taxa==10) lucroPercent=90;
