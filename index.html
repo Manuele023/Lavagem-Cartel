@@ -509,11 +509,11 @@ async function calcular(){
         passaporte,
         valorSujo: valor,
         valorLimpo,
+        origem: modoLavagem,
         data: data.toLocaleString('pt-BR'),
         mes: String(data.getMonth()+1).padStart(2,'0'),
         ano: String(data.getFullYear()),
         semana: Math.ceil(data.getDate()/7)
-        origem: modoLavagem,
     };
 
     const colecao = modo === "pista" ? "lavagens_pista" : "lavagens";
