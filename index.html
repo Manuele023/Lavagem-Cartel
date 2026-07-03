@@ -845,12 +845,16 @@ function atualizarTudo(){
 
     const dados = getDadosAtuais();
 
+    // 📜 total de lavagens
     document.getElementById('totalLavagens').innerText = dados.length;
 
+    // 💰 total lavado
     const total = dados.reduce((a,b)=>a + Number(b.valorSujo || 0),0);
     document.getElementById('totalDinheiro').innerText = formatar(total);
 
-    const lucroTotalGeral = dados.reduce((a, r) => {
+    // 💸 lucro total
+    const lucroTotal = dados.reduce((a, r) => {
+
         let lucroPercent = 0;
 
         if(r.taxa==10) lucroPercent=90;
@@ -859,19 +863,21 @@ function atualizarTudo(){
         else if(r.taxa==30) lucroPercent=20;
 
         return a + (Number(r.valorSujo || 0) * (lucroPercent / 100));
+
     }, 0);
 
-    document.getElementById('lucroTotal').innerText = formatar(lucroTotalGeral);
+    document.getElementById('lucroTotal').innerText = formatar(lucroTotal);
 
+    // 🔁 atualiza lista e mensal com o mesmo filtro
     atualizarLista();
     atualizarMensal();
 
-    // 👇 REGRA DO RANKING GERAL
+    // 🏆 ranking geral só no modo "todos"
     if(filtroModo === "todos"){
         document.getElementById("tituloRankingGeral").style.display = "block";
         document.getElementById("rankingGeralBox").style.display = "block";
 
-        atualizarRankingGeral(registros); // 🔥 usa TODOS os dados
+        atualizarRankingGeral(registros); // sempre global
     } else {
         document.getElementById("tituloRankingGeral").style.display = "none";
         document.getElementById("rankingGeralBox").style.display = "none";
