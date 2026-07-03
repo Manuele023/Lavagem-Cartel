@@ -403,13 +403,22 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 let registros = [];
-    
+
+const WEBHOOK_FACCAO = "https://discord.com/api/webhooks/1519147289036193972/WreVR0l-ZJ7GbI7xiGUMdi-2k6P64hem0GmnH4dyGHGvlt0neVrf88mAIzaciy2Frjsm";
+
+const WEBHOOK_PISTA = "https://discord.com/api/webhooks/1522613236745371769/wCPzVZjiJ_EZolu_JZD6HJzG8YAOFjPuOzKFvkXhyFY-cD0vhlze4SU_4BpBK8ick1g-";
+
 let modoLavagem = "faccao";
 let filtroModo = "todos";
 
 /* ---------------- DISCORD ---------------- */
 function enviarDiscord(r){
-    fetch("https://discord.com/api/webhooks/1519147289036193972/WreVR0l-ZJ7GbI7xiGUMdi-2k6P64hem0GmnH4dyGHGvlt0neVrf88mAIzaciy2Frjsm",{
+
+    const webhook = r.origem === "pista"
+        ? https://discord.com/api/webhooks/1522613236745371769/wCPzVZjiJ_EZolu_JZD6HJzG8YAOFjPuOzKFvkXhyFY-cD0vhlze4SU_4BpBK8ick1g-
+        : https://discord.com/api/webhooks/1519147289036193972/WreVR0l-ZJ7GbI7xiGUMdi-2k6P64hem0GmnH4dyGHGvlt0neVrf88mAIzaciy2Frjsm;
+
+    fetch(webhook,{
         method:"POST",
         headers:{ "Content-Type":"application/json" },
         body:JSON.stringify({
@@ -516,6 +525,8 @@ async function calcular(){
         ano: String(data.getFullYear()),
         semana: Math.ceil(data.getDate()/7)
     };
+
+    const modo = modoLavagem;
 
     const colecao = modo === "pista" ? "lavagens_pista" : "lavagens";
 
