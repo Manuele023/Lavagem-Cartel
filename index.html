@@ -415,8 +415,8 @@ let filtroModo = "todos";
 function enviarDiscord(r){
 
     const webhook = r.origem === "pista"
-        ? https://discord.com/api/webhooks/1522613236745371769/wCPzVZjiJ_EZolu_JZD6HJzG8YAOFjPuOzKFvkXhyFY-cD0vhlze4SU_4BpBK8ick1g-
-        : https://discord.com/api/webhooks/1519147289036193972/WreVR0l-ZJ7GbI7xiGUMdi-2k6P64hem0GmnH4dyGHGvlt0neVrf88mAIzaciy2Frjsm;
+    ? WEBHOOK_PISTA
+    : WEBHOOK_FACCAO;
 
     fetch(webhook,{
         method:"POST",
