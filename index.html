@@ -795,6 +795,8 @@ for (let s = 1; s <= 5; s++) {
 function atualizarRankingGeral(dados){
 
     const rankingGeral = document.getElementById("rankingGeral");
+    const titulo = document.getElementById("tituloRankingGeral");
+    const box = document.getElementById("rankingGeralBox");
 
     let ranking = {};
 
@@ -827,6 +829,15 @@ function atualizarRankingGeral(dados){
             💰 $ ${formatar(dados.total)}
         </div>`;
     });
+
+    // mostra ou esconde no modo "todos"
+    if(filtroModo === "todos"){
+        titulo.style.display = "block";
+        box.style.display = "block";
+    } else {
+        titulo.style.display = "none";
+        box.style.display = "none";
+    }
 }
     
 /* ---------------- TUDO ---------------- */
@@ -836,10 +847,9 @@ function atualizarTudo(){
 
     document.getElementById('totalLavagens').innerText = dados.length;
 
-    const total = dados.reduce((a,b)=>a + b.valorSujo,0);
+    const total = dados.reduce((a,b)=>a + Number(b.valorSujo || 0),0);
     document.getElementById('totalDinheiro').innerText = formatar(total);
 
-    // 💰 lucro total correto (por taxa)
     const lucroTotalGeral = dados.reduce((a, r) => {
         let lucroPercent = 0;
 
@@ -848,13 +858,24 @@ function atualizarTudo(){
         else if(r.taxa==25) lucroPercent=15;
         else if(r.taxa==30) lucroPercent=20;
 
-        return a + (r.valorSujo * (lucroPercent / 100));
+        return a + (Number(r.valorSujo || 0) * (lucroPercent / 100));
     }, 0);
 
     document.getElementById('lucroTotal').innerText = formatar(lucroTotalGeral);
 
     atualizarLista();
     atualizarMensal();
+
+    // 👇 REGRA DO RANKING GERAL
+    if(filtroModo === "todos"){
+        document.getElementById("tituloRankingGeral").style.display = "block";
+        document.getElementById("rankingGeralBox").style.display = "block";
+
+        atualizarRankingGeral(registros); // 🔥 usa TODOS os dados
+    } else {
+        document.getElementById("tituloRankingGeral").style.display = "none";
+        document.getElementById("rankingGeralBox").style.display = "none";
+    }
 }
     
 function mostrarToast() {
