@@ -345,9 +345,22 @@ button{
 </div>
 
 <div style="display:flex; gap:10px; margin-bottom:15px;">
-    <button onclick="setFiltro('todos')" id="btnTodos" style="font-weight:bold;">Todos</button>
-    <button onclick="setFiltro('faccao')" id="btnFaccao" style="font-weight:bold;">Facção</button>
-    <button onclick="setFiltro('pista')" id="btnPista" style="font-weight:bold;">Pista</button>
+
+    <button onclick="setFiltro('faccao')" id="btnFaccao"
+        style="flex:1; font-weight:bold; opacity:0.5;">
+        Facção
+    </button>
+
+    <button onclick="setFiltro('todos')" id="btnTodos"
+        style="flex:1; font-weight:bold; opacity:1; border:2px solid #8B1E1E;">
+        Todos
+    </button>
+
+    <button onclick="setFiltro('pista')" id="btnPista"
+        style="flex:1; font-weight:bold; opacity:0.5;">
+        Pista
+    </button>
+
 </div>
     
 <h2 id="tituloHistorico">📜 Histórico de Lavagens</h2>
