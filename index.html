@@ -971,6 +971,10 @@ function getDadosAtuais(){
     return registros.filter(r => r.origem === filtroModo);
 }
     
+window.addEventListener("DOMContentLoaded", () => {
+    setFiltro("todos");
+});
+    
 /* ---------------- INIT ---------------- */
 initFiltros();
 carregar();
