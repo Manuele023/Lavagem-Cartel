@@ -376,27 +376,9 @@ button{
 
     <br>
 
-    <!-- HEADER DO RANKING (com botão) -->
-    <div id="rankingGeralHeader"
-         style="display:none; justify-content:space-between; align-items:center; margin:12px 0 8px;">
-
-        <h2 style="margin:0;">
-            🏆 Ranking geral de facções
-        </h2>
-
-        <button onclick="copiarRanking('rankingGeral')" style="
-            font-size:12px;
-            padding:4px 8px;
-            background:#8B1E1E;
-            color:white;
-            border:none;
-            border-radius:5px;
-            cursor:pointer;
-        ">
-            Copiar
-        </button>
-
-    </div>
+    <h2 id="tituloRankingGeral" style="display:none; margin:12px 0 8px;">
+        🏆 Ranking geral de facções
+    </h2>
 
     <div id="rankingGeralBox"
          style="display:none; max-height:180px; overflow-y:auto;">
@@ -420,28 +402,14 @@ button{
 💰 Valor total lavado mensal: $ <span id="totalMensal"></span><br><br>
 💸 Lucro mensal: R$ <span id="lucroMensal"></span><br><br>
 
-<div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
-
-    <h2 style="margin:0;">
-        🏆 Ranking mensal de facções
-    </h2>
-
-    <button onclick="copiarRanking('rankingMensal')" style="
-        font-size:12px;
-        padding:4px 8px;
-        background:#8B1E1E;
-        color:white;
-        border:none;
-        border-radius:5px;
-        cursor:pointer;
-    ">
-        Copiar
-    </button>
-
-</div>
+<h2>🏆 Ranking mensal de facções</h2>
 
 <div id="rankingBox">
     <div id="rankingMensal"></div>
+</div>
+    
+<h2 id="tituloMensal">📜 Registros de lavagens mensais</h2>
+<div id="listaMensal"></div>
 </div>
 
 <div id="toast" class="toast">
@@ -710,7 +678,7 @@ function atualizarMensal(){
     const f = registros.filter(r =>
     String(r.mes) === String(mes) &&
     String(r.ano) === String(ano) &&
-    (filtroModo === "todos" || r.origem === filtroModo)
+    filtroModo === "todos" || r.origem === filtroModo
 );
     // 🔥 LIMPA TUDO SEMPRE
     listaMensal.innerHTML = '';
@@ -1003,29 +971,14 @@ function getDadosAtuais(){
     return registros.filter(r => r.origem === filtroModo);
 }
     
-window.addEventListener("DOMContentLoaded", async () => {
-    initFiltros();
-
-    await carregar();   // 🔥 espera o Firebase terminar
-
+window.addEventListener("DOMContentLoaded", () => {
     setFiltro("todos");
 });
-
-function copiarRanking(id){
-    const el = document.getElementById(id);
-    if(!el) return;
-
-    let texto = el.innerText;
-
-    navigator.clipboard.writeText(texto)
-        .then(() => {
-            alert("Ranking copiado!");
-        })
-        .catch(() => {
-            alert("Erro ao copiar");
-        });
-}
+    
 /* ---------------- INIT ---------------- */
+initFiltros();
+carregar();
+
 window.calcular = calcular;
 window.atualizarMensal = atualizarMensal;
 window.atualizarTudo = atualizarTudo;
