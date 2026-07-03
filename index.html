@@ -710,7 +710,7 @@ function atualizarMensal(){
     const f = registros.filter(r =>
     String(r.mes) === String(mes) &&
     String(r.ano) === String(ano) &&
-    filtroModo === "todos" || r.origem === filtroModo
+    (filtroModo === "todos" || r.origem === filtroModo)
 );
     // 🔥 LIMPA TUDO SEMPRE
     listaMensal.innerHTML = '';
@@ -1003,7 +1003,11 @@ function getDadosAtuais(){
     return registros.filter(r => r.origem === filtroModo);
 }
     
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
+    initFiltros();
+
+    await carregar();   // 🔥 espera o Firebase terminar
+
     setFiltro("todos");
 });
 
@@ -1022,9 +1026,6 @@ function copiarRanking(id){
         });
 }
 /* ---------------- INIT ---------------- */
-initFiltros();
-carregar();
-
 window.calcular = calcular;
 window.atualizarMensal = atualizarMensal;
 window.atualizarTudo = atualizarTudo;
