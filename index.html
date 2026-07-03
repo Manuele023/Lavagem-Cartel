@@ -354,23 +354,26 @@ button{
 <div id="lista"></div>
 
 <h2>📊 Painel de Controle</h2>
+
 <div class="painel">
 📜 Nº total de lavagens: <span id="totalLavagens"></span><br>
 💰 Valor total lavado: $ <span id="totalDinheiro"></span><br>
 💸 Lucro total: R$ <span id="lucroTotal"></span>
-</div>
 
-<h2 id="tituloRankingGeral" style="display:none;">
+<br><br>
+
+<h3 id="tituloRankingGeral" style="display:none; margin:10px 0 8px;">
 🏆 Ranking geral de facções
-</h2>
+</h3>
 
 <div id="rankingGeralBox"
-     style="display:none; height:180px; overflow-y:auto; padding:8px; margin-top:10px; border-radius:12px; background:rgba(31,31,31,0.50); box-sizing:border-box;">
+     style="display:none; max-height:180px; overflow-y:auto; padding:8px; border-radius:12px; background:rgba(31,31,31,0.50); box-sizing:border-box;">
 
     <div id="rankingGeral"></div>
 
 </div>
-
+</div>
+    
 <h2>📆 Controle mensal</h2>
 <div class="painel">
 <div class="filtro-linha">
@@ -590,6 +593,8 @@ async function carregar(){
         });
     });
 
+    atualizarLista();
+    atualizarMensal();
     atualizarTudo();
 }
 
@@ -787,23 +792,16 @@ for (let s = 1; s <= 5; s++) {
     });
 }
 
-function atualizarRankingGeral(){
+function atualizarRankingGeral(dados){
 
     const rankingGeral = document.getElementById("rankingGeral");
 
     let ranking = {};
 
-    const dados = filtroModo === "todos"
-    ? registros
-    : registros.filter(r => r.origem === filtroModo);
-
-dados.forEach(r => {
+    dados.forEach(r => {
 
         if(!ranking[r.faccao]){
-            ranking[r.faccao] = {
-                total:0,
-                quantidade:0
-            };
+            ranking[r.faccao] = { total:0, quantidade:0 };
         }
 
         ranking[r.faccao].total += Number(r.valorSujo);
@@ -811,14 +809,13 @@ dados.forEach(r => {
     });
 
     const rankingOrdenado = Object.entries(ranking)
-        .sort((a,b)=>b[1].total-a[1].total);
+        .sort((a,b)=>b[1].total - a[1].total);
 
     rankingGeral.innerHTML = "";
 
     rankingOrdenado.forEach(([faccao,dados], index)=>{
 
         let medalha = "";
-
         if(index === 0) medalha = "🥇";
         else if(index === 1) medalha = "🥈";
         else if(index === 2) medalha = "🥉";
@@ -834,20 +831,22 @@ dados.forEach(r => {
     
 /* ---------------- TUDO ---------------- */
 function atualizarTudo(){
-    document.getElementById('totalLavagens').innerText = registros.length;
 
-    const total = registros.reduce((a,b)=>a + b.valorSujo,0);
+    const dados = getDadosAtuais();
 
+    document.getElementById('totalLavagens').innerText = dados.length;
+
+    const total = dados.reduce((a,b)=>a + b.valorSujo,0);
     document.getElementById('totalDinheiro').innerText = formatar(total);
 
     // 💰 lucro total correto (por taxa)
-    const lucroTotalGeral = registros.reduce((a, r) => {
+    const lucroTotalGeral = dados.reduce((a, r) => {
         let lucroPercent = 0;
 
         if(r.taxa==10) lucroPercent=90;
         else if(r.taxa==20) lucroPercent=10;
-        else if (r.taxa == 25) lucroPercent = 15;
-        else if (r.taxa == 30) lucroPercent = 20;
+        else if(r.taxa==25) lucroPercent=15;
+        else if(r.taxa==30) lucroPercent=20;
 
         return a + (r.valorSujo * (lucroPercent / 100));
     }, 0);
@@ -922,6 +921,11 @@ function setFiltro(modo){
 }
 
 window.setFiltro = setFiltro;
+
+function getDadosAtuais(){
+    if(filtroModo === "todos") return registros;
+    return registros.filter(r => r.origem === filtroModo);
+}
     
 /* ---------------- INIT ---------------- */
 initFiltros();
