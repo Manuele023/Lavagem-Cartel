@@ -920,6 +920,8 @@ window.selecionarModo = selecionarModo;
 function setFiltro(modo){
     filtroModo = modo;
 
+    atualizarTudo(); // 🔥 ESSENCIAL (painel muda aqui)
+
     atualizarLista();
     atualizarMensal();
 
@@ -927,7 +929,7 @@ function setFiltro(modo){
     document.getElementById("btnFaccao").style.opacity = modo === "faccao" ? "1" : "0.5";
     document.getElementById("btnPista").style.opacity = modo === "pista" ? "1" : "0.5";
 
-    // Mostrar/ocultar histórico e registros mensais
+    // Mostrar/ocultar histórico e mensal
     const mostrar = modo !== "todos";
 
     document.getElementById("tituloHistorico").style.display = mostrar ? "" : "none";
@@ -936,14 +938,14 @@ function setFiltro(modo){
     document.getElementById("tituloMensal").style.display = mostrar ? "" : "none";
     document.getElementById("listaMensal").style.display = mostrar ? "" : "none";
 
-    // Mostrar ranking geral apenas em "Todos"
+    // Ranking geral
     const geral = modo === "todos";
 
     document.getElementById("tituloRankingGeral").style.display = geral ? "" : "none";
     document.getElementById("rankingGeralBox").style.display = geral ? "" : "none";
 
     if(geral){
-        atualizarRankingGeral();
+        atualizarRankingGeral(registros);
     }
 }
 
