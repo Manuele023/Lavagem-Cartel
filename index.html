@@ -342,7 +342,7 @@ button{
     <button onclick="setFiltro('pista')" id="btnPista" style="font-weight:bold;">Pista</button>
 </div>
     
-<h2>📜 Histórico de Lavagens</h2>
+<h2 id="tituloHistorico">📜 Histórico de Lavagens</h2>
 <div id="lista"></div>
 
 <h2>📊 Painel de Controle</h2>
@@ -371,7 +371,7 @@ button{
     <div id="rankingMensal"></div>
 </div>
     
-<h2>📜 Registros de lavagens mensais </h2>
+<h2 id="tituloMensal">📜 Registros de lavagens mensais</h2>
 <div id="listaMensal"></div>
 </div>
 
@@ -767,6 +767,52 @@ for (let s = 1; s <= 5; s++) {
         </div>`;
     });
 }
+
+function atualizarRankingGeral(){
+
+    const rankingGeral = document.getElementById("rankingGeral");
+
+    let ranking = {};
+
+    const dados = filtroModo === "todos"
+    ? registros
+    : registros.filter(r => r.origem === filtroModo);
+
+dados.forEach(r => {
+
+        if(!ranking[r.faccao]){
+            ranking[r.faccao] = {
+                total:0,
+                quantidade:0
+            };
+        }
+
+        ranking[r.faccao].total += Number(r.valorSujo);
+        ranking[r.faccao].quantidade++;
+    });
+
+    const rankingOrdenado = Object.entries(ranking)
+        .sort((a,b)=>b[1].total-a[1].total);
+
+    rankingGeral.innerHTML = "";
+
+    rankingOrdenado.forEach(([faccao,dados], index)=>{
+
+        let medalha = "";
+
+        if(index === 0) medalha = "🥇";
+        else if(index === 1) medalha = "🥈";
+        else if(index === 2) medalha = "🥉";
+
+        rankingGeral.innerHTML += `
+        <div class="lavagem-card">
+            ${medalha} <strong>${index+1}º</strong> — ${faccao} •
+            ${dados.quantidade} ${dados.quantidade === 1 ? "lavagem" : "lavagens"} →
+            💰 $ ${formatar(dados.total)}
+        </div>`;
+    });
+}
+    
 /* ---------------- TUDO ---------------- */
 function atualizarTudo(){
     document.getElementById('totalLavagens').innerText = registros.length;
@@ -835,6 +881,25 @@ function setFiltro(modo){
     document.getElementById("btnTodos").style.opacity = modo === "todos" ? "1" : "0.5";
     document.getElementById("btnFaccao").style.opacity = modo === "faccao" ? "1" : "0.5";
     document.getElementById("btnPista").style.opacity = modo === "pista" ? "1" : "0.5";
+
+    // Mostrar/ocultar histórico e registros mensais
+    const mostrar = modo !== "todos";
+
+    document.getElementById("tituloHistorico").style.display = mostrar ? "" : "none";
+    document.getElementById("lista").style.display = mostrar ? "" : "none";
+
+    document.getElementById("tituloMensal").style.display = mostrar ? "" : "none";
+    document.getElementById("listaMensal").style.display = mostrar ? "" : "none";
+
+    // Mostrar ranking geral apenas em "Todos"
+    const geral = modo === "todos";
+
+    document.getElementById("tituloRankingGeral").style.display = geral ? "" : "none";
+    document.getElementById("rankingGeralBox").style.display = geral ? "" : "none";
+
+    if(geral){
+        atualizarRankingGeral();
+    }
 }
 
 window.setFiltro = setFiltro;
