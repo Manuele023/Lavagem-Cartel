@@ -526,7 +526,6 @@ browserSessionPersistence
 window.cadastrar = async function(){
 
 
-
 const nomeUsuario =
 document.getElementById("nomeUsuario").value.trim();
 
@@ -633,18 +632,31 @@ mensagem(
 
 console.error(e);
 
-mensagem(
-"❌ " + e.message
-);
+let erro = "Não foi possível criar a conta.";
+
+switch(e.code){
+
+    case "auth/email-already-in-use":
+        erro = "Este e-mail já está cadastrado.";
+        break;
+
+    case "auth/invalid-email":
+        erro = "E-mail inválido.";
+        break;
+
+    case "auth/weak-password":
+        erro = "A senha precisa ter pelo menos 6 caracteres.";
+        break;
 
 }
 
 
+mensagem("❌ " + erro);
 
 }
 
 
-
+}
 
 window.entrar = async function(){
 
