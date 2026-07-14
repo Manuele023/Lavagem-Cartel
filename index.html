@@ -549,20 +549,19 @@ async function calcular(){
 
     const valorLimpo = valor - (valor * tipo / 100);
 
-    const r = {
-        numero,
-        taxa: tipo,
-        faccao,
-        passaporte,
-        valorSujo: valor,
-        valorLimpo,
-        origem: modoLavagem,
-        data: data.toLocaleString('pt-BR'),
-        mes: String(data.getMonth()+1).padStart(2,'0'),
-        ano: String(data.getFullYear()),
-        semana: Math.ceil(data.getDate()/7)
-    };
-
+const r = {
+    numero,
+    taxa: tipo,
+    faccao,
+    passaporte,
+    valorSujo: valor,
+    valorLimpo,
+    origem: modoLavagem,
+    data: data.toLocaleString('pt-BR'),
+    mes: String(data.getMonth()+1).padStart(2,'0'),
+    ano: String(data.getFullYear()),
+};
+    
     const modo = modoLavagem;
 
     const colecao = modo === "pista" ? "lavagens_pista" : "lavagens";
@@ -675,10 +674,10 @@ function atualizarMensal(){
     const rankingMensal = document.getElementById('rankingMensal');
 
     // 🔥 FILTRO DO MÊS
-    const f = registros.filter(r =>
+   const f = registros.filter(r =>
     String(r.mes) === String(mes) &&
     String(r.ano) === String(ano) &&
-    filtroModo === "todos" || r.origem === filtroModo
+    (filtroModo === "todos" || r.origem === filtroModo)
 );
     // 🔥 LIMPA TUDO SEMPRE
     listaMensal.innerHTML = '';
@@ -723,7 +722,7 @@ let semanas = '';
 for (let s = 1; s <= 5; s++) {
 
     const lucroSemana = f
-        .filter(r => r.semana === s)
+        .filter(r => calcularSemana(r.data) === s)
         .reduce((a, r) => {
             let lucroPercent = 0;
 
@@ -736,7 +735,7 @@ for (let s = 1; s <= 5; s++) {
         }, 0);
 
     const t = f
-        .filter(r => r.semana === s)
+        .filter(r => calcularSemana(r.data) === s)
         .reduce((a, b) => a + b.valorSujo, 0);
 
     semanas += `
@@ -932,6 +931,22 @@ function selecionarModo(modo){
 
 window.selecionarModo = selecionarModo;
 
+function calcularSemana(dataTexto){
+
+    const [dataParte] = dataTexto.split(",");
+
+    const [dia, mes, ano] = dataParte.split("/").map(Number);
+
+    const data = new Date(ano, mes - 1, dia);
+
+    const primeiroDia = new Date(ano, mes - 1, 1);
+
+    let deslocamento = primeiroDia.getDay();
+    deslocamento = (deslocamento + 6) % 7; // Segunda = 0
+
+    return Math.floor((dia + deslocamento - 1) / 7) + 1;
+}
+    
 function setFiltro(modo){
     filtroModo = modo;
 
