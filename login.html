@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cartel - Login</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+
+body{
+
+    margin:0;
+    min-height:100vh;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+    linear-gradient(
+        rgba(0,0,0,.80),
+        rgba(0,0,0,.95)
+    ),
+    url("fundo-cartel.png");
+
+    background-size:cover;
+    background-position:center;
+
+    color:white;
+
+}
+
+
+
+.container{
+
+    width:400px;
+    max-width:90%;
+
+    background:rgba(20,20,20,.90);
+
+    padding:35px;
+
+    border-radius:15px;
+
+    border:1px solid rgba(255,255,255,.1);
+
+    box-shadow:0 0 35px black;
+
+    backdrop-filter:blur(10px);
+
+}
+
+
+
+.logo{
+
+    text-align:center;
+
+}
+
+
+
+.logo img{
+
+    width:100px;
+    height:100px;
+
+    object-fit:contain;
+
+}
+
+
+
+h1{
+
+    text-align:center;
+
+    color:#b30000;
+
+    letter-spacing:3px;
+
+    margin-bottom:25px;
+
+}
+
+
+
+h2{
+
+    text-align:center;
+
+    font-size:18px;
+
+    margin-bottom:20px;
+
+}
+
+
+
+input{
+
+    width:100%;
+
+    padding:13px;
+
+    margin-bottom:12px;
+
+    background:#111;
+
+    border:none;
+
+    border-radius:8px;
+
+    color:white;
+
+    outline:none;
+
+}
+
+
+
+input:focus{
+
+    border:1px solid #b30000;
+
+}
+
+
+
+.checkbox{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin:10px 0 20px;
+
+    font-size:14px;
+
+}
+
+
+
+.checkbox input{
+
+    width:auto;
+
+    margin:0;
+
+}
+
+
+
+button{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+    margin-top:10px;
+
+}
+
+
+
+.login{
+
+    background:#8b0000;
+
+    color:white;
+
+}
+
+
+
+.login:hover{
+
+    background:#b30000;
+
+}
+
+
+
+.cadastro{
+
+    background:#252525;
+
+    color:white;
+
+}
+
+
+
+.cadastro:hover{
+
+    background:#333;
+
+}
+
+
+
+#mensagem{
+
+    text-align:center;
+
+    margin-top:15px;
+
+    font-size:14px;
+
+}
+
+
+
+</style>
+
+</head>
+
+
+
+<body>
+
+
+<div class="container">
+
+
+<div class="logo">
+<img src="logo.png">
+</div>
+
+
+<h1>CARTEL</h1>
+
+
+<h2>LOGIN</h2>
+
+
+
+<div id="areaCadastro">
+
+
+<input 
+id="nomeUsuario"
+placeholder="Nome de usuário">
+
+
+<input 
+id="nomeRP"
+placeholder="Nome em RP">
+
+
+<input 
+id="email"
+type="email"
+placeholder="E-mail">
+
+
+<input 
+id="senha"
+type="password"
+placeholder="Senha">
+
+
+<input 
+id="confirmarSenha"
+type="password"
+placeholder="Confirmar senha">
+
+
+</div>
+
+
+
+<div id="areaLogin" style="display:none">
+
+
+<input 
+id="emailLogin"
+type="email"
+placeholder="E-mail">
+
+
+<input 
+id="senhaLogin"
+type="password"
+placeholder="Senha">
+
+
+</div>
+
+
+
+<div class="checkbox">
+
+<input 
+type="checkbox"
+id="lembrar">
+
+<label>
+Manter conectado
+</label>
+
+</div>
+
+
+
+<button 
+class="cadastro"
+onclick="cadastrar()">
+
+Criar conta
+
+</button>
+
+
+<button 
+class="login"
+onclick="entrar()">
+
+Entrar
+
+</button>
+
+
+
+<div id="mensagem"></div>
+
+
+</div>
+
+
+
+<script type="module">
+
+
+import { auth, db } from "./firebase.js";
+
+
+import {
+
+createUserWithEmailAndPassword,
+
+signInWithEmailAndPassword,
+
+setPersistence,
+
+browserLocalPersistence,
+
+browserSessionPersistence
+
+} 
+from 
+"https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+
+import {
+
+doc,
+
+setDoc,
+
+serverTimestamp
+
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+
+
+
+
+function mensagem(texto){
+
+document.getElementById("mensagem").innerHTML = texto;
+
+}
+
+
+
+async function configurarPersistencia(){
+
+
+const lembrar =
+document.getElementById("lembrar").checked;
+
+
+
+await setPersistence(
+
+auth,
+
+lembrar
+?
+browserLocalPersistence
+:
+browserSessionPersistence
+
+);
+
+
+}
+
+
+
+
+window.cadastrar = async function(){
+
+
+
+const nomeUsuario =
+document.getElementById("nomeUsuario").value.trim();
+
+
+const nomeRP =
+document.getElementById("nomeRP").value.trim();
+
+
+const email =
+document.getElementById("email").value.trim();
+
+
+const senha =
+document.getElementById("senha").value;
+
+
+const confirmar =
+document.getElementById("confirmarSenha").value;
+
+
+
+if(!nomeUsuario || !nomeRP || !email || !senha || !confirmar){
+
+mensagem("❌ Preencha todos os campos.");
+
+return;
+
+}
+
+
+
+if(senha !== confirmar){
+
+mensagem("❌ As senhas não coincidem.");
+
+return;
+
+}
+
+
+
+if(senha.length < 6){
+
+mensagem("❌ A senha precisa ter pelo menos 6 caracteres.");
+
+return;
+
+}
+
+
+
+try{
+
+
+await configurarPersistencia();
+
+
+
+const usuario = await createUserWithEmailAndPassword(
+
+auth,
+
+email,
+
+senha
+
+);
+
+
+
+await setDoc(
+
+doc(db,"usuarios",usuario.user.uid),
+
+{
+
+nomeUsuario,
+
+nomeRP,
+
+email,
+
+admin:false,
+
+aprovado:false,
+
+ativo:true,
+
+criadoEm:serverTimestamp()
+
+}
+
+);
+
+
+
+mensagem(
+"✅ Conta criada! Aguarde aprovação de um administrador."
+);
+
+
+
+}catch(e){
+
+
+mensagem(
+"❌ Erro ao criar conta."
+);
+
+
+}
+
+
+
+}
+
+
+
+
+window.entrar = async function(){
+
+
+
+const email =
+document.getElementById("emailLogin").value;
+
+
+const senha =
+document.getElementById("senhaLogin").value;
+
+
+
+try{
+
+
+await configurarPersistencia();
+
+
+
+await signInWithEmailAndPassword(
+
+auth,
+
+email,
+
+senha
+
+);
+
+
+
+window.location.href="index.html";
+
+
+
+}catch(e){
+
+
+mensagem(
+"❌ E-mail ou senha incorretos."
+);
+
+
+}
+
+
+
+}
+
+
+
+
+</script>
+
+
+</body>
+
+</html>
