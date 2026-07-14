@@ -232,39 +232,50 @@ button{
 }
 
 .senha-box{
-
     position:relative;
-
 }
 
 
 .senha-box input{
-
     padding-right:45px;
-
 }
 
 
-.senha-box span{
+.olho{
 
     position:absolute;
 
-    right:15px;
+    right:14px;
 
-    top:13px;
+    top:50%;
+
+    transform:translateY(-50%);
 
     cursor:pointer;
 
-    font-size:18px;
+    width:22px;
 
-    opacity:.7;
+    height:22px;
+
+    opacity:.6;
 
 }
 
 
-.senha-box span:hover{
+.olho:hover{
 
     opacity:1;
+
+}
+
+
+.olho svg{
+
+    width:100%;
+
+    height:100%;
+
+    fill:white;
 
 }
 
@@ -319,7 +330,10 @@ type="password"
 placeholder="Senha">
 
 <span onclick="mostrarSenha('senha', this)">
-👁️
+<svg viewBox="0 0 24 24">
+<path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+<circle cx="12" cy="12" r="2.5"/>
+</svg>
 </span>
 
 </div>
@@ -333,7 +347,10 @@ type="password"
 placeholder="Confirmar senha">
 
 <span onclick="mostrarSenha('confirmarSenha', this)">
-👁️
+<svg viewBox="0 0 24 24">
+<path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+<circle cx="12" cy="12" r="2.5"/>
+</svg>
 </span>
 
 </div>
@@ -358,7 +375,10 @@ type="password"
 placeholder="Senha">
 
 <span onclick="mostrarSenha('senhaLogin', this)">
-👁️
+<svg viewBox="0 0 24 24">
+<path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+<circle cx="12" cy="12" r="2.5"/>
+</svg>
 </span>
 
 </div>
@@ -754,18 +774,27 @@ window.mostrarSenha = function(id, elemento){
 
         campo.type = "text";
 
-        elemento.innerHTML = "🙈";
+        elemento.innerHTML = `
+        <svg viewBox="0 0 24 24">
+        <path d="M3 3l18 18"/>
+        <path d="M10.5 10.5a2.5 2.5 0 0 0 3 3"/>
+        <path d="M9.9 5.1A11 11 0 0 1 12 5c7 0 11 7 11 7a18 18 0 0 1-5 5.5"/>
+        <path d="M6.6 6.6C3.6 8.5 1 12 1 12s4 7 11 7a10.9 10.9 0 0 0 4.1-.8"/>
+        </svg>`;
 
     }else{
 
         campo.type = "password";
 
-        elemento.innerHTML = "👁️";
+        elemento.innerHTML = `
+        <svg viewBox="0 0 24 24">
+        <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7z"/>
+        <circle cx="12" cy="12" r="2.5"/>
+        </svg>`;
 
     }
 
 }
-
 </script>
 
 
