@@ -934,17 +934,20 @@ window.selecionarModo = selecionarModo;
 function calcularSemana(dataTexto){
 
     const [dataParte] = dataTexto.split(",");
-
     const [dia, mes, ano] = dataParte.split("/").map(Number);
 
     const data = new Date(ano, mes - 1, dia);
 
-    const primeiroDia = new Date(ano, mes - 1, 1);
+    // Segunda-feira da semana que contém o dia 1 do mês
+    const inicio = new Date(ano, mes - 1, 1);
 
-    let deslocamento = primeiroDia.getDay();
-    deslocamento = (deslocamento + 6) % 7; // Segunda = 0
+    while (inicio.getDay() !== 1) { // 1 = segunda
+        inicio.setDate(inicio.getDate() - 1);
+    }
 
-    return Math.floor((dia + deslocamento - 1) / 7) + 1;
+    const diferencaDias = Math.floor((data - inicio) / 86400000);
+
+    return Math.floor(diferencaDias / 7) + 1;
 }
     
 function setFiltro(modo){
