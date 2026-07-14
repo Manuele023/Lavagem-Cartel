@@ -8,6 +8,8 @@
 
 <title>Cartel - Login</title>
 
+<link rel="icon" type="image/png" href="logo.png">
+    
 <style>
 
 *{
@@ -43,7 +45,7 @@ body{
 
 .container{
 
-    width:400px;
+    width:480px;
     max-width:90%;
 
     background:rgba(20,20,20,.90);
@@ -255,7 +257,7 @@ button{
 
 
 
-<div id="areaCadastro">
+<div id="areaCadastro" style="display:none">
 
 
 <input 
@@ -290,7 +292,7 @@ placeholder="Confirmar senha">
 
 
 
-<div id="areaLogin" style="display:none">
+<div id="areaLogin">
 
 
 <input 
@@ -324,19 +326,19 @@ Manter conectado
 
 
 <button 
-class="cadastro"
-onclick="cadastrar()">
+class="login"
+onclick="entrar()">
 
-Criar conta
+Entrar
 
 </button>
 
 
 <button 
-class="login"
-onclick="entrar()">
+class="cadastro"
+onclick="mostrarCadastro()">
 
-Entrar
+Não tem uma conta? Criar conta
 
 </button>
 
