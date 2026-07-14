@@ -538,11 +538,11 @@ mensagem(
 
 }catch(e){
 
+console.error(e);
 
 mensagem(
-"❌ Erro ao criar conta."
+"❌ " + e.message
 );
-
 
 }
 
