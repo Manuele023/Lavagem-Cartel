@@ -231,7 +231,42 @@ button{
 
 }
 
+.senha-box{
 
+    position:relative;
+
+}
+
+
+.senha-box input{
+
+    padding-right:45px;
+
+}
+
+
+.senha-box span{
+
+    position:absolute;
+
+    right:15px;
+
+    top:13px;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    opacity:.7;
+
+}
+
+
+.senha-box span:hover{
+
+    opacity:1;
+
+}
 
 </style>
 
@@ -309,14 +344,16 @@ id="loginUsuario"
 placeholder="E-mail ou Nome de usuário">
 
 
+<div class="senha-box">
+
 <input 
 id="senhaLogin"
 type="password"
 placeholder="Senha">
 
+<span onclick="mostrarSenha('senhaLogin', this)">👁️</span>
 
 </div>
-
 
 
 <div class="checkbox">
@@ -698,6 +735,26 @@ window.voltarLogin = function(){
 
 };
 
+window.mostrarSenha = function(id, elemento){
+
+    const campo = document.getElementById(id);
+
+
+    if(campo.type === "password"){
+
+        campo.type = "text";
+
+        elemento.innerHTML = "🙈";
+
+    }else{
+
+        campo.type = "password";
+
+        elemento.innerHTML = "👁️";
+
+    }
+
+}
 
 </script>
 
