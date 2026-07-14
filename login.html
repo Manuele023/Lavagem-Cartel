@@ -326,6 +326,7 @@ Manter conectado
 
 
 <button 
+id="botaoPrincipal"
 class="login"
 onclick="entrar()">
 
@@ -335,13 +336,13 @@ Entrar
 
 
 <button 
+id="botaoCadastro"
 class="cadastro"
 onclick="mostrarCadastro()">
 
 Não tem uma conta? Criar conta
 
 </button>
-
 
 
 <div id="mensagem"></div>
@@ -599,7 +600,50 @@ mensagem(
 
 }
 
+window.mostrarCadastro = function(){
 
+    document.getElementById("areaLogin").style.display = "none";
+
+    document.getElementById("areaCadastro").style.display = "block";
+
+
+    document.querySelector("h2").innerHTML = "CADASTRO";
+
+
+    document.getElementById("botaoPrincipal").innerHTML = "Criar conta";
+
+    document.getElementById("botaoPrincipal").onclick = cadastrar;
+
+
+    document.getElementById("botaoCadastro").innerHTML = "Já tenho uma conta";
+
+
+    document.getElementById("botaoCadastro").onclick = voltarLogin;
+
+};
+
+
+window.voltarLogin = function(){
+
+    document.getElementById("areaCadastro").style.display = "none";
+
+    document.getElementById("areaLogin").style.display = "block";
+
+
+    document.querySelector("h2").innerHTML = "LOGIN";
+
+
+    document.getElementById("botaoPrincipal").innerHTML = "Entrar";
+
+    document.getElementById("botaoPrincipal").onclick = entrar;
+
+
+    document.getElementById("botaoCadastro").innerHTML = "Não tem uma conta? Criar conta";
+
+
+    document.getElementById("botaoCadastro").onclick = mostrarCadastro;
+
+};
 
 
 </script>
