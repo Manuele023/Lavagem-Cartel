@@ -296,9 +296,8 @@ placeholder="Confirmar senha">
 
 
 <input 
-id="emailLogin"
-type="email"
-placeholder="E-mail">
+id="loginUsuario"
+placeholder="E-mail ou Nome de usuário">
 
 
 <input 
@@ -552,21 +551,62 @@ mensagem(
 
 window.entrar = async function(){
 
-
-
-const email =
-document.getElementById("emailLogin").value;
-
+const login =
+document.getElementById("loginUsuario").value.trim();
 
 const senha =
 document.getElementById("senhaLogin").value;
 
 
-
 try{
 
-
 await configurarPersistencia();
+
+
+let email = login;
+
+
+// Se não for e-mail, procura pelo nome de usuário
+if(!login.includes("@")){
+
+
+const usuariosRef = collection(db,"usuarios");
+
+const busca = await getDocs(usuariosRef);
+
+
+let encontrado = null;
+
+
+busca.forEach((doc)=>{
+
+const dados = doc.data();
+
+
+if(
+dados.nomeUsuario.toLowerCase() === login.toLowerCase()
+){
+
+encontrado = dados.email;
+
+}
+
+});
+
+
+if(!encontrado){
+
+mensagem("❌ Usuário não encontrado.");
+
+return;
+
+}
+
+
+email = encontrado;
+
+
+}
 
 
 
@@ -590,7 +630,7 @@ window.location.href="index.html";
 
 
 mensagem(
-"❌ E-mail ou senha incorretos."
+"❌ Usuário ou senha incorretos."
 );
 
 
