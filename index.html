@@ -1233,13 +1233,12 @@ window.addEventListener("DOMContentLoaded", () => {
     setFiltro("todos");
 });
 
-import { signOut } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
-import { auth } from "./firebase.js";
-
 window.logout = async function () {
     await signOut(auth);
     window.location.href = "login.html";
 }
+
+</script>
     
 /* ---------------- INIT ---------------- */
 initFiltros();
