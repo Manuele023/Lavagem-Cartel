@@ -218,15 +218,19 @@ button{
 }
 
 .logo-topo{
-
+    display:flex;
+    align-items:center;
+    gap:8px;
     font-size:20px;
-
     font-weight:bold;
-
     color:#fff;
-
     white-space:nowrap;
+}
 
+.logo-topo img{
+    width:28px;
+    height:28px;
+    object-fit:contain;
 }
 
 .online{
@@ -396,8 +400,11 @@ button{
 
     <div class="conteudo-topo">
 
-        <div class="logo-topo">☠ CARTEL</div>
-
+        <div class="logo-topo">☠ CARTEL</div><div class="logo-topo">
+    <img src="logo.png" alt="Cartel">
+    CARTEL
+</div>
+        
         <div class="online">
             🟢 <span id="onlineCount">0</span> Online
         </div>
