@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cartel - Admin</title>
+
+<link rel="icon" type="image/png" href="logo.png">
+
+<style>
+
+*{
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+
+body{
+
+    margin:0;
+    min-height:100vh;
+
+    background:
+    linear-gradient(
+        rgba(0,0,0,.85),
+        rgba(0,0,0,.95)
+    ),
+    url("fundo-cartel.png");
+
+    background-size:cover;
+    background-position:center;
+
+    color:white;
+
+    padding:30px;
+
+}
+
+
+
+.container{
+
+    max-width:1000px;
+
+    margin:auto;
+
+    background:rgba(20,20,20,.92);
+
+    padding:30px;
+
+    border-radius:15px;
+
+    box-shadow:0 0 35px black;
+
+}
+
+
+
+.logo{
+
+    text-align:center;
+
+}
+
+
+.logo img{
+
+    width:90px;
+
+}
+
+
+
+h1{
+
+    text-align:center;
+
+    color:#b30000;
+
+    letter-spacing:3px;
+
+}
+
+
+
+.topo{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+
+
+button{
+
+    padding:10px 15px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+}
+
+
+
+.voltar{
+
+    background:#333;
+
+    color:white;
+
+}
+
+
+
+.usuario{
+
+    background:#111;
+
+    border:1px solid #333;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    margin-bottom:15px;
+
+}
+
+
+
+.usuario span{
+
+    display:block;
+
+    margin:5px 0;
+
+}
+
+
+
+.aprovar{
+
+    background:#006400;
+
+    color:white;
+
+}
+
+
+
+.bloquear{
+
+    background:#8b0000;
+
+    color:white;
+
+}
+
+
+
+.ativar{
+
+    background:#006400;
+
+    color:white;
+
+}
+
+
+
+</style>
+
+</head>
+
+
+
+<body>
+
+
+<div class="container">
+
+
+<div class="logo">
+
+<img src="logo.png">
+
+</div>
+
+
+<h1>
+PAINEL ADMINISTRATIVO
+</h1>
+
+
+<div class="topo">
+
+<h2>
+Usuários
+</h2>
+
+
+<button 
+class="voltar"
+onclick="voltar()">
+
+⬅ Voltar
+
+</button>
+
+
+</div>
+
+
+<div id="listaUsuarios">
+
+Carregando...
+
+</div>
+
+
+
+</div>
+
+
+
+<script type="module">
+
+
+import { auth, db } from "./firebase.js";
+
+
+import {
+
+onAuthStateChanged
+
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+
+import {
+
+collection,
+
+getDocs,
+
+doc,
+
+getDoc,
+
+updateDoc
+
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+
+
+
+
+const lista =
+document.getElementById("listaUsuarios");
+
+
+
+
+
+onAuthStateChanged(auth, async(user)=>{
+
+
+if(!user){
+
+window.location.href="login.html";
+
+return;
+
+}
+
+
+
+const adminRef =
+doc(db,"usuarios",user.uid);
+
+
+const adminSnap =
+await getDoc(adminRef);
+
+
+
+if(
+!adminSnap.exists() ||
+adminSnap.data().admin !== true
+){
+
+alert("Acesso negado.");
+
+window.location.href="index.html";
+
+return;
+
+}
+
+
+
+carregarUsuarios();
+
+
+
+});
+
+
+
+
+
+
+
+async function carregarUsuarios(){
+
+
+lista.innerHTML="";
+
+
+const usuarios =
+await getDocs(collection(db,"usuarios"));
+
+
+
+usuarios.forEach((usuario)=>{
+
+
+const u = usuario.data();
+
+
+
+lista.innerHTML += `
+
+<div class="usuario">
+
+
+<span>
+<b>Usuário:</b> ${u.nomeUsuario || "-"}
+</span>
+
+
+<span>
+<b>RP:</b> ${u.nomeRP || "-"}
+</span>
+
+
+<span>
+<b>Email:</b> ${u.email || "-"}
+</span>
+
+
+<span>
+<b>Status:</b> 
+${u.ativo ? "🟢 Ativo" : "🔴 Bloqueado"}
+
+</span>
+
+
+<span>
+<b>Aprovado:</b>
+${u.aprovado ? "✅ Sim" : "⏳ Pendente"}
+
+</span>
+
+
+<br>
+
+
+${
+!u.aprovado ?
+
+`
+
+<button 
+class="aprovar"
+onclick="aprovar('${usuario.id}')">
+
+Aprovar
+
+</button>
+
+`
+
+:
+
+""
+
+}
+
+
+
+<button
+
+class="${u.ativo ? "bloquear" : "ativar"}"
+
+onclick="alterarStatus('${usuario.id}', ${u.ativo})">
+
+${u.ativo ? "Bloquear" : "Ativar"}
+
+</button>
+
+
+
+</div>
+
+`;
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+window.aprovar = async function(id){
+
+
+await updateDoc(
+
+doc(db,"usuarios",id),
+
+{
+
+aprovado:true
+
+}
+
+);
+
+
+carregarUsuarios();
+
+
+}
+
+
+
+
+
+
+
+window.alterarStatus = async function(id,status){
+
+
+await updateDoc(
+
+doc(db,"usuarios",id),
+
+{
+
+ativo:!status
+
+}
+
+);
+
+
+carregarUsuarios();
+
+
+}
+
+
+
+
+
+
+
+window.voltar=function(){
+
+window.location.href="index.html";
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
