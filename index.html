@@ -180,6 +180,157 @@ button{
 
 }
 
+/* ---------- TOPBAR ---------- */
+
+.topbar{
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    background:rgba(18,18,18,.92);
+
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+    z-index:9999;
+
+}
+
+.conteudo-topo{
+
+    max-width:900px;
+
+    height:60px;
+
+    margin:auto;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    padding:0 20px;
+
+}
+
+.logo-topo{
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    color:#fff;
+
+    white-space:nowrap;
+
+}
+
+.online{
+
+    color:#4ade80;
+
+    font-weight:bold;
+
+    white-space:nowrap;
+
+}
+
+.usuario{
+
+    margin-left:auto;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    white-space:nowrap;
+
+}
+
+.nome-rp{
+
+    color:#fff;
+
+    font-weight:700;
+
+}
+
+.nome-user{
+
+    color:#999;
+
+    font-size:13px;
+
+}
+
+.separador{
+
+    color:#666;
+
+}
+
+.topButton{
+
+    width:auto !important;
+
+    margin:0 !important;
+
+    padding:8px 14px !important;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    white-space:nowrap;
+
+    background:#8B1E1E;
+
+    color:white;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    flex-shrink:0;
+
+}
+
+.topButton.logout{
+
+    background:#3a3a3a;
+
+}
+
+.topButton:hover{
+
+    background:#b30000;
+
+}
+
+.topButton.logout:hover{
+
+    background:#555;
+
+}
+
 /* ---------------- SCROLL TRANSPARENTE ---------------- */
 
 /* Chrome / Edge / Android */
@@ -247,36 +398,39 @@ button{
 
 <div class="topbar">
 
-    <div class="logo-topo">
-        ☠ CARTEL
+    <div class="conteudo-topo">
+
+        <div class="logo-topo">☠ CARTEL</div>
+
+        <div class="online">
+            🟢 <span id="onlineCount">0</span> Online
+        </div>
+
+        <div class="usuario">
+
+    👤
+
+    <span id="nomeRPTopo" class="nome-rp">
+        ...
+    </span>
+
+    <span class="separador">•</span>
+
+    <span id="nomeUsuarioTopo" class="nome-user">
+        @...
+    </span>
+
+</div>
+
+        <button id="btnAdmin" class="topButton" style="display:none">
+            👑 Admin
+        </button>
+
+        <button class="topButton logout" onclick="logout()">
+            🚪 Sair
+        </button>
+
     </div>
-
-    <div class="online">
-        🟢 <span id="onlineCount">0</span> Online
-    </div>
-
-    <div class="usuario">
-        👤 <span id="nomeUsuarioTopo">...</span>
-        (<span id="nomeRPTopo">...</span>)
-    </div>
-
-    <button
-        id="btnAdmin"
-        class="topButton"
-        style="display:none;"
-        onclick="window.location.href='admin.html'">
-
-        👑 Painel Admin
-
-    </button>
-
-    <button
-        class="topButton logout"
-        onclick="logout()">
-
-        🚪 Sair
-
-    </button>
 
 </div>
 
@@ -462,15 +616,20 @@ button{
 </div>
 
 <script type="module">
-import { db } from "./firebase.js";
-
+import { auth, db } from "./firebase.js";
 
 import {
- collection,
- addDoc,
- getDocs,
- deleteDoc,
- doc
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+    
+import {
+    collection,
+    addDoc,
+    getDocs,
+    deleteDoc,
+    doc,
+    getDoc
 } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
 let registros = [];
@@ -481,6 +640,53 @@ const WEBHOOK_PISTA = "https://discord.com/api/webhooks/1522613236745371769/wCPz
 
 let modoLavagem = "faccao";
 let filtroModo = "todos";
+
+onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    const snap = await getDoc(doc(db, "usuarios", user.uid));
+
+    if (!snap.exists()) {
+        await signOut(auth);
+        window.location.href = "login.html";
+        return;
+    }
+
+    const dados = snap.data();
+
+    if (!dados.aprovado || !dados.ativo) {
+
+    await signOut(auth);
+
+    alert("Sua conta ainda não foi aprovada.");
+
+    window.location.href = "login.html";
+
+    return;
+
+}
+    
+    document.getElementById("nomeRPTopo").textContent = dados.nomeRP;
+
+    document.getElementById("nomeUsuarioTopo").textContent = "@" + dados.nomeUsuario;
+
+    document.getElementById("btnAdmin").style.display = "none";
+    
+    if (dados.admin) {
+
+    document.getElementById("btnAdmin").style.display = "flex";
+
+    document.getElementById("btnAdmin").onclick = () => {
+        window.location.href = "admin.html";
+    };
+
+}
+
+});
 
 /* ---------------- DISCORD ---------------- */
 function enviarDiscord(r){
