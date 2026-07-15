@@ -45,18 +45,16 @@
 body{
     font-family:Arial;
     color:#fff;
-    max-width:900px;
-    margin:auto;
-    padding:20px;
+    margin:0;
 
     background:
     linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.75)),
     url("fundo-cartel.png");
 
-    background-size: cover;
-    background-position: center 5%;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-size:cover;
+    background-position:center 5%;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
 }
 
 label{
@@ -172,6 +170,16 @@ button{
     box-sizing:border-box;
 }
 
+.conteudo{
+
+    max-width:900px;
+
+    margin:auto;
+
+    padding:95px 20px 20px;
+
+}
+
 /* ---------------- SCROLL TRANSPARENTE ---------------- */
 
 /* Chrome / Edge / Android */
@@ -236,7 +244,44 @@ button{
 </head>
 
 <body>
-    
+
+<div class="topbar">
+
+    <div class="logo-topo">
+        ☠ CARTEL
+    </div>
+
+    <div class="online">
+        🟢 <span id="onlineCount">0</span> Online
+    </div>
+
+    <div class="usuario">
+        👤 <span id="nomeUsuarioTopo">...</span>
+        (<span id="nomeRPTopo">...</span>)
+    </div>
+
+    <button
+        id="btnAdmin"
+        class="topButton"
+        style="display:none;"
+        onclick="window.location.href='admin.html'">
+
+        👑 Painel Admin
+
+    </button>
+
+    <button
+        class="topButton logout"
+        onclick="logout()">
+
+        🚪 Sair
+
+    </button>
+
+</div>
+
+<div class="conteudo">
+
 <div class="hero">
 
 <h1>Sistema de Lavagem</h1>
@@ -981,6 +1026,14 @@ function getDadosAtuais(){
 window.addEventListener("DOMContentLoaded", () => {
     setFiltro("todos");
 });
+
+import { signOut } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+import { auth } from "./firebase.js";
+
+window.logout = async function () {
+    await signOut(auth);
+    window.location.href = "login.html";
+}
     
 /* ---------------- INIT ---------------- */
 initFiltros();
