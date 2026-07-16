@@ -342,9 +342,9 @@ button{
     cursor: pointer;
 }
 
-.toggle-lavagem span {
-    display: inline-block;
-    transition: 0.3s;
+.toggle-lavagem span{
+    display:inline-block;
+    transition:transform .25s ease;
 }
 
 .oculto {
@@ -686,6 +686,7 @@ button{
 </div>
 
 <script type="module">
+    
 import { auth, db } from "./firebase.js";
 
 import {
@@ -1404,8 +1405,13 @@ window.toggleLavagem = function () {
     const sistema = document.getElementById("sistemaLavagem");
     const seta = document.getElementById("setaLavagem");
 
-    sistema.classList.toggle("oculto");
-    seta.textContent = sistema.classList.contains("oculto") ? "▼" : "▲";
+    if (getComputedStyle(sistema).display === "none") {
+        sistema.style.display = "block";
+        seta.style.transform = "rotate(180deg)";
+    } else {
+        sistema.style.display = "none";
+        seta.style.transform = "rotate(0deg)";
+    }
 };
 /* ---------------- INIT ---------------- */
 initFiltros();
