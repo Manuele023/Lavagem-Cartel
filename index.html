@@ -774,10 +774,11 @@ function enviarDiscordProducao(r){
         body:JSON.stringify({
             embeds:[{
                 title:`🧾 Solicitações de Lavagem Nº ${r.lavagensFaccao || "-"} ➜ Facção
-                       🧾 Solicitações de Lavagem Nº ${r.lavagensPista || "-"} ➜Pista)  `,
+                       🧾 Solicitações de Lavagem Nº ${r.lavagensPista || "-"} ➜ Pista)`,
                 color:3066993,
                 description:
-`💰 **Valor total lavado:** $ ${formatar(r.valorProducao)}
+`
+💰 **Valor total lavado:** $ ${formatar(r.valorProducao)}
 📦 **Pacotes produzidos:** ${formatar(r.pacotes)}
                             
 **Valor restante anterior:** $ ${formatar(r.restanteAnterior)}
