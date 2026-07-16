@@ -549,9 +549,9 @@ button{
 
 <div style="margin:100px 0 60px;">
 
-<h1>Lavagem (Produção de pacotes)</h1>
-    
-<div class="painel">
+<div class=hero">
+
+<h1>Sistema de Produção de Pacotes)</h1>
 
 <label> Nº das Solicitações de Lavagem (Facção)</label>
 <input
@@ -778,6 +778,7 @@ function enviarDiscordProducao(r){
                 description:
 `
 🧾 Solicitações de Lavagem Nº ${r.lavagensFaccao || "-"} ➜ Facção
+
 🧾 Solicitações de Lavagem Nº ${r.lavagensPista || "-"} ➜ Pista
 
 💰 **Valor total lavado:** $ ${formatar(r.valorProducao)}
