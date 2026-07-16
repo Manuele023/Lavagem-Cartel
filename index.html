@@ -1400,23 +1400,16 @@ window.logout = async function () {
     window.location.href = "login.html";
 }
     
-window.toggleLavagem = function() {
+window.toggleLavagem = function () {
 
     const sistema = document.getElementById("sistemaLavagem");
     const seta = document.getElementById("setaLavagem");
 
-    if (sistema.style.display === "none") {
+    sistema.classList.toggle("oculto");
 
-        sistema.style.display = "block";
-        seta.textContent = "▲";
-
-    } else {
-
-        sistema.style.display = "none";
-        seta.textContent = "▼";
-
-    }
-
+    seta.textContent = sistema.classList.contains("oculto")
+        ? "▼"
+        : "▲";
 };
 /* ---------------- INIT ---------------- */
 initFiltros();
