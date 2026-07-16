@@ -332,6 +332,24 @@ button{
 
 }
 
+.toggle-lavagem {
+    width: 100%;
+    max-width: 900px;
+    margin: 20px auto;
+    display: block;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.toggle-lavagem span {
+    display: inline-block;
+    transition: 0.3s;
+}
+
 /* ---------------- SCROLL TRANSPARENTE ---------------- */
 
 /* Chrome / Edge / Android */
@@ -548,10 +566,16 @@ button{
 </div>
 
 <div style="margin:100px 0 60px;">
-
+    
 <div class="hero">
-
 <h1>Sistema de Produção</h1>
+</div>
+
+<button class="toggle-lavagem" onclick="toggleLavagem()">
+    <span id="setaLavagem">▼</span> Sistema de Lavagem
+</button>
+
+ <div id="sistemaLavagem" class="hero" style="display:none;">
 
 <label> Nº das Solicitações de Lavagem — Facção</label>
 <input
@@ -1371,6 +1395,19 @@ window.addEventListener("DOMContentLoaded", () => {
 window.logout = async function () {
     await signOut(auth);
     window.location.href = "login.html";
+}
+
+function toggleLavagem() {
+    const sistema = document.getElementById("sistemaLavagem");
+    const seta = document.getElementById("setaLavagem");
+
+    if (sistema.style.display === "none") {
+        sistema.style.display = "block";
+        seta.textContent = "▲";
+    } else {
+        sistema.style.display = "none";
+        seta.textContent = "▼";
+    }
 }
     
 /* ---------------- INIT ---------------- */
