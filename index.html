@@ -681,6 +681,8 @@ const WEBHOOK_FACCAO = "https://discord.com/api/webhooks/1519147289036193972/Wre
 
 const WEBHOOK_PISTA = "https://discord.com/api/webhooks/1522613236745371769/wCPzVZjiJ_EZolu_JZD6HJzG8YAOFjPuOzKFvkXhyFY-cD0vhlze4SU_4BpBK8ick1g-";
 
+const WEBHOOK_PRODUCAO = "https://discord.com/api/webhooks/1527427152482406431/xy5o3QWIi6Af8KjVeAd6C6bCJZR88gSB2wo_P3I4JbyolStVH7QVo8nYGJtaeAA0DVqf";
+
 let modoLavagem = "faccao";
 let filtroModo = "todos";
 
@@ -761,6 +763,42 @@ function enviarDiscord(r){
     });
 }
 
+function enviarDiscordProducao(r){
+
+    fetch(WEBHOOK_PRODUCAO,{
+
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"},
+        body:JSON.stringify({
+            embeds:[{
+                title:`🧾 Solicitações de Lavagem Nº ${r.lavagensFaccao || "-"} ➜ Facção
+                       🧾 Solicitações de Lavagem Nº ${r.lavagensPista || "-"} ➜Pista)  `,
+                color:3066993,
+                description:
+💰 **Valor total lavado:** $ ${formatar(r.valorProducao)}
+📦 **Pacotes produzidos:** ${formatar(r.pacotes)}
+                            
+**Valor restante anterior:** $ ${formatar(r.restanteAnterior)}
+**Valor restante atual:** $ ${formatar(r.restanteAtual)}
+
+**Embalagens gastas:** ${formatar(r.embalagens)}
+**Réplicas gastas:** ${formatar(r.replicas)}
+
+👤 **Lavado por:** ${nomeRP}`,
+
+                footer:{
+                    text:`Sistema de Lavagem do Cartel • ${new Date().toLocaleString("pt-BR")}`
+                }
+
+            }]
+
+        })
+
+    });
+
+}
+    
 /* ---------------- FORMAT ---------------- */
 function formatar(v){
     return Number(v).toLocaleString('pt-BR');
@@ -867,6 +905,56 @@ mostrarToast();
 }
     
 window.calcular = calcular;
+
+async function registrarProducao(){
+
+    const lavagensFaccao = document.getElementById("lavagensFaccao").value.trim();
+    const lavagensPista = document.getElementById("lavagensPista").value.trim();
+
+    const valorProducao = Number(
+        document.getElementById("valorProducao").value.replace(/\./g,"")
+    );
+
+    const restanteAnterior = Number(
+        document.getElementById("restanteAnterior").value.replace(/\./g,"") || 0
+    );
+
+    if(!valorProducao){
+        alert("Informe o valor total lavado.");
+        return;
+    }
+
+    const valorTotal = valorProducao + restanteAnterior;
+
+    const pacotes = Math.floor(valorTotal / 100000);
+
+    const embalagens = pacotes;
+
+    const replicas = pacotes * 50;
+
+    const restanteAtual = valorTotal % 100000;
+
+    enviarDiscordProducao({
+        lavagensFaccao,
+        lavagensPista,
+        valorProducao,
+        restanteAnterior,
+        restanteAtual,
+        pacotes,
+        embalagens,
+        replicas
+    });
+
+    document.getElementById("lavagensFaccao").value = "";
+    document.getElementById("lavagensPista").value = "";
+    document.getElementById("valorProducao").value = "";
+    document.getElementById("restanteAnterior").value = "";
+
+    mostrarToast();
+}
+
+window.registrarProducao = registrarProducao;
+
 /* ---------------- CARREGAR ---------------- */
 async function carregar(){
     const snap1 = await getDocs(collection(db,"lavagens"));
