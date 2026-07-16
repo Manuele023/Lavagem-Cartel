@@ -685,6 +685,7 @@ const WEBHOOK_PRODUCAO = "https://discord.com/api/webhooks/1527427152482406431/x
 
 let modoLavagem = "faccao";
 let filtroModo = "todos";
+let nomeRP = "";
 
 onAuthStateChanged(auth, async (user) => {
 
@@ -714,6 +715,7 @@ onAuthStateChanged(auth, async (user) => {
     return;
 
 }
+    nomeRP = dados.nomeRP;
     
     document.getElementById("nomeRPTopo").textContent = dados.nomeRP;
 
