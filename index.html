@@ -333,15 +333,12 @@ button{
 }
 
 .toggle-lavagem {
-    width: 100%;
-    max-width: 900px;
-    margin: 20px auto;
     display: block;
+    margin: 20px auto;
     background: transparent;
     border: none;
     color: white;
-    font-size: 22px;
-    font-weight: bold;
+    font-size: 28px;
     cursor: pointer;
 }
 
@@ -567,16 +564,18 @@ button{
 
 <div style="margin:100px 0 60px;">
     
-<div class="hero">
-<h1>Sistema de Produção</h1>
 </div>
 
 <button class="toggle-lavagem" onclick="toggleLavagem()">
-    <span id="setaLavagem">▼</span> Sistema de Lavagem
+    <span id="setaLavagem">▼</span>
 </button>
 
- <div id="sistemaLavagem" class="hero" style="display:none;">
+<div id="sistemaLavagem" style="display:none;">
 
+<div class="hero">
+
+<h1>Sistema de Lavagem</h1>
+    
 <label> Nº das Solicitações de Lavagem — Facção</label>
 <input
     id="lavagensFaccao"
@@ -679,7 +678,7 @@ button{
 </div>
 
 <div id="toast" class="toast">
-✅ Solicitação de lavagem registrada.
+✅ Registrado com sucesso.
 </div>
 
 <script type="module">
@@ -1396,8 +1395,8 @@ window.logout = async function () {
     await signOut(auth);
     window.location.href = "login.html";
 }
-
-function toggleLavagem() {
+    
+window.toggleLavagem = function() {
     const sistema = document.getElementById("sistemaLavagem");
     const seta = document.getElementById("setaLavagem");
 
@@ -1408,8 +1407,7 @@ function toggleLavagem() {
         sistema.style.display = "none";
         seta.textContent = "▼";
     }
-}
-    
+};
 /* ---------------- INIT ---------------- */
 initFiltros();
 carregar();
