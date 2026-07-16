@@ -1401,15 +1401,11 @@ window.logout = async function () {
 }
     
 window.toggleLavagem = function () {
-
     const sistema = document.getElementById("sistemaLavagem");
     const seta = document.getElementById("setaLavagem");
 
     sistema.classList.toggle("oculto");
-
-    seta.textContent = sistema.classList.contains("oculto")
-        ? "▼"
-        : "▲";
+    seta.textContent = sistema.classList.contains("oculto") ? "▼" : "▲";
 };
 /* ---------------- INIT ---------------- */
 initFiltros();
