@@ -547,6 +547,45 @@ button{
 
 </div>
 
+<div style="margin:100px 0 60px;">
+
+<h1>Lavagem (Produção de pacotes)</h1>
+    
+<div class="painel">
+
+<label> Nº das Solicitações de Lavagem (Facção)</label>
+<input
+    id="lavagensFaccao"
+    placeholder="Ex.: 26, 27 e 28">
+
+<label>Nº das Solicitações de Lavagem (Pista)</label>
+<input
+    id="lavagensPista"
+    placeholder="Ex.: 8 e 9">
+
+<label>Valor total lavado</label>
+<input
+    id="valorProducao"
+    placeholder="Ex.: 12.350.000">
+
+<label>Valor restante anterior</label>
+<input
+    id="restanteAnterior"
+    placeholder="Ex.: 50.000">
+
+<button
+    onclick="registrarProducao()"
+    style="
+        margin-top:20px;
+        font-weight:bold;
+        background:#8B1E1E;
+        color:white;
+    ">
+    Registrar Produção
+</button>
+
+</div>
+
 <div style="display:flex; gap:10px; margin-bottom:15px;">
 
     <button onclick="setFiltro('faccao')" id="btnFaccao"
