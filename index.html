@@ -1405,12 +1405,12 @@ window.toggleLavagem = function () {
     const sistema = document.getElementById("sistemaLavagem");
     const seta = document.getElementById("setaLavagem");
 
-    if (getComputedStyle(sistema).display === "none") {
-        sistema.style.display = "block";
-        seta.style.transform = "rotate(180deg)";
+    if (sistema.classList.contains("oculto")) {
+        sistema.classList.remove("oculto");
+        seta.textContent = "▲";
     } else {
-        sistema.style.display = "none";
-        seta.style.transform = "rotate(0deg)";
+        sistema.classList.add("oculto");
+        seta.textContent = "▼";
     }
 };
 /* ---------------- INIT ---------------- */
