@@ -732,7 +732,6 @@ onAuthStateChanged(auth, async (user) => {
 }
 
 });
-
 /* ---------------- DISCORD ---------------- */
 function enviarDiscord(r){
 
@@ -776,7 +775,7 @@ function enviarDiscordProducao(r){
                        🧾 Solicitações de Lavagem Nº ${r.lavagensPista || "-"} ➜Pista)  `,
                 color:3066993,
                 description:
-💰 **Valor total lavado:** $ ${formatar(r.valorProducao)}
+`💰 **Valor total lavado:** $ ${formatar(r.valorProducao)}
 📦 **Pacotes produzidos:** ${formatar(r.pacotes)}
                             
 **Valor restante anterior:** $ ${formatar(r.restanteAnterior)}
@@ -798,7 +797,6 @@ function enviarDiscordProducao(r){
     });
 
 }
-    
 /* ---------------- FORMAT ---------------- */
 function formatar(v){
     return Number(v).toLocaleString('pt-BR');
