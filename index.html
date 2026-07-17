@@ -1403,15 +1403,12 @@ window.logout = async function () {
     
 window.toggleLavagem = function () {
     const sistema = document.getElementById("sistemaLavagem");
-    const seta = document.getElementById("setaLavagem");
 
-    if (sistema.classList.contains("oculto")) {
-        sistema.classList.remove("oculto");
-        seta.textContent = "▲";
-    } else {
-        sistema.classList.add("oculto");
-        seta.textContent = "▼";
-    }
+    console.log("Antes:", sistema.className);
+
+    sistema.classList.toggle("oculto");
+
+    console.log("Depois:", sistema.className);
 };
 /* ---------------- INIT ---------------- */
 initFiltros();
