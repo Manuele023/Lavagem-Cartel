@@ -1404,11 +1404,15 @@ window.logout = async function () {
 window.toggleLavagem = function () {
     const sistema = document.getElementById("sistemaLavagem");
 
-    alert(getComputedStyle(sistema).display);
+    console.log("Antes:", sistema.className);
 
-    sistema.classList.toggle("oculto");
+    if (sistema.classList.contains("oculto")) {
+        sistema.classList.remove("oculto");
+    } else {
+        sistema.classList.add("oculto");
+    }
 
-    alert(getComputedStyle(sistema).display);
+    console.log("Depois:", sistema.className);
 };
 /* ---------------- INIT ---------------- */
 initFiltros();
