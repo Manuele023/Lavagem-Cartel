@@ -1404,11 +1404,11 @@ window.logout = async function () {
 window.toggleLavagem = function () {
     const sistema = document.getElementById("sistemaLavagem");
 
-    console.log("Antes:", sistema.className);
+    alert(getComputedStyle(sistema).display);
 
     sistema.classList.toggle("oculto");
 
-    console.log("Depois:", sistema.className);
+    alert(getComputedStyle(sistema).display);
 };
 /* ---------------- INIT ---------------- */
 initFiltros();
