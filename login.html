@@ -652,19 +652,15 @@ mensagem("❌ " + erro);
 window.entrar = async function(){
 
     const login = document.getElementById("loginUsuario").value.trim();
-
     const senha = document.getElementById("senhaLogin").value;
-
 
     try{
 
         await configurarPersistencia();
 
-
         let email = login;
 
 
-        // Se não for e-mail, procura pelo nome de usuário
         if(!login.includes("@")){
 
             const loginDoc = await getDoc(
@@ -687,61 +683,63 @@ window.entrar = async function(){
 
 
         const resultado = await signInWithEmailAndPassword(
-    auth,
-    email,
-    senha
-);
+            auth,
+            email,
+            senha
+        );
 
 
-const usuarioDoc = await getDoc(
-    doc(db, "usuarios", resultado.user.uid)
-);
+        const usuarioDoc = await getDoc(
+            doc(db, "usuarios", resultado.user.uid)
+        );
 
 
-if(!usuarioDoc.exists()){
+        if(!usuarioDoc.exists()){
 
-    await signOut(auth);
+            await signOut(auth);
 
-    mensagem("❌ Usuário sem cadastro no sistema.");
-    return;
+            mensagem("❌ Cadastro não encontrado.");
+            return;
 
-}
-
-
-const dados = usuarioDoc.data();
+        }
 
 
-if(!dados.aprovado){
-
-    await signOut(auth);
-
-    mensagem("⏳ Sua conta ainda aguarda aprovação de um administrador.");
-    return;
-
-}
+        const dados = usuarioDoc.data();
 
 
-if(!dados.ativo){
+        if(!dados.aprovado){
 
-    await signOut(auth);
+            await signOut(auth);
 
-    mensagem("❌ Sua conta foi desativada.");
-    return;
+            mensagem("⏳ Sua conta está aguardando aprovação de um administrador.");
+            return;
 
-}
+        }
 
 
-window.location.href = "index.html";
+        if(!dados.ativo){
+
+            await signOut(auth);
+
+            mensagem("❌ Sua conta foi desativada.");
+            return;
+
+        }
+
+
+        window.location.href = "index.html";
 
 
     }catch(e){
+
+        console.error(e);
 
         mensagem("❌ Usuário ou senha incorretos.");
 
     }
 
 }
-
+    
 window.mostrarCadastro = function(){
 
     document.getElementById("areaLogin").style.display = "none";
