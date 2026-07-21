@@ -613,9 +613,21 @@ await setDoc(
     }
 );
 
-mensagem(
-"✅ Conta criada! Aguarde aprovação de um administrador"
-);
+// Esconde todos os campos de cadastro
+document.getElementById("areaCadastro").style.display = "none";
+
+// Esconde botão de criar conta
+document.getElementById("botaoCadastro").style.display = "none";
+
+// Altera título
+document.querySelector("h2").innerHTML = "CADASTRO ENVIADO";
+
+// Mostra aviso
+mensagem(`
+    ✅ Conta criada com sucesso!<br><br>
+    ⏳ Sua conta está aguardando aprovação de um administrador.<br><br>
+    Você poderá entrar no sistema assim que ela for aprovada.
+`);
 
 
 
