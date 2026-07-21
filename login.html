@@ -613,22 +613,28 @@ await setDoc(
     }
 );
 
-// Esconde todos os campos de cadastro
+// Esconde formulário de cadastro
 document.getElementById("areaCadastro").style.display = "none";
 
-// Esconde botão de criar conta
+// Esconde botão secundário
 document.getElementById("botaoCadastro").style.display = "none";
 
-// Altera título
+// Muda título
 document.querySelector("h2").innerHTML = "CADASTRO ENVIADO";
 
-// Mostra aviso
+// Muda botão principal para login
+const botao = document.getElementById("botaoPrincipal");
+
+botao.innerHTML = "Fazer login";
+botao.onclick = voltarLogin;
+
+
+// Mensagem
 mensagem(`
     ✅ Conta criada com sucesso!<br><br>
     ⏳ Sua conta está aguardando aprovação de um administrador.<br><br>
-    Você poderá entrar no sistema assim que ela for aprovada.
+    Você poderá fazer login após a aprovação.
 `);
-
 
 
 }catch(e){
