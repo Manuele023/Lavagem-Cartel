@@ -674,7 +674,7 @@ window.entrar = async function(){
 
             }else{
 
-                mensagem("❌ Usuário não encontrado.");
+                mensagem("❌ Usuário não encontrado");
                 return;
 
             }
@@ -698,7 +698,7 @@ window.entrar = async function(){
 
             await signOut(auth);
 
-            mensagem("❌ Cadastro não encontrado.");
+            mensagem("❌ Cadastro não encontrado");
             return;
 
         }
@@ -711,7 +711,7 @@ window.entrar = async function(){
 
             await signOut(auth);
 
-            mensagem("⏳ Sua conta está aguardando aprovação de um administrador.");
+            mensagem("⏳ Sua conta está aguardando aprovação de um administrador");
             return;
 
         }
@@ -721,7 +721,7 @@ window.entrar = async function(){
 
             await signOut(auth);
 
-            mensagem("❌ Sua conta foi desativada.");
+            mensagem("❌ Sua conta foi desativada");
             return;
 
         }
