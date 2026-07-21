@@ -451,18 +451,13 @@ import { auth, db } from "./firebase.js";
 
 
 import {
-
 createUserWithEmailAndPassword,
-
 signInWithEmailAndPassword,
-
+signOut,
 setPersistence,
-
 browserLocalPersistence,
-
 browserSessionPersistence
-
-} 
+}
 from 
 "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
@@ -691,14 +686,52 @@ window.entrar = async function(){
         }
 
 
-        await signInWithEmailAndPassword(
-            auth,
-            email,
-            senha
-        );
+        const resultado = await signInWithEmailAndPassword(
+    auth,
+    email,
+    senha
+);
 
 
-        window.location.href = "index.html";
+const usuarioDoc = await getDoc(
+    doc(db, "usuarios", resultado.user.uid)
+);
+
+
+if(!usuarioDoc.exists()){
+
+    await signOut(auth);
+
+    mensagem("❌ Usuário sem cadastro no sistema.");
+    return;
+
+}
+
+
+const dados = usuarioDoc.data();
+
+
+if(!dados.aprovado){
+
+    await signOut(auth);
+
+    mensagem("⏳ Sua conta ainda aguarda aprovação de um administrador.");
+    return;
+
+}
+
+
+if(!dados.ativo){
+
+    await signOut(auth);
+
+    mensagem("❌ Sua conta foi desativada.");
+    return;
+
+}
+
+
+window.location.href = "index.html";
 
 
     }catch(e){
