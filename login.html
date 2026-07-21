@@ -614,7 +614,7 @@ await setDoc(
 );
 
 mensagem(
-"✅ Conta criada! Aguarde aprovação de um administrador."
+"✅ Conta criada! Aguarde aprovação de um administrador"
 );
 
 
@@ -623,20 +623,20 @@ mensagem(
 
 console.error(e);
 
-let erro = "Não foi possível criar a conta.";
+let erro = "Não foi possível criar a conta";
 
 switch(e.code){
 
     case "auth/email-already-in-use":
-        erro = "Este e-mail já está cadastrado.";
+        erro = "Este e-mail já está cadastrado";
         break;
 
     case "auth/invalid-email":
-        erro = "E-mail inválido.";
+        erro = "E-mail inválido";
         break;
 
     case "auth/weak-password":
-        erro = "A senha precisa ter pelo menos 6 caracteres.";
+        erro = "A senha precisa ter pelo menos 6 caracteres";
         break;
 
 }
