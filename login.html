@@ -468,22 +468,13 @@ from
 
 
 import {
-
-doc,
-
-setDoc,
-
-serverTimestamp,
-
-collection,
-
-getDocs
-
-}
-
-from
-
-"https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+    doc,
+    setDoc,
+    serverTimestamp,
+    collection,
+    getDocs,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
 
 
@@ -620,7 +611,12 @@ criadoEm:serverTimestamp()
 
 );
 
-
+await setDoc(
+    doc(db, "loginUsuarios", nomeUsuario.toLowerCase()),
+    {
+        email: email
+    }
+);
 
 mensagem(
 "✅ Conta criada! Aguarde aprovação de um administrador."
@@ -660,92 +656,56 @@ mensagem("❌ " + erro);
 
 window.entrar = async function(){
 
-const login =
-document.getElementById("loginUsuario").value.trim();
+    const login = document.getElementById("loginUsuario").value.trim();
 
-const senha =
-document.getElementById("senhaLogin").value;
+    const senha = document.getElementById("senhaLogin").value;
 
 
-try{
+    try{
 
-await configurarPersistencia();
-
-
-let email = login;
+        await configurarPersistencia();
 
 
-// Se não for e-mail, procura pelo nome de usuário
-if(!login.includes("@")){
+        let email = login;
 
 
-const usuariosRef = collection(db,"usuarios");
+        // Se não for e-mail, procura pelo nome de usuário
+        if(!login.includes("@")){
 
-const busca = await getDocs(usuariosRef);
-
-
-let encontrado = null;
-
-
-busca.forEach((doc)=>{
-
-const dados = doc.data();
+            const loginDoc = await getDoc(
+                doc(db, "loginUsuarios", login.toLowerCase())
+            );
 
 
-if(
-dados.nomeUsuario.toLowerCase() === login.toLowerCase()
-){
+            if(loginDoc.exists()){
 
-encontrado = dados.email;
+                email = loginDoc.data().email;
 
-}
+            }else{
 
-});
+                mensagem("❌ Usuário não encontrado.");
+                return;
 
+            }
 
-if(!encontrado){
-
-mensagem("❌ Usuário não encontrado.");
-
-return;
-
-}
+        }
 
 
-email = encontrado;
+        await signInWithEmailAndPassword(
+            auth,
+            email,
+            senha
+        );
 
 
-}
+        window.location.href = "index.html";
 
 
+    }catch(e){
 
-await signInWithEmailAndPassword(
+        mensagem("❌ Usuário ou senha incorretos.");
 
-auth,
-
-email,
-
-senha
-
-);
-
-
-
-window.location.href="index.html";
-
-
-
-}catch(e){
-
-
-mensagem(
-"❌ Usuário ou senha incorretos."
-);
-
-
-}
-
-
+    }
 
 }
 
