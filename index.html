@@ -491,7 +491,6 @@ button{
         min="10"
         max="100"
         step="1"
-        oninput="if(this.value > 100) this.value = 100; if(this.value < 0) this.value = '';"
         placeholder="Digite a porcentagem">
 
 </div>
@@ -883,6 +882,27 @@ const tipoLavagem = document.getElementById("tipoLavagem");
 const faccao = document.getElementById("faccao");
 
 const faccoesOriginais = faccao.innerHTML;
+
+// Limite da porcentagem personalizada
+const taxaPersonalizada = document.getElementById("taxaPersonalizada");
+
+if(taxaPersonalizada){
+
+    taxaPersonalizada.addEventListener("input", () => {
+
+        let valor = Number(taxaPersonalizada.value);
+
+        if(valor > 100){
+            taxaPersonalizada.value = 100;
+        }
+
+        if(valor < 10 && taxaPersonalizada.value !== ""){
+            taxaPersonalizada.value = 10;
+        }
+
+    });
+
+}
 
 tipoLavagem.addEventListener("change", () => {
 
