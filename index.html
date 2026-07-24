@@ -337,18 +337,6 @@ button{
     padding-bottom:130px;
 }
 
-.toggle-container{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding-top:80px;
-    padding-bottom:40px;
-}
-
-.toggle-container.aberto{
-    padding-bottom:10px;
-}
-
 .toggle-lavagem span{
     display:inline-block;
     transition:transform .25s ease;
@@ -1559,26 +1547,13 @@ window.logout = async function () {
     
 window.toggleLavagem = function () {
     const sistema = document.getElementById("sistemaLavagem");
-    const toggle = document.querySelector(".toggle-container");
 
     console.log("Antes:", sistema.className);
 
     if (sistema.classList.contains("oculto")) {
-
         sistema.classList.remove("oculto");
-
-        if (toggle) {
-            toggle.classList.add("aberto");
-        }
-
     } else {
-
         sistema.classList.add("oculto");
-
-        if (toggle) {
-            toggle.classList.remove("aberto");
-        }
-
     }
 
     console.log("Depois:", sistema.className);
