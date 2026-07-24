@@ -473,13 +473,28 @@ button{
 
 <label>Tipo de lavagem (Porcentagem):</label>
 <select id="tipoLavagem">
-    <option value="personalizada">Taxa personalizada — Vapos, promoções e condições especiais</option>
     <option value="10">10% — Lavagem própria (Cartel)</option>
     <option value="20" selected>20% — Acima de 5kk</option>
     <option value="25">25% — De 2.5kk a 5kk</option>
     <option value="30">30% — Até 2.5kk</option>
+    <option value="personalizada">Porcentagem personalizada — Vapos, promoções e condições especiais</option>
 </select>
- 
+
+<div id="boxTaxaPersonalizada" style="display:none;">
+
+    <label>Porcentagem personalizada:</label>
+
+    <input
+        id="taxaPersonalizada"
+        type="number"
+        inputmode="numeric"
+        min="10"
+        max="100"
+        step="1"
+        placeholder="Ex.: 15">
+
+</div>
+
 <label>Facção solicitante</label>
 <select id="faccao">
     <option value="" selected disabled>Selecione a facção</option>
