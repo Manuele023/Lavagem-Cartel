@@ -657,7 +657,8 @@ button{
 
     </div>
 
-
+<div id="espacoAbertura" style="display:none; height:20px;"></div>
+    
 <div class="filtros-container">
 
 <button onclick="setFiltro('todos')" id="btnTodos"
@@ -1546,17 +1547,22 @@ window.toggleLavagem = function () {
     const sistema = document.getElementById("sistemaLavagem");
 
     if (sistema.classList.contains("oculto")) {
+    sistema.classList.remove("oculto");
+    sistema.classList.add("aberto");
 
-        sistema.classList.remove("oculto");
-        sistema.classList.add("aberto");
-
-    } else {
-
-        sistema.classList.add("oculto");
-        sistema.classList.remove("aberto");
-
+    // mostra o espaço quando aberto
+    if (spacer) {
+        spacer.style.display = "block";
     }
-};
+} else {
+    sistema.classList.add("oculto");
+    sistema.classList.remove("aberto");
+
+    // esconde o espaço quando fechado
+    if (spacer) {
+        spacer.style.display = "none";
+    }
+}
 /* ---------------- INIT ---------------- */
 initFiltros();
 carregar();
