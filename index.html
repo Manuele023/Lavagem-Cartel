@@ -889,6 +889,18 @@ function formatar(v){
     return Number(v).toLocaleString('pt-BR');
 }
 
+/* ---------------- LUCRO ---------------- */
+function calcularLucroPercent(taxa){
+
+    taxa = Number(taxa);
+
+    if(taxa === 10){
+        return 90;
+    }
+
+    return Math.max(0, taxa - 10);
+}
+
 /* ---------------- FILTROS ---------------- */
 function initFiltros(){
     const mes = document.getElementById('filtroMes');
@@ -1519,17 +1531,6 @@ window.addEventListener("DOMContentLoaded", () => {
 window.logout = async function () {
     await signOut(auth);
     window.location.href = "login.html";
-}
-
-function calcularLucroPercent(taxa){
-
-    taxa = Number(taxa);
-
-    if(taxa === 10){
-        return 90;
-    }
-
-    return Math.max(0, taxa - 10);
 }
     
 window.toggleLavagem = function () {
