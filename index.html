@@ -353,14 +353,17 @@ button{
     transition:transform .25s ease;
 }
 
-#sistemaLavagem{
-    margin-top:0px;
-}
-
 .oculto{
     display:none;
 }
 
+.filtros-container{
+    display:flex;
+    justify-content:center;
+    margin-top:40px;
+    margin-bottom:10px;
+}
+    
 /* ---------------- SCROLL TRANSPARENTE ---------------- */
 
 /* Chrome / Edge / Android */
@@ -654,7 +657,7 @@ button{
     </div>
 
 
-<div style="display:flex; justify-content:center; margin-bottom:10px;">
+<div class="filtros-container">
 
 <button onclick="setFiltro('todos')" id="btnTodos"
 style="width:50%; font-weight:bold;">
