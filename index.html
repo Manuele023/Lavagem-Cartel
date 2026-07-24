@@ -1548,15 +1548,11 @@ window.logout = async function () {
 window.toggleLavagem = function () {
     const sistema = document.getElementById("sistemaLavagem");
 
-    console.log("Antes:", sistema.className);
-
     if (sistema.classList.contains("oculto")) {
         sistema.classList.remove("oculto");
     } else {
         sistema.classList.add("oculto");
     }
-
-    console.log("Depois:", sistema.className);
 };
 /* ---------------- INIT ---------------- */
 initFiltros();
