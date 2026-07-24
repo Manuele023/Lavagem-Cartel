@@ -1187,7 +1187,7 @@ function atualizarLista(){
 })
     .sort((a, b) => Number(b.numero) - Number(a.numero))
     .forEach(r => {
-        cconst lucroPercent = calcularLucroPercent(r.taxa);
+        const lucroPercent = calcularLucroPercent(r.taxa);
         const lucro = r.valorSujo * (lucroPercent/100);
 
         lista.innerHTML += `
