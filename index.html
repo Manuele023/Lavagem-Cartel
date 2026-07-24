@@ -473,6 +473,7 @@ button{
 
 <label>Tipo de lavagem (Porcentagem):</label>
 <select id="tipoLavagem">
+    <option value="personalizada">Taxa personalizada — Vapos, promoções e condições especiais</option>
     <option value="10">10% — Lavagem própria (Cartel)</option>
     <option value="20" selected>20% — Acima de 5kk</option>
     <option value="25">25% — De 2.5kk a 5kk</option>
@@ -869,6 +870,18 @@ const faccoesOriginais = faccao.innerHTML;
 
 tipoLavagem.addEventListener("change", () => {
 
+    const box = document.getElementById("boxTaxaPersonalizada");
+
+    // Taxa personalizada
+    if(tipoLavagem.value === "personalizada"){
+        box.style.display = "block";
+    }else{
+        box.style.display = "none";
+        document.getElementById("taxaPersonalizada").value = "";
+    }
+
+
+    // Lavagem própria (Cartel)
     if (tipoLavagem.value === "10") {
 
         faccao.innerHTML = `
@@ -902,7 +915,30 @@ async function calcular(){
         return;
     }
 
-    const tipo = Number(document.getElementById("tipoLavagem").value);
+    let tipo;
+
+const selecionado = document.getElementById("tipoLavagem").value;
+
+if(selecionado === "personalizada"){
+
+    tipo = Number(document.getElementById("taxaPersonalizada").value);
+
+    if(isNaN(tipo) || tipo < 10 || tipo > 100){
+    alert("A porcentagem deve estar entre 10% e 100%.");
+    return;
+}
+
+}else{
+
+    tipo = Number(selecionado);
+
+}
+
+if(tipo < 10 || tipo > 100){
+    alert("A porcentagem deve estar entre 10% e 100%.");
+    return;
+}
+
     const valor = Number(valorTexto.replace(/\./g,''));
 
     const valorLimpo = valor - (valor * tipo / 100);
@@ -934,6 +970,8 @@ document.getElementById("passaporte").value = "";
 document.getElementById("valor").value = "";
 
 document.getElementById("tipoLavagem").value = "20";
+document.getElementById("boxTaxaPersonalizada").style.display="none";
+document.getElementById("taxaPersonalizada").value="";
 document.getElementById("tipoLavagem").dispatchEvent(new Event("change"));
 
 document.getElementById("faccao").selectedIndex = 0;
@@ -1043,12 +1081,9 @@ function atualizarLista(){
 })
     .sort((a, b) => Number(b.numero) - Number(a.numero))
     .forEach(r => {
-        let lucroPercent = 0;
-
-        if(r.taxa==10) lucroPercent=90;
-        else if(r.taxa==20) lucroPercent=10;
-        else if(r.taxa==25) lucroPercent=15;
-        else if(r.taxa==30) lucroPercent=20;
+        const lucroPercent = r.taxa == 10 
+            ? 90 
+            : Math.max(0, r.taxa - 10);
 
         const lucro = r.valorSujo * (lucroPercent/100);
 
@@ -1112,12 +1147,9 @@ totalMensal.innerText = formatar(total);
 
 // lucro mensal correto (variável por taxa)
 const lucroMensalTotal = f.reduce((a, r) => {
-    let lucroPercent = 0;
-
-        if(r.taxa==10) lucroPercent=90;
-        else if(r.taxa==20) lucroPercent=10;
-        else if(r.taxa==25) lucroPercent=15;
-        else if(r.taxa==30) lucroPercent=20
+    const lucroPercent = r.taxa == 10 
+    ? 90 
+    : Math.max(0, r.taxa - 10);
 
     return a + (r.valorSujo * (lucroPercent / 100));
 }, 0);
@@ -1132,12 +1164,9 @@ for (let s = 1; s <= 5; s++) {
     const lucroSemana = f
         .filter(r => calcularSemana(r.data) === s)
         .reduce((a, r) => {
-            let lucroPercent = 0;
-
-            if(r.taxa==10) lucroPercent=90;
-            else if(r.taxa==20) lucroPercent=10;
-            else if (r.taxa == 25) lucroPercent = 15;
-            else if (r.taxa == 30) lucroPercent = 20;
+            const lucroPercent = r.taxa == 10 
+                ? 90 
+                : Math.max(0, r.taxa - 10);
 
             return a + (r.valorSujo * (lucroPercent / 100));
         }, 0);
@@ -1160,12 +1189,9 @@ for (let s = 1; s <= 5; s++) {
     [...f]
     .sort((a, b) => Number(a.numero) - Number(b.numero))
     .forEach(r => {
-        let lucroPercent = 0;
-
-        if(r.taxa==10) lucroPercent=90;
-        else if(r.taxa==20) lucroPercent=10;
-        else if(r.taxa==25) lucroPercent=15;
-        else if(r.taxa==30) lucroPercent=20;
+        const lucroPercent = r.taxa == 10 
+                ? 90 
+                : Math.max(0, r.taxa - 10);
 
         const lucro = r.valorSujo * (lucroPercent/100);
 
@@ -1277,12 +1303,9 @@ function atualizarTudo(){
     // 💸 lucro total
     const lucroTotal = dados.reduce((a, r) => {
 
-        let lucroPercent = 0;
-
-        if(r.taxa==10) lucroPercent=90;
-        else if(r.taxa==20) lucroPercent=10;
-        else if(r.taxa==25) lucroPercent=15;
-        else if(r.taxa==30) lucroPercent=20;
+        const lucroPercent = r.taxa == 10 
+            ? 90 
+            : Math.max(0, r.taxa - 10);
 
         return a + (Number(r.valorSujo || 0) * (lucroPercent / 100));
 
