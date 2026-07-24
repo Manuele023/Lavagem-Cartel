@@ -649,10 +649,14 @@ button{
 
 </div>
 
+<div style="display:flex; justify-content:center; margin-bottom:10px;">
+
 <button onclick="setFiltro('todos')" id="btnTodos"
-style="width:100%; font-weight:bold;">
+style="width:150px; font-weight:bold;">
 Todos
 </button>
+
+</div>
 
 
 <div style="display:flex; gap:10px; margin-bottom:15px;">
@@ -918,17 +922,13 @@ if(taxaPersonalizada){
 
     taxaPersonalizada.addEventListener("input", () => {
 
-        let valor = Number(taxaPersonalizada.value);
+    let valor = Number(taxaPersonalizada.value);
 
-        if(valor > 100){
-            taxaPersonalizada.value = 100;
-        }
+    if(valor > 100){
+        taxaPersonalizada.value = 100;
+    }
 
-        if(valor < 10 && taxaPersonalizada.value !== ""){
-            taxaPersonalizada.value = 10;
-        }
-
-    });
+});
 
 }
 
