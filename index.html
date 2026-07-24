@@ -333,22 +333,27 @@ button{
     display:flex;
     justify-content:center;
     align-items:center;
-    height:130px;
+    height:120px;
 }
 
 .toggle-lavagem{
     width:auto;
     background:transparent;
-    padding:10px;
+    padding:5px 15px;
     margin:0;
     border:none;
     color:#fff;
     cursor:pointer;
-    font-size:40px;
+    font-size:35px;
+}
+
+.toggle-lavagem span{
+    display:inline-block;
+    transition:transform .25s ease;
 }
 
 #sistemaLavagem{
-    margin-top:60px;
+    margin-top:40px;
 }
 
 .oculto{
@@ -602,15 +607,14 @@ button{
 </div>
 
 <div class="toggle-container">
-
     <button class="toggle-lavagem" onclick="toggleLavagem()">
         <span id="setaLavagem">▼</span>
     </button>
+</div>
 
-    <div id="sistemaLavagem" class="oculto">
+<div id="sistemaLavagem" class="oculto">
 
-        <div class="hero">
-    
+<div class="hero">
 <h1>Sistema de produção</h1>
     
 <label> Nº das Solicitações de Lavagem — Facção</label>
@@ -648,7 +652,6 @@ button{
 
     </div>
 
-</div>
 
 <div style="display:flex; justify-content:center; margin-bottom:10px;">
 
