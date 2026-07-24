@@ -1547,11 +1547,18 @@ window.logout = async function () {
     
 window.toggleLavagem = function () {
     const sistema = document.getElementById("sistemaLavagem");
+    const filtros = document.querySelector(".filtros-container");
 
     if (sistema.classList.contains("oculto")) {
+
         sistema.classList.remove("oculto");
+        filtros.classList.add("aberto");
+
     } else {
+
         sistema.classList.add("oculto");
+        filtros.classList.remove("aberto");
+
     }
 };
 /* ---------------- INIT ---------------- */
