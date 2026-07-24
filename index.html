@@ -575,6 +575,21 @@ button{
         Pista
     </div>
 
+<div onclick="selecionarModo('vapo')" id="boxVapo"
+        style="
+        flex:1;
+        padding:10px;
+        border-radius:8px;
+        background:#2a2a2a;
+        text-align:center;
+        cursor:pointer;
+        border:2px solid transparent;
+        opacity:0.6;
+    ">
+        Vapo
+    </div>
+
+
 </div>
 
 <button onclick="calcular()" style="
@@ -634,22 +649,25 @@ button{
 
 </div>
 
+<button onclick="setFiltro('todos')" id="btnTodos"
+style="width:100%; font-weight:bold;">
+Todos
+</button>
+
+
 <div style="display:flex; gap:10px; margin-bottom:15px;">
 
-    <button onclick="setFiltro('faccao')" id="btnFaccao"
-        style="flex:1; font-weight:bold; opacity:0.5;">
-        Facção
-    </button>
+<button onclick="setFiltro('faccao')" id="btnFaccao">
+Facção
+</button>
 
-    <button onclick="setFiltro('todos')" id="btnTodos"
-        style="flex:1; font-weight:bold; opacity:1; border:2px solid #8B1E1E;">
-        Todos
-    </button>
+<button onclick="setFiltro('pista')" id="btnPista">
+Pista
+</button>
 
-    <button onclick="setFiltro('pista')" id="btnPista"
-        style="flex:1; font-weight:bold; opacity:0.5;">
-        Pista
-    </button>
+<button onclick="setFiltro('vapo')" id="btnVapo">
+Vapo
+</button>
 
 </div>
     
@@ -730,6 +748,8 @@ const WEBHOOK_FACCAO = "https://discord.com/api/webhooks/1519147289036193972/Wre
 
 const WEBHOOK_PISTA = "https://discord.com/api/webhooks/1522613236745371769/wCPzVZjiJ_EZolu_JZD6HJzG8YAOFjPuOzKFvkXhyFY-cD0vhlze4SU_4BpBK8ick1g-";
 
+const WEBHOOK_VAPO = "https://discord.com/api/webhooks/1530287806759309394/YwgoDjyvkIZ7rjPvFtxHvHvJlEPesBUQRsu5FWAuyD1cqDr3DCvkUP0tlwTuo4G9NeNk";
+
 const WEBHOOK_PRODUCAO = "https://discord.com/api/webhooks/1527427152482406431/xy5o3QWIi6Af8KjVeAd6C6bCJZR88gSB2wo_P3I4JbyolStVH7QVo8nYGJtaeAA0DVqf";
 
 let modoLavagem = "faccao";
@@ -786,9 +806,17 @@ onAuthStateChanged(auth, async (user) => {
 /* ---------------- DISCORD ---------------- */
 function enviarDiscord(r){
 
-    const webhook = r.origem === "pista"
-    ? WEBHOOK_PISTA
-    : WEBHOOK_FACCAO;
+        let webhook;
+
+    if(r.origem === "pista"){
+        webhook = WEBHOOK_PISTA;
+    }
+    else if(r.origem === "vapo"){
+        webhook = WEBHOOK_VAPO;
+    }
+    else{
+        webhook = WEBHOOK_FACCAO;
+    }
 
     fetch(webhook,{
         method:"POST",
@@ -994,7 +1022,17 @@ const r = {
     
     const modo = modoLavagem;
 
-    const colecao = modo === "pista" ? "lavagens_pista" : "lavagens";
+    let colecao;
+
+if(modo === "pista"){
+    colecao = "lavagens_pista";
+}
+else if(modo === "vapo"){
+    colecao = "lavagens_vapo";
+}
+else{
+    colecao = "lavagens";
+}
 
     await addDoc(collection(db, colecao), r);
 
@@ -1068,8 +1106,10 @@ window.registrarProducao = registrarProducao;
 
 /* ---------------- CARREGAR ---------------- */
 async function carregar(){
-    const snap1 = await getDocs(collection(db,"lavagens"));
-    const snap2 = await getDocs(collection(db,"lavagens_pista"));
+
+    const snap1 = await getDocs(collection(db, "lavagens"));
+    const snap2 = await getDocs(collection(db, "lavagens_pista"));
+    const snap3 = await getDocs(collection(db, "lavagens_vapo"));
 
     registros = [];
 
@@ -1086,6 +1126,14 @@ async function carregar(){
             id: d.id,
             ...d.data(),
             origem: "pista"
+        });
+    });
+
+    snap3.forEach(d => {
+        registros.push({
+            id: d.id,
+            ...d.data(),
+            origem: "vapo"
         });
     });
 
@@ -1380,19 +1428,26 @@ function selecionarModo(modo){
 
     const faccao = document.getElementById("boxFaccao");
     const pista = document.getElementById("boxPista");
+    const vapo = document.getElementById("boxVapo");
 
+    // Reseta todos
+    [faccao, pista, vapo].forEach(box => {
+        box.style.border = "2px solid transparent";
+        box.style.opacity = "0.6";
+    });
+
+    // Destaca o selecionado
     if(modo === "faccao"){
         faccao.style.border = "2px solid #8B1E1E";
         faccao.style.opacity = "1";
-
-        pista.style.border = "2px solid transparent";
-        pista.style.opacity = "0.6";
-    } else {
+    }
+    else if(modo === "pista"){
         pista.style.border = "2px solid #8B1E1E";
         pista.style.opacity = "1";
-
-        faccao.style.border = "2px solid transparent";
-        faccao.style.opacity = "0.6";
+    }
+    else if(modo === "vapo"){
+        vapo.style.border = "2px solid #8B1E1E";
+        vapo.style.opacity = "1";
     }
 }
 
