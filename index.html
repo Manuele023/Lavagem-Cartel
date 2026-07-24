@@ -1145,7 +1145,17 @@ async function carregar(){
 /* ---------------- EXCLUIR ---------------- */
 async function excluir(id, origem){
 
-    const colecao = origem === "pista" ? "lavagens_pista" : "lavagens";
+    let colecao;
+
+    if(origem === "pista"){
+        colecao = "lavagens_pista";
+    }
+    else if(origem === "vapo"){
+        colecao = "lavagens_vapo";
+    }
+    else{
+        colecao = "lavagens";
+    }
 
     await deleteDoc(doc(db, colecao, id));
     await carregar();
