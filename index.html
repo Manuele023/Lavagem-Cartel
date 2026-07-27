@@ -666,14 +666,14 @@ button{
     </label>
 </div>
 
-<div id="boxPista" style="display:none;">
+<div id="campoPista" style="display:none;">
     <label>Nº das Solicitações de Lavagem — Pista</label>
     <input
         id="lavagensPista"
         placeholder="Ex.: 8 e 9">
 </div>
 
-<div id="boxVapo" style="display:none;">
+<div id="campoVapo" style="display:none;">
     <label>Nº das Solicitações de Lavagem — Vapo</label>
     <input
         id="lavagensVapo"
@@ -1616,8 +1616,11 @@ window.atualizarCamposProducao = function () {
     const pista = document.getElementById("checkPista").checked;
     const vapo = document.getElementById("checkVapo").checked;
 
-    document.getElementById("boxPista").style.display = pista ? "block" : "none";
-    document.getElementById("boxVapo").style.display = vapo ? "block" : "none";
+    document.getElementById("campoPista").style.display =
+        pista ? "block" : "none";
+
+    document.getElementById("campoVapo").style.display =
+        vapo ? "block" : "none";
 };
 /* ---------------- INIT ---------------- */
 initFiltros();
