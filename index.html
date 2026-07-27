@@ -405,47 +405,52 @@ button{
     color:#2ecc71;
 }
 
-.card-producao{
+#historicoProducao{
+    max-height:465px;
+    overflow-y:auto;
+    background:rgba(31,31,31,0.50);
+    padding:10px;
+    border-radius:12px;
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.08);
+}
 
-    background:#111827;
 
-    border-radius:15px;
+.producao-card{
 
-    padding:20px;
+    background: rgba(42,42,42,0.60);
 
-    margin-top:15px;
+    padding:12px;
 
-    box-shadow:0 5px 20px rgba(0,0,0,0.25);
+    border-radius:12px;
 
-    color:white;
+    margin-top:10px;
+
+    backdrop-filter:blur(10px);
+
+    -webkit-backdrop-filter:blur(10px);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    border-left:4px solid #8B1E1E;
+
+    box-shadow:0 8px 20px rgba(0,0,0,0.25);
 
     line-height:1.6;
 
 }
 
 
-.card-producao button{
+.producao-card button{
 
     margin-top:15px;
 
-    background:#e74c3c;
+    background:#8B1E1E;
 
-    border:none;
-
-    color:white;
+    width:auto;
 
     padding:8px 15px;
-
-    border-radius:8px;
-
-    cursor:pointer;
-
-}
-
-
-.card-producao button:hover{
-
-    opacity:0.8;
 
 }
 /* ---------------- SCROLL TRANSPARENTE ---------------- */
@@ -778,7 +783,7 @@ button{
 
 <div class="hero">
 
-    <h2>📦 Histórico de Produção</h2>
+    <h1>📜 Histórico de Produção</h1>
 
     <div id="historicoProducao">
         Carregando produções...
@@ -1941,7 +1946,7 @@ async function carregarHistoricoProducao(){
 
         div.innerHTML += `
 
-        <div class="card-producao">
+        <div class="producao-card">
 
 
         <b>💼 Produção de pacotes (Lavagem)</b>
