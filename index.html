@@ -903,20 +903,42 @@ function enviarDiscord(r){
 
 function enviarDiscordProducao(r){
 
+    let solicitacoes = "";
+
+
+    if(r.lavagensFaccao){
+        solicitacoes += `🧾 Solicitações de Lavagem Nº ${r.lavagensFaccao} ➜ Facção\n\n`;
+    }
+
+
+    if(r.lavagensPista){
+        solicitacoes += `🧾 Solicitações de Lavagem Nº ${r.lavagensPista} ➜ Pista\n\n`;
+    }
+
+
+    if(r.lavagensVapo){
+        solicitacoes += `🧾 Solicitações de Lavagem Nº ${r.lavagensVapo} ➜ Vapo\n\n`;
+    }
+
+
     fetch(WEBHOOK_PRODUCAO,{
 
         method:"POST",
-        headers:{
-            "Content-Type":"application/json"},
-        body:JSON.stringify({
-            embeds:[{
-                title:`💼 Produção de pacotes (Lavagem)`,
-                color:3066993,
-                description:
-`
-🧾 Solicitações de Lavagem Nº ${r.lavagensFaccao || "-"} ➜ Facção
 
-🧾 Solicitações de Lavagem Nº ${r.lavagensPista || "-"} ➜ Pista
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+
+            embeds:[{
+
+                title:`💼 Produção de pacotes (Lavagem)`,
+
+                color:3066993,
+
+                description:
+`${solicitacoes}
 
 💰 **Valor total lavado:** $ ${formatar(r.valorProducao)}
 💸 **Pacotes produzidos:** ${formatar(r.pacotes)}
@@ -1158,16 +1180,16 @@ const lavagensVapo = vapoAtivo
     const restanteAtual = valorTotal % 100000;
 
     enviarDiscordProducao({
-        lavagensFaccao,
-        lavagensPista,
-        lavagensVapo,
-        valorProducao,
-        restanteAnterior,
-        restanteAtual,
-        pacotes,
-        embalagens,
-        replicas
-    });
+    lavagensFaccao,
+    lavagensPista,
+    lavagensVapo,
+    valorProducao,
+    restanteAnterior,
+    restanteAtual,
+    pacotes,
+    embalagens,
+    replicas
+});
 
     document.getElementById("lavagensFaccao").value = "";
     document.getElementById("lavagensPista").value = "";
