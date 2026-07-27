@@ -386,6 +386,24 @@ button{
     height:18px;
     margin:0;
 }
+
+.area-imagem{
+    width:100%;
+    min-height:100px;
+    border:2px dashed #888;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    margin-top:10px;
+    color:#aaa;
+}
+
+.area-imagem.imagem-ok{
+    border-color:#2ecc71;
+    color:#2ecc71;
+}
 /* ---------------- SCROLL TRANSPARENTE ---------------- */
 
 /* Chrome / Edge / Android */
@@ -672,8 +690,13 @@ button{
     id="restanteAnterior"
     placeholder="Ex.: 50.000">
 
-<label>Imagem da produção</label>
-<input type="file" id="imagemProducao" accept="image/*">
+<div id="areaImagemProducao" class="area-imagem">
+    📷 Cole a imagem aqui (Ctrl + V)
+</div>
+
+<img id="previewImagemProducao" style="display:none; max-width:300px; margin-top:10px; border-radius:10px;">
+
+<input type="hidden" id="imagemProducao">
     
 <div class="opcoes-producao">
     <label>
@@ -1213,7 +1236,7 @@ const lavagensVapo = vapoAtivo
     const embalagens = pacotes;
     const replicas = pacotes * 50;
     const restanteAtual = valorTotal % 100000;
-    const imagemProducao = document.getElementById("imagemProducao").files[0];
+    imagemProducao
 
     enviarDiscordProducao({
     lavagensFaccao,
@@ -1698,6 +1721,40 @@ window.atualizarCamposProducao = function () {
         document.getElementById("lavagensVapo").value = "";
     }
 };
+
+let imagemProducao = null;
+
+
+document.getElementById("areaImagemProducao").addEventListener("paste", function(e){
+
+    const itens = e.clipboardData.items;
+
+
+    for(let item of itens){
+
+        if(item.type.startsWith("image/")){
+
+            imagemProducao = item.getAsFile();
+
+
+            const preview = document.getElementById("previewImagemProducao");
+
+            preview.src = URL.createObjectURL(imagemProducao);
+
+            preview.style.display = "block";
+
+
+            this.innerHTML = "✅ Imagem pronta para envio";
+
+            this.classList.add("imagem-ok");
+
+
+            break;
+        }
+
+    }
+
+});
 /* ---------------- INIT ---------------- */
 initFiltros();
 carregar();
