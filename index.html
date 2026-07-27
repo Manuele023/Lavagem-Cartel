@@ -404,6 +404,50 @@ button{
     border-color:#2ecc71;
     color:#2ecc71;
 }
+
+.card-producao{
+
+    background:#111827;
+
+    border-radius:15px;
+
+    padding:20px;
+
+    margin-top:15px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,0.25);
+
+    color:white;
+
+    line-height:1.6;
+
+}
+
+
+.card-producao button{
+
+    margin-top:15px;
+
+    background:#e74c3c;
+
+    border:none;
+
+    color:white;
+
+    padding:8px 15px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+
+.card-producao button:hover{
+
+    opacity:0.8;
+
+}
 /* ---------------- SCROLL TRANSPARENTE ---------------- */
 
 /* Chrome / Edge / Android */
@@ -732,6 +776,16 @@ button{
     Registrar Produção
             </button>
 
+<div class="hero">
+
+    <h2>📦 Histórico de Produção</h2>
+
+    <div id="historicoProducao">
+        Carregando produções...
+    </div>
+
+</div>
+
         </div>
 
     </div>
@@ -892,6 +946,9 @@ onAuthStateChanged(auth, async (user) => {
     };
 
 }
+
+    // CARREGA HISTÓRICO DE PRODUÇÃO
+    carregarHistoricoProducao();
 
 });
 /* ---------------- DISCORD ---------------- */
@@ -1273,6 +1330,19 @@ const lavagensVapo = vapoAtivo
     embalagens,
     replicas,
     imagemProducao
+});
+
+await salvarProducao({
+    lavagensFaccao,
+    lavagensPista,
+    lavagensVapo,
+    valorProducao,
+    restanteAnterior,
+    restanteAtual,
+    pacotes,
+    embalagens,
+    replicas,
+    nomeRP
 });
 
     document.getElementById("lavagensFaccao").value = "";
@@ -1801,6 +1871,150 @@ removerImagem.addEventListener("click", function(){
     areaImagem.classList.remove("imagem-ok");
 
 });
+
+async function salvarProducao(dados){
+
+    await addDoc(collection(db,"producao"),{
+
+        ...dados,
+
+        criadoEm: serverTimestamp()
+
+    });
+
+
+    carregarHistoricoProducao();
+
+}
+
+async function carregarHistoricoProducao(){
+
+    const div = document.getElementById("historicoProducao");
+
+    div.innerHTML="";
+
+
+    const consulta = await getDocs(collection(db,"producao"));
+
+
+    if(consulta.empty){
+
+        div.innerHTML="Nenhuma produção registrada.";
+
+        return;
+
+    }
+
+
+    consulta.forEach((docu)=>{
+
+        const p = docu.data();
+
+
+        let solicitacoes="";
+
+
+        if(p.lavagensFaccao){
+
+            solicitacoes += 
+            `🧾 Solicitações de Lavagem Nº ${p.lavagensFaccao} ➜ Facção<br><br>`;
+
+        }
+
+
+        if(p.lavagensPista){
+
+            solicitacoes += 
+            `🧾 Solicitações de Lavagem Nº ${p.lavagensPista} ➜ Pista<br><br>`;
+
+        }
+
+
+        if(p.lavagensVapo){
+
+            solicitacoes += 
+            `🧾 Solicitações de Lavagem Nº ${p.lavagensVapo} ➜ Vapo<br><br>`;
+
+        }
+
+
+        div.innerHTML += `
+
+        <div class="card-producao">
+
+
+        <b>💼 Produção de pacotes (Lavagem)</b>
+
+        <br><br>
+
+
+        ${solicitacoes}
+
+
+        💰 <b>Valor total lavado:</b> $ ${formatar(p.valorProducao)}
+
+        <br>
+
+        💸 <b>Pacotes produzidos:</b> ${formatar(p.pacotes)}
+
+
+        <br><br>
+
+
+        <b>Valor restante anterior:</b> $ ${formatar(p.restanteAnterior)}
+
+        <br>
+
+        <b>Valor restante atual:</b> $ ${formatar(p.restanteAtual)}
+
+
+        <br><br>
+
+
+        <b>Embalagens gastas:</b> ${formatar(p.embalagens)}
+
+        <br>
+
+        <b>Réplicas gastas:</b> ${formatar(p.replicas)}
+
+
+        <br><br>
+
+
+        👤 <b>Lavado por:</b> ${p.nomeRP}
+
+
+        <br>
+
+
+        <button onclick="excluirProducao('${docu.id}')">
+
+        🗑️ Excluir
+
+        </button>
+
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+window.excluirProducao = async function(id){
+
+    if(!confirm("Excluir essa produção?")) return;
+
+
+    await deleteDoc(doc(db,"producao",id));
+
+
+    carregarHistoricoProducao();
+
+};
+
+
 /* ---------------- INIT ---------------- */
 initFiltros();
 carregar();
