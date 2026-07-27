@@ -1126,7 +1126,16 @@ window.calcular = calcular;
 async function registrarProducao(){
 
     const lavagensFaccao = document.getElementById("lavagensFaccao").value.trim();
-    const lavagensPista = document.getElementById("lavagensPista").value.trim();
+    const pistaAtiva = document.getElementById("checkPista").checked;
+    const vapoAtivo = document.getElementById("checkVapo").checked;
+
+const lavagensPista = pistaAtiva 
+    ? document.getElementById("lavagensPista").value.trim()
+    : "";
+
+const lavagensVapo = vapoAtivo
+    ? document.getElementById("lavagensVapo").value.trim()
+    : "";
 
     const valorProducao = Number(
         document.getElementById("valorProducao").value.replace(/\./g,"")
@@ -1144,16 +1153,14 @@ async function registrarProducao(){
     const valorTotal = valorProducao + restanteAnterior;
 
     const pacotes = Math.floor(valorTotal / 100000);
-
     const embalagens = pacotes;
-
     const replicas = pacotes * 50;
-
     const restanteAtual = valorTotal % 100000;
 
     enviarDiscordProducao({
         lavagensFaccao,
         lavagensPista,
+        lavagensVapo,
         valorProducao,
         restanteAnterior,
         restanteAtual,
@@ -1164,6 +1171,7 @@ async function registrarProducao(){
 
     document.getElementById("lavagensFaccao").value = "";
     document.getElementById("lavagensPista").value = "";
+    document.getElementById("lavagensVapo").value = "";
     document.getElementById("valorProducao").value = "";
     document.getElementById("restanteAnterior").value = "";
 
