@@ -453,6 +453,13 @@ button{
     padding:8px 15px;
 
 }
+
+#bloqueioInicial{
+    position:fixed;
+    inset:0;
+    background:#111;
+    z-index:999999;
+}
 /* ---------------- SCROLL TRANSPARENTE ---------------- */
 
 /* Chrome / Edge / Android */
@@ -523,6 +530,8 @@ button{
 
 <body>
 
+<div id="bloqueioInicial"></div>
+    
 <div class="topbar">
 
     <div class="conteudo-topo">
@@ -912,6 +921,12 @@ let modoLavagem = "faccao";
 let filtroModo = "todos";
 let nomeRP = "";
 
+window.history.scrollRestoration = "manual";
+
+window.addEventListener("load", () => {
+    window.scrollTo(0, 0);
+});
+
 onAuthStateChanged(auth, async (user) => {
 
     if (!user) {
@@ -940,6 +955,9 @@ onAuthStateChanged(auth, async (user) => {
     return;
 
 }
+
+    document.getElementById("bloqueioInicial")?.remove();
+    
     nomeRP = dados.nomeRP;
     
     document.getElementById("nomeRPTopo").textContent = dados.nomeRP;
