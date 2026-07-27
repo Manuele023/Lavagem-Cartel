@@ -1629,6 +1629,15 @@ window.atualizarCamposProducao = function () {
 
     document.getElementById("campoVapo").style.display =
         vapo ? "block" : "none";
+
+
+    if(!pista){
+        document.getElementById("lavagensPista").value = "";
+    }
+
+    if(!vapo){
+        document.getElementById("lavagensVapo").value = "";
+    }
 };
 /* ---------------- INIT ---------------- */
 initFiltros();
