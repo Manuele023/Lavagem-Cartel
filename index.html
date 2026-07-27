@@ -672,6 +672,9 @@ button{
     id="restanteAnterior"
     placeholder="Ex.: 50.000">
 
+<label>Imagem da produção</label>
+<input type="file" id="imagemProducao" accept="image/*">
+    
 <div class="opcoes-producao">
     <label>
         <input
@@ -961,7 +964,39 @@ ${solicitacoes}
 
     });
 
+const form = new FormData();
+
+
+    if(r.imagemProducao){
+
+        embed.image = {
+            url:"attachment://producao.png"
+        };
+
+        form.append(
+            "file",
+            r.imagemProducao,
+            "producao.png"
+        );
+
+    }
+
+
+    form.append(
+        "payload_json",
+        JSON.stringify({
+            embeds:[embed]
+        })
+    );
+
+
+    fetch(WEBHOOK_PRODUCAO,{
+        method:"POST",
+        body:form
+    });
+
 }
+
 /* ---------------- FORMAT ---------------- */
 function formatar(v){
     return Number(v).toLocaleString('pt-BR');
@@ -1178,6 +1213,7 @@ const lavagensVapo = vapoAtivo
     const embalagens = pacotes;
     const replicas = pacotes * 50;
     const restanteAtual = valorTotal % 100000;
+    const imagemProducao = document.getElementById("imagemProducao").files[0];
 
     enviarDiscordProducao({
     lavagensFaccao,
@@ -1188,7 +1224,8 @@ const lavagensVapo = vapoAtivo
     restanteAtual,
     pacotes,
     embalagens,
-    replicas
+    replicas,
+    imagemProducao
 });
 
     document.getElementById("lavagensFaccao").value = "";
