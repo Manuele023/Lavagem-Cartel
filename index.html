@@ -690,13 +690,18 @@ button{
     id="restanteAnterior"
     placeholder="Ex.: 50.000">
 
-<div id="areaImagemProducao" class="area-imagem">
+<div id="areaImagemProducao" class="area-imagem" tabindex="0">
     📷 Cole a imagem aqui (Ctrl + V)
 </div>
 
 <img id="previewImagemProducao" style="display:none; max-width:300px; margin-top:10px; border-radius:10px;">
 
-<input type="hidden" id="imagemProducao">
+<button 
+    id="removerImagemProducao" 
+    style="display:none; margin-top:10px;"
+    type="button">
+    ❌ Remover imagem
+</button>
     
 <div class="opcoes-producao">
     <label>
@@ -947,23 +952,13 @@ function enviarDiscordProducao(r){
     }
 
 
-    fetch(WEBHOOK_PRODUCAO,{
+    const embed = {
 
-        method:"POST",
+        title:`💼 Produção de pacotes (Lavagem)`,
 
-        headers:{
-            "Content-Type":"application/json"
-        },
+        color:3066993,
 
-        body:JSON.stringify({
-
-            embeds:[{
-
-                title:`💼 Produção de pacotes (Lavagem)`,
-
-                color:3066993,
-
-                description:
+        description:
 `\u200B
 ${solicitacoes}
 💰 **Valor total lavado:** $ ${formatar(r.valorProducao)}
@@ -977,17 +972,14 @@ ${solicitacoes}
 
 👤 **Lavado por:** ${nomeRP}`,
 
-                footer:{
-                    text:`Sistema de Lavagem do Cartel • ${new Date().toLocaleString("pt-BR")}`
-                }
+        footer:{
+            text:`Sistema de Lavagem do Cartel • ${new Date().toLocaleString("pt-BR")}`
+        }
 
-            }]
+    };
 
-        })
 
-    });
-
-const form = new FormData();
+    const form = new FormData();
 
 
     if(r.imagemProducao){
@@ -995,6 +987,7 @@ const form = new FormData();
         embed.image = {
             url:"attachment://producao.png"
         };
+
 
         form.append(
             "file",
@@ -1014,12 +1007,43 @@ const form = new FormData();
 
 
     fetch(WEBHOOK_PRODUCAO,{
-        method:"POST",
-        body:form
-    });
+    method:"POST",
+    body:form
+})
+.then(() => {
+
+    // limpa imagem após enviar
+    imagemProducao = null;
+
+
+    // limpa prévia
+    const preview = document.getElementById("previewImagemProducao");
+    if(preview){
+        preview.src = "";
+        preview.style.display = "none";
+    }
+
+
+    // reseta caixa
+    const area = document.getElementById("areaImagemProducao");
+    if(area){
+        area.innerHTML = "📷 Cole a imagem aqui (Ctrl + V)";
+        area.classList.remove("imagem-ok");
+    }
+
+
+    // esconde botão remover
+    const remover = document.getElementById("removerImagemProducao");
+    if(remover){
+        remover.style.display = "none";
+    }
+
+})
+.catch((erro)=>{
+    console.error("Erro ao enviar produção:", erro);
+});
 
 }
-
 /* ---------------- FORMAT ---------------- */
 function formatar(v){
     return Number(v).toLocaleString('pt-BR');
@@ -1208,6 +1232,7 @@ async function registrarProducao(){
     const lavagensFaccao = document.getElementById("lavagensFaccao").value.trim();
     const pistaAtiva = document.getElementById("checkPista").checked;
     const vapoAtivo = document.getElementById("checkVapo").checked;
+    const imagemProducaoAtual = imagemProducao;
 
 const lavagensPista = pistaAtiva 
     ? document.getElementById("lavagensPista").value.trim()
@@ -1236,7 +1261,6 @@ const lavagensVapo = vapoAtivo
     const embalagens = pacotes;
     const replicas = pacotes * 50;
     const restanteAtual = valorTotal % 100000;
-    imagemProducao
 
     enviarDiscordProducao({
     lavagensFaccao,
@@ -1725,7 +1749,12 @@ window.atualizarCamposProducao = function () {
 let imagemProducao = null;
 
 
-document.getElementById("areaImagemProducao").addEventListener("paste", function(e){
+const areaImagem = document.getElementById("areaImagemProducao");
+const previewImagem = document.getElementById("previewImagemProducao");
+const removerImagem = document.getElementById("removerImagemProducao");
+
+
+areaImagem.addEventListener("paste", function(e){
 
     const itens = e.clipboardData.items;
 
@@ -1737,22 +1766,39 @@ document.getElementById("areaImagemProducao").addEventListener("paste", function
             imagemProducao = item.getAsFile();
 
 
-            const preview = document.getElementById("previewImagemProducao");
-
-            preview.src = URL.createObjectURL(imagemProducao);
-
-            preview.style.display = "block";
+            previewImagem.src = URL.createObjectURL(imagemProducao);
+            previewImagem.style.display = "block";
 
 
-            this.innerHTML = "✅ Imagem pronta para envio";
+            removerImagem.style.display = "inline-block";
 
-            this.classList.add("imagem-ok");
+
+            areaImagem.innerHTML = "✅ Imagem adicionada";
+            areaImagem.classList.add("imagem-ok");
 
 
             break;
         }
 
     }
+
+});
+
+
+removerImagem.addEventListener("click", function(){
+
+    imagemProducao = null;
+
+
+    previewImagem.src = "";
+    previewImagem.style.display = "none";
+
+
+    removerImagem.style.display = "none";
+
+
+    areaImagem.innerHTML = "📷 Cole a imagem aqui (Ctrl + V)";
+    areaImagem.classList.remove("imagem-ok");
 
 });
 /* ---------------- INIT ---------------- */
