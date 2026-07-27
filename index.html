@@ -648,24 +648,6 @@ button{
     id="lavagensFaccao"
     placeholder="Ex.: 26, 27 e 28">
 
-<div class="opcoes-producao">
-    <label>
-        <input
-            type="checkbox"
-            id="checkPista"
-            onchange="atualizarCamposProducao()">
-        Pista
-    </label>
-
-    <label>
-        <input
-            type="checkbox"
-            id="checkVapo"
-            onchange="atualizarCamposProducao()">
-        Vapo
-    </label>
-</div>
-
 <div id="campoPista" style="display:none;">
     <label>Nº das Solicitações de Lavagem — Pista</label>
     <input
@@ -689,6 +671,24 @@ button{
 <input
     id="restanteAnterior"
     placeholder="Ex.: 50.000">
+
+<div class="opcoes-producao">
+    <label>
+        <input
+            type="checkbox"
+            id="checkPista"
+            onchange="atualizarCamposProducao()">
+        Pista
+    </label>
+
+    <label>
+        <input
+            type="checkbox"
+            id="checkVapo"
+            onchange="atualizarCamposProducao()">
+        Vapo
+    </label>
+</div>
 
 <button
     onclick="registrarProducao()"
