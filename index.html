@@ -368,16 +368,23 @@ button{
 .opcoes-producao{
     display:flex;
     justify-content:center;
-    gap:20px;
-    margin:18px 0;
+    gap:30px;
+    margin:15px 0 20px;
 }
 
 .opcoes-producao label{
-    display:flex;
+    display:flex !important;
     align-items:center;
-    gap:6px;
-    font-weight:bold;
+    gap:8px;
+    width:auto !important;
+    margin:0;
     cursor:pointer;
+}
+
+.opcoes-producao input[type="checkbox"]{
+    width:18px;
+    height:18px;
+    margin:0;
 }
 /* ---------------- SCROLL TRANSPARENTE ---------------- */
 
@@ -1606,11 +1613,11 @@ window.toggleLavagem = function () {
 };
 
 window.atualizarCamposProducao = function () {
-    document.getElementById("boxPista").style.display =
-        document.getElementById("checkPista").checked ? "block" : "none";
+    const pista = document.getElementById("checkPista").checked;
+    const vapo = document.getElementById("checkVapo").checked;
 
-    document.getElementById("boxVapo").style.display =
-        document.getElementById("checkVapo").checked ? "block" : "none";
+    document.getElementById("boxPista").style.display = pista ? "block" : "none";
+    document.getElementById("boxVapo").style.display = vapo ? "block" : "none";
 };
 /* ---------------- INIT ---------------- */
 initFiltros();
