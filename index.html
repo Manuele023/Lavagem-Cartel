@@ -658,20 +658,6 @@ button{
 
 <div style="display:flex; gap:10px; margin-top:8px;">
 
-    <div onclick="selecionarModo('faccao')" id="boxFaccao"
-        style="
-        flex:1;
-        padding:10px;
-        border-radius:8px;
-        background:#2a2a2a;
-        text-align:center;
-        cursor:pointer;
-        border:2px solid #8B1E1E;
-        opacity:1;
-    ">
-        Facção
-    </div>
-
     <div onclick="selecionarModo('pista')" id="boxPista"
         style="
         flex:1;
@@ -684,6 +670,20 @@ button{
         opacity:0.6;
     ">
         Pista
+    </div>
+
+    <div onclick="selecionarModo('faccao')" id="boxFaccao"
+        style="
+        flex:1;
+        padding:10px;
+        border-radius:8px;
+        background:#2a2a2a;
+        text-align:center;
+        cursor:pointer;
+        border:2px solid #8B1E1E;
+        opacity:1;
+    ">
+        Facção
     </div>
 
 <div onclick="selecionarModo('vapo')" id="boxVapo"
@@ -1768,6 +1768,7 @@ function setFiltro(modo){
     document.getElementById("btnTodos").style.opacity = modo === "todos" ? "1" : "0.5";
     document.getElementById("btnFaccao").style.opacity = modo === "faccao" ? "1" : "0.5";
     document.getElementById("btnPista").style.opacity = modo === "pista" ? "1" : "0.5";
+    document.getElementById("btnVapo").style.opacity = modo === "vapo" ? "1" : "0.5";
 
     // Mostrar/ocultar histórico e mensal
     const mostrar = modo !== "todos";
