@@ -1048,7 +1048,8 @@ function enviarDiscordProducao(r){
 `\u200B
 ${solicitacoes}
 💰 **Valor total lavado:** $ ${formatar(r.valorProducao)}
-💸 **Pacotes produzidos:** ${formatar(r.pacotes)}
+📦 **Pacotes produzidos:** ${formatar(r.pacotes)}
+💸 **Valor a ser transferido:** $ ${formatar(r.pacotes * 80000)}
                             
 **Valor restante anterior:** $ ${formatar(r.restanteAnterior)}
 **Valor restante atual:** $ ${formatar(r.restanteAtual)}
@@ -1347,6 +1348,7 @@ const lavagensVapo = vapoAtivo
     const embalagens = pacotes;
     const replicas = pacotes * 50;
     const restanteAtual = valorTotal % 100000;
+    const valorTransferencia = pacotes * 80000;
 
     enviarDiscordProducao({
     lavagensFaccao,
@@ -1356,6 +1358,7 @@ const lavagensVapo = vapoAtivo
     restanteAnterior,
     restanteAtual,
     pacotes,
+    valorTransferencia,
     embalagens,
     replicas,
     imagemProducao
