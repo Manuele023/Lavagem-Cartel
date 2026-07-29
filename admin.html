@@ -300,14 +300,24 @@ const adminRef =
 doc(db,"usuarios",user.uid);
 
 
-const adminSnap =
-await getDoc(adminRef);
+const adminSnap = await getDoc(adminRef);
+
+
+if(!adminSnap.exists()){
+
+    alert("Usuário não encontrado.");
+
+    window.location.href="index.html";
+
+    return;
+
+}
 
 
 const dadosAdmin = adminSnap.data();
 
+
 if(
-!adminSnap.exists() ||
 !dadosAdmin.cargos ||
 (
 !dadosAdmin.cargos.includes("Admin") &&
@@ -315,11 +325,11 @@ if(
 )
 ){
 
-alert("Acesso negado.");
+    alert("Acesso negado.");
 
-window.location.href="index.html";
+    window.location.href="index.html";
 
-return;
+    return;
 
 }
 
@@ -330,9 +340,6 @@ carregarUsuarios();
 
 
 });
-
-
-
 
 
 
