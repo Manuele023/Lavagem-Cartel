@@ -362,7 +362,7 @@ button{
 
 #listaAuditoria{
 
-    max-height:490px;
+    max-height:530px;
 
     overflow-y:auto;
 
@@ -718,6 +718,8 @@ addDoc,
     
 serverTimestamp,
 
+query,
+
 orderBy
 
 }
@@ -1023,8 +1025,16 @@ onclick="resetarSenha('${usuario.id}')">
 async function carregarAuditoria(){
 
     const logs = await getDocs(
-        collection(db,"auditoria")
-    );
+
+    query(
+
+        collection(db,"auditoria"),
+
+        orderBy("data", "desc")
+
+    )
+
+);
 
     logsCache = [];
 
@@ -1442,14 +1452,25 @@ function mostrarLogs(lista){
 
     listaAuditoria.innerHTML = "";
 
-    lista.forEach((l)=>{
+lista.forEach((l)=>{
 
-        listaAuditoria.innerHTML += `
+    const dataHora = l.data
+        ? l.data.toDate().toLocaleString("pt-BR")
+        : "-";
+
+
+    listaAuditoria.innerHTML += `
 
 <div class="log">
 
 <span>
 ${mostrarGravidade(l.gravidade)}
+</span>
+
+<br>
+
+<span>
+<b>📅 Data:</b> ${dataHora}
 </span>
 
 <br>
@@ -1482,7 +1503,80 @@ ${mostrarGravidade(l.gravidade)}
 
 }
 
-    
+
+document.getElementById("buscarAuditoria")
+.addEventListener("input", filtrarAuditoria);
+
+document.getElementById("filtroGravidade")
+.addEventListener("change", filtrarAuditoria);
+
+document.getElementById("filtroTipo")
+.addEventListener("change", filtrarAuditoria);
+
+
+function filtrarAuditoria(){
+
+    const busca = document
+        .getElementById("buscarAuditoria")
+        .value
+        .toLowerCase();
+
+    const gravidade = document
+        .getElementById("filtroGravidade")
+        .value;
+
+    const tipo = document
+        .getElementById("filtroTipo")
+        .value;
+
+
+    const filtrados = logsCache.filter((l)=>{
+
+        const passouBusca =
+
+            busca === "" ||
+
+            (l.usuario || "")
+            .toLowerCase()
+            .includes(busca) ||
+
+            (l.descricao || "")
+            .toLowerCase()
+            .includes(busca) ||
+
+            (l.evento || "")
+            .toLowerCase()
+            .includes(busca);
+
+
+        const passouGravidade =
+
+            gravidade === "" ||
+
+            l.gravidade === gravidade;
+
+
+        const passouTipo =
+
+            tipo === "" ||
+
+            l.tipo === tipo;
+
+
+        return (
+            passouBusca &&
+            passouGravidade &&
+            passouTipo
+        );
+
+    });
+
+
+    mostrarLogs(filtrados);
+
+}
+
+
 </script>
 
 
