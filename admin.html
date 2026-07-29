@@ -747,13 +747,51 @@ window.location.href="index.html";
     
 }
 
-window.editarCargos = function(id){
+    
+window.editarCargos = async function(id){
 
     usuarioEditando = id;
 
 
-    document.getElementById("modalCargos").style.display = "flex";
+    const usuarioRef = doc(db,"usuarios",id);
 
+
+    const usuarioSnap = await getDoc(usuarioRef);
+
+
+    if(!usuarioSnap.exists()){
+
+        alert("Usuário não encontrado.");
+
+        return;
+
+    }
+
+
+    const u = usuarioSnap.data();
+
+
+    const cargos = u.cargos || ["Membro"];
+
+
+    document.getElementById("cargoDono").checked =
+        cargos.includes("Dono");
+
+
+    document.getElementById("cargoAdmin").checked =
+        cargos.includes("Admin");
+
+
+    document.getElementById("cargoProducao").checked =
+        cargos.includes("Produção");
+
+
+    document.getElementById("cargoMembro").checked =
+        cargos.includes("Membro");
+
+
+
+    document.getElementById("modalCargos").style.display = "flex";
 
 }
 
