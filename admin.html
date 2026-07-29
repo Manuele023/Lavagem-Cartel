@@ -955,27 +955,32 @@ listaAuditoria.innerHTML += `
 
 
 <span>
-<b>Evento:</b> ${l.evento}
+${mostrarGravidade(l.gravidade)}
 </span>
 
 
 <span>
-<b>Usuário:</b> ${l.usuario}
+<b>📌 Tipo:</b> ${l.tipo}
 </span>
 
 
 <span>
-<b>Administrador:</b> ${l.administrador}
+<b>⚡ Evento:</b> ${l.evento}
 </span>
 
 
 <span>
-<b>Gravidade:</b> ${l.gravidade}
+<b>👤 Usuário:</b> ${l.usuario}
 </span>
 
 
 <span>
-<b>Descrição:</b> ${l.descricao}
+<b>🛡️ Administrador:</b> ${l.administrador}
+</span>
+
+
+<span>
+<b>📝 Descrição:</b> ${l.descricao}
 </span>
 
 
@@ -1289,6 +1294,42 @@ function mostrarCargo(cargo){
 
 
     return emojis[cargo] || cargo;
+
+}
+
+
+function mostrarGravidade(gravidade){
+
+    const lista = {
+
+        "informacao":"🟢 Informação",
+
+        "atencao":"🟡 Atenção",
+
+        "critico":"🔴 Crítico"
+
+    };
+
+
+    return lista[gravidade] || gravidade;
+
+}
+
+
+function mostrarTipo(tipo){
+
+    const lista = {
+
+        "usuario":"Usuário",
+
+        "seguranca":"Segurança",
+
+        "administracao":"Administração"
+
+    };
+
+
+    return lista[tipo] || tipo;
 
 }
 
