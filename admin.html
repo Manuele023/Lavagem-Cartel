@@ -180,7 +180,59 @@ button{
 
 }
 
+.usuario-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
 
+.usuario-nome{
+    font-size:20px;
+    font-weight:bold;
+    color:#fff;
+}
+
+.usuario-login{
+    color:#999;
+    margin-top:3px;
+}
+
+.usuario-info{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin:15px 0;
+}
+
+.info-box{
+    background:#181818;
+    border:1px solid #333;
+    border-radius:8px;
+    padding:10px;
+}
+
+.acoes{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:15px;
+}
+
+.cargos{
+    color:#ffd54f;
+    font-weight:bold;
+}
+
+.editar{
+    background:#0057b8;
+    color:white;
+}
+
+.resetar{
+    background:#7a4d00;
+    color:white;
+}
 
 </style>
 
@@ -393,14 +445,12 @@ lista.innerHTML += `
 <span>
 <b>Status:</b> 
 ${u.ativo ? "🟢 Ativo" : "🔴 Bloqueado"}
-
 </span>
 
 
 <span>
 <b>Aprovado:</b>
 ${u.aprovado ? "✅ Sim" : "⏳ Pendente"}
-
 </span>
 
 
@@ -408,6 +458,7 @@ ${u.aprovado ? "✅ Sim" : "⏳ Pendente"}
 <b>Cargos:</b>
 ${u.cargos ? u.cargos.join(" • ") : "Membro"}
 </span>
+
 
 <br>
 
@@ -421,7 +472,7 @@ ${
 class="aprovar"
 onclick="aprovar('${usuario.id}')">
 
-Aprovar
+✅ Aprovar
 
 </button>
 
@@ -441,7 +492,31 @@ class="${u.ativo ? "bloquear" : "ativar"}"
 
 onclick="alterarStatus('${usuario.id}', ${u.ativo})">
 
-${u.ativo ? "Bloquear" : "Ativar"}
+${u.ativo ? "🔒 Bloquear" : "🟢 Ativar"}
+
+</button>
+
+
+
+<button
+
+class="editar"
+
+onclick="editarCargos('${usuario.id}')">
+
+🎖️ Editar cargos
+
+</button>
+
+
+
+<button
+
+class="resetar"
+
+onclick="resetarSenha('${usuario.id}')">
+
+🔑 Redefinir senha
 
 </button>
 
@@ -450,13 +525,6 @@ ${u.ativo ? "Bloquear" : "Ativar"}
 </div>
 
 `;
-
-
-
-});
-
-
-}
 
 
 
@@ -512,19 +580,26 @@ carregarUsuarios();
 
 }
 
-
-
-
-
-
-
+    
 window.voltar=function(){
 
 window.location.href="index.html";
 
+    
+}
+
+window.editarCargos = function(id){
+
+    alert("Editor de cargos será feito na próxima etapa.");
+
 }
 
 
+window.resetarSenha = function(id){
+
+    alert("Redefinição de senha será feita depois.");
+
+}
 
 </script>
 
