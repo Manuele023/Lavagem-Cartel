@@ -1537,148 +1537,150 @@ document.getElementById("filtroPeriodo")
 .addEventListener("change", filtrarAuditoria);
 
 
-const filtrados = logsCache.filter((l)=>{
+function filtrarAuditoria(){
+
+    const busca = document
+        .getElementById("buscarAuditoria")
+        .value
+        .toLowerCase()
+        .trim();
 
 
-    const textoBusca = JSON.stringify(l)
-        .toLowerCase();
+    const gravidade = document
+        .getElementById("filtroGravidade")
+        .value;
 
 
-
-    const passouBusca =
-
-        busca === "" ||
-
-        textoBusca.includes(busca);
+    const tipo = document
+        .getElementById("filtroTipo")
+        .value;
 
 
-
-    const passouGravidade =
-
-        gravidade === "" ||
-
-        l.gravidade === gravidade;
-
-
-
-    const passouTipo =
-
-        tipo === "" ||
-
-        l.tipo === tipo;
+    const periodo = document
+        .getElementById("filtroPeriodo")
+        .value;
 
 
 
-    const passouPeriodo = (()=>{
+    const filtrados = logsCache.filter((l)=>{
 
 
-        if(periodo === ""){
+        const textoBusca = JSON.stringify(l)
+            .toLowerCase();
+
+
+
+        const passouBusca =
+            busca === "" ||
+            textoBusca.includes(busca);
+
+
+
+        const passouGravidade =
+            gravidade === "" ||
+            l.gravidade === gravidade;
+
+
+
+        const passouTipo =
+            tipo === "" ||
+            l.tipo === tipo;
+
+
+
+        const passouPeriodo = (()=>{
+
+
+            if(periodo === ""){
+                return true;
+            }
+
+
+            if(!l.data){
+                return false;
+            }
+
+
+            const dataLog = l.data.toDate();
+
+            const agora = new Date();
+
+
+
+            if(periodo === "hoje"){
+
+                return (
+                    dataLog.getDate() === agora.getDate() &&
+                    dataLog.getMonth() === agora.getMonth() &&
+                    dataLog.getFullYear() === agora.getFullYear()
+                );
+
+            }
+
+
+
+            if(periodo === "7dias"){
+
+                const limite = new Date();
+
+                limite.setDate(
+                    agora.getDate() - 7
+                );
+
+                return dataLog >= limite;
+
+            }
+
+
+
+            if(periodo === "30dias"){
+
+                const limite = new Date();
+
+                limite.setDate(
+                    agora.getDate() - 30
+                );
+
+                return dataLog >= limite;
+
+            }
+
 
             return true;
 
-        }
 
-
-        if(!l.data){
-
-            return false;
-
-        }
-
-
-        const dataLog = l.data.toDate();
-
-        const agora = new Date();
+        })();
 
 
 
-        if(periodo === "hoje"){
+        return (
+            passouBusca &&
+            passouGravidade &&
+            passouTipo &&
+            passouPeriodo
+        );
 
-
-            return (
-
-                dataLog.getDate() === agora.getDate() &&
-
-                dataLog.getMonth() === agora.getMonth() &&
-
-                dataLog.getFullYear() === agora.getFullYear()
-
-            );
-
-
-        }
-
-
-
-        if(periodo === "7dias"){
-
-
-            const limite = new Date();
-
-
-            limite.setDate(
-                agora.getDate() - 7
-            );
-
-
-            return dataLog >= limite;
-
-
-        }
-
-
-
-        if(periodo === "30dias"){
-
-
-            const limite = new Date();
-
-
-            limite.setDate(
-                agora.getDate() - 30
-            );
-
-
-            return dataLog >= limite;
-
-
-        }
-
-
-        return true;
-
-
-    })();
-
-
-
-    return (
-
-        passouBusca &&
-
-        passouGravidade &&
-
-        passouTipo &&
-
-        passouPeriodo
-
-    );
-
-
-});
-    
-mostrarLogs(filtrados);
-
-
-if(busca !== "" && filtrados.length > 0){
-
-    listaAuditoria.scrollTo({
-
-        top:0,
-
-        behavior:"smooth"
 
     });
+
+
+
+    mostrarLogs(filtrados);
+
+
+
+    if(busca !== "" && filtrados.length > 0){
+
+        listaAuditoria.scrollTo({
+
+            top:0,
+
+            behavior:"smooth"
+
+        });
+
+    }
+
 
 }
 
