@@ -486,10 +486,9 @@ lista.innerHTML += `
 <b>Email:</b> ${u.email || "-"}
 </span>
 
-
 <span>
-<b>Status:</b> 
-${u.ativo ? "🟢 Ativo" : "🔴 Bloqueado"}
+<b>Cadastro:</b>
+${dataCadastro}
 </span>
 
 
@@ -500,14 +499,16 @@ ${u.aprovado ? "✅ Sim" : "⏳ Pendente"}
 
 
 <span>
+<b>Status:</b> 
+${u.ativo ? "🟢 Ativo" : "🔴 Bloqueado"}
+</span>
+
+
+<span>
 <b>Cargos:</b>
 ${u.cargos ? u.cargos.join(" • ") : "Membro"}
 </span>
 
-<span>
-<b>Cadastro:</b>
-${dataCadastro}
-</span>
 
 <br>
 
