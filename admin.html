@@ -936,11 +936,44 @@ window.alterarStatus = async function(id,status){
     }
 
 
+    const usuarioRef = doc(db,"usuarios",id);
+
+    const usuarioSnap = await getDoc(usuarioRef);
+
+
+    if(!usuarioSnap.exists()){
+        alert("Usuário não encontrado.");
+        return;
+    }
+
+
+    const usuario = usuarioSnap.data();
+
+
     await updateDoc(
-        doc(db,"usuarios",id),
+        usuarioRef,
         {
             ativo:!status
         }
+    );
+
+
+    await registrarAuditoria(
+
+        "usuario",
+
+        status ? "Conta bloqueada" : "Conta desbloqueada",
+
+        status ? "atencao" : "informacao",
+
+        usuario.nomeUsuario,
+
+        id,
+
+        status
+        ? `Conta de ${usuario.nomeUsuario} foi bloqueada.`
+        : `Conta de ${usuario.nomeUsuario} foi desbloqueada.`
+
     );
 
 
