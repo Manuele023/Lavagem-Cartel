@@ -467,7 +467,8 @@ import { auth, db } from "./firebase.js";
 
 import {
 
-onAuthStateChanged
+onAuthStateChanged,
+sendPasswordResetEmail
 
 }
 
@@ -930,39 +931,70 @@ window.salvarCargos = async function(){
 
 }
 
-window.resetarSenha = function(id){
+window.resetarSenha = async function(id){
 
-    alert("Redefinição de senha será feita depois.");
+
+    const usuarioRef = doc(db,"usuarios",id);
+
+
+    const usuarioSnap = await getDoc(usuarioRef);
+
+
+    if(!usuarioSnap.exists()){
+
+        alert("Usuário não encontrado.");
+
+        return;
+
+    }
+
+
+    const usuario = usuarioSnap.data();
+
+
+    const confirmar = confirm(
+        `Enviar e-mail de redefinição de senha para:\n\n${usuario.email}?`
+    );
+
+
+    if(!confirmar){
+
+        return;
+
+    }
+
+
+    try{
+
+
+        await sendPasswordResetEmail(
+            auth,
+            usuario.email
+        );
+
+
+        alert(
+            "✅ E-mail de redefinição enviado com sucesso."
+        );
+
+
+    }catch(e){
+
+
+        console.error(e);
+
+
+        alert(
+            "❌ Não foi possível enviar o e-mail."
+        );
+
+
+    }
+
 
 }
 
-pesquisa.addEventListener("input", function(){
-
-    const termo = pesquisa.value.toLowerCase();
-
-
-    const cards = document.querySelectorAll(".usuario");
-
-
-    cards.forEach((card)=>{
-
-        const texto = card.innerText.toLowerCase();
-
-
-        if(texto.includes(termo)){
-
-            card.style.display = "";
-
-        }else{
-
-            card.style.display = "none";
-
-        }
-
-    });
-
-});
-
+    
 function mostrarCargo(cargo){
 
     const emojis = {
