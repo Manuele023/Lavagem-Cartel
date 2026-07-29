@@ -601,16 +601,20 @@ from
 import {
 
 collection,
-
+    
 getDocs,
-
+    
 doc,
-
+    
 getDoc,
-
+    
 updateDoc,
+    
 addDoc,
-serverTimestamp
+    
+serverTimestamp,
+
+orderBy
 
 }
 
@@ -746,6 +750,7 @@ document.getElementById("bloqueioInicial")?.remove();
 
 
 carregarUsuarios();
+carregarAuditoria();
 
 
 });
@@ -895,6 +900,83 @@ onclick="resetarSenha('${usuario.id}')">
 
 </button>
 
+
+
+</div>
+
+`;
+
+
+
+});
+
+
+}
+
+
+async function carregarAuditoria(){
+
+
+listaAuditoria.innerHTML="";
+
+
+const logs = await getDocs(
+    collection(db,"auditoria")
+);
+
+
+
+if(logs.empty){
+
+    listaAuditoria.innerHTML =
+    "Nenhum registro encontrado.";
+
+    return;
+
+}
+
+
+
+logs.forEach((log)=>{
+
+
+const l = log.data();
+
+
+
+listaAuditoria.innerHTML += `
+
+<div class="log">
+
+
+<span>
+<b>Tipo:</b> ${l.tipo}
+</span>
+
+
+<span>
+<b>Evento:</b> ${l.evento}
+</span>
+
+
+<span>
+<b>Usuário:</b> ${l.usuario}
+</span>
+
+
+<span>
+<b>Administrador:</b> ${l.administrador}
+</span>
+
+
+<span>
+<b>Gravidade:</b> ${l.gravidade}
+</span>
+
+
+<span>
+<b>Descrição:</b> ${l.descricao}
+</span>
 
 
 </div>
