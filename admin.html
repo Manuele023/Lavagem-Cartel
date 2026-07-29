@@ -1537,51 +1537,19 @@ document.getElementById("filtroPeriodo")
 .addEventListener("change", filtrarAuditoria);
 
 
-function filtrarAuditoria(){
-
-    const busca = document
-        .getElementById("buscarAuditoria")
-        .value
-        .toLowerCase();
-
-    const gravidade = document
-        .getElementById("filtroGravidade")
-        .value;
-
-    const tipo = document
-        .getElementById("filtroTipo")
-        .value;
-
-    const periodo = document
-    .getElementById("filtroPeriodo")
-    .value;
-    
 const filtrados = logsCache.filter((l)=>{
 
 
-    const textoBusca = (
-
-    (l.usuario || "") +
-    " " +
-    (l.descricao || "") +
-    " " +
-    (l.evento || "") +
-    " " +
-    (l.administrador || "") +
-    " " +
-    (l.tipo || "")
-
-)
-.toLowerCase()
-.trim();
+    const textoBusca = JSON.stringify(l)
+        .toLowerCase();
 
 
 
-const passouBusca =
+    const passouBusca =
 
-    busca === "" ||
+        busca === "" ||
 
-    textoBusca.includes(busca);
+        textoBusca.includes(busca);
 
 
 
@@ -1698,9 +1666,19 @@ const passouBusca =
 
 
 });
-
-
+    
 mostrarLogs(filtrados);
+
+
+if(busca !== "" && filtrados.length > 0){
+
+    listaAuditoria.scrollTo({
+
+        top:0,
+
+        behavior:"smooth"
+
+    });
 
 }
 
