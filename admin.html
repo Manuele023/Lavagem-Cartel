@@ -362,7 +362,7 @@ button{
 
 #listaAuditoria{
 
-    max-height:304px;
+    max-height:303px;
 
     overflow-y:auto;
 
@@ -1559,21 +1559,29 @@ function filtrarAuditoria(){
 const filtrados = logsCache.filter((l)=>{
 
 
-    const passouBusca =
+    const textoBusca = (
 
-        busca === "" ||
+    (l.usuario || "") +
+    " " +
+    (l.descricao || "") +
+    " " +
+    (l.evento || "") +
+    " " +
+    (l.administrador || "") +
+    " " +
+    (l.tipo || "")
 
-        (l.usuario || "")
-        .toLowerCase()
-        .includes(busca) ||
+)
+.toLowerCase()
+.trim();
 
-        (l.descricao || "")
-        .toLowerCase()
-        .includes(busca) ||
 
-        (l.evento || "")
-        .toLowerCase()
-        .includes(busca);
+
+const passouBusca =
+
+    busca === "" ||
+
+    textoBusca.includes(busca);
 
 
 
