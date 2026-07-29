@@ -304,10 +304,15 @@ const adminSnap =
 await getDoc(adminRef);
 
 
+const dadosAdmin = adminSnap.data();
 
 if(
 !adminSnap.exists() ||
-adminSnap.data().admin !== true
+!dadosAdmin.cargos ||
+(
+!dadosAdmin.cargos.includes("Admin") &&
+!dadosAdmin.cargos.includes("Dono")
+)
 ){
 
 alert("Acesso negado.");
@@ -361,7 +366,7 @@ lista.innerHTML += `
 
 
 <span>
-<b>RP:</b> ${u.nomeRP || "-"}
+<b>Nome em RP:</b> ${u.nomeRP || "-"}
 </span>
 
 
@@ -383,6 +388,11 @@ ${u.aprovado ? "✅ Sim" : "⏳ Pendente"}
 
 </span>
 
+
+<span>
+<b>Cargos:</b>
+${u.cargos ? u.cargos.join(" • ") : "Membro"}
+</span>
 
 <br>
 
