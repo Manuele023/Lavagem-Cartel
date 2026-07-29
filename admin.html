@@ -346,6 +346,8 @@ carregarUsuarios();
 
 async function carregarUsuarios(){
 
+console.log("Iniciou carregamento");
+
 
 lista.innerHTML="";
 
@@ -354,11 +356,17 @@ const usuarios =
 await getDocs(collection(db,"usuarios"));
 
 
+console.log("Total usuários:", usuarios.size);
+
+
 
 usuarios.forEach((usuario)=>{
 
 
 const u = usuario.data();
+
+
+console.log("Usuário:", u);
 
 
 
