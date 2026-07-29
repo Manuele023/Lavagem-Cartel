@@ -344,7 +344,7 @@ button{
     
 #listaUsuarios{
 
-    max-height:600px;
+    max-height:650px;
 
     overflow-y:auto;
 
@@ -1064,6 +1064,60 @@ function mostrarCargo(cargo){
 
 }
 
+
+pesquisa.addEventListener("input", function(){
+
+    const termo = pesquisa.value.toLowerCase();
+
+    const cards = document.querySelectorAll(".usuario");
+
+    let primeiroEncontrado = null;
+
+
+    cards.forEach((card)=>{
+
+        const texto = card.innerText.toLowerCase();
+
+
+        if(texto.includes(termo)){
+
+            card.style.display = "";
+
+
+            if(!primeiroEncontrado){
+
+                primeiroEncontrado = card;
+
+            }
+
+
+        }else{
+
+            card.style.display = "none";
+
+        }
+
+
+    });
+
+
+
+    if(primeiroEncontrado && termo !== ""){
+
+        primeiroEncontrado.scrollIntoView({
+
+            behavior:"smooth",
+
+            block:"start"
+
+        });
+
+    }
+
+
+});
+
+    
 </script>
 
 
