@@ -622,7 +622,9 @@ ${u.ativo ? "🟢 Ativo" : "🔴 Bloqueado"}
 
 <span>
 <b>Cargos:</b>
-${u.cargos ? u.cargos.join(" • ") : "Membro"}
+${u.cargos 
+? u.cargos.map(mostrarCargo).join(" • ") 
+: "👤 Membro"}
 </span>
 
 
@@ -896,6 +898,25 @@ pesquisa.addEventListener("input", function(){
     });
 
 });
+
+function mostrarCargo(cargo){
+
+    const emojis = {
+
+        "Dono":"👑 Dono",
+
+        "Admin":"🛡️ Admin",
+
+        "Produção":"⚙️ Produção",
+
+        "Membro":"👤 Membro"
+
+    };
+
+
+    return emojis[cargo] || cargo;
+
+}
 
 </script>
 
