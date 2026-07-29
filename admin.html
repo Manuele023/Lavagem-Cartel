@@ -745,6 +745,8 @@ let usuariosCache = [];
 
 let usuarioEditando = null;
 
+let logsCache = [];
+
 
 function temCargo(cargo){
 
@@ -1020,77 +1022,27 @@ onclick="resetarSenha('${usuario.id}')">
 
 async function carregarAuditoria(){
 
+    const logs = await getDocs(
+        collection(db,"auditoria")
+    );
 
-listaAuditoria.innerHTML="";
+    logsCache = [];
 
+    if(logs.empty){
 
-const logs = await getDocs(
-    collection(db,"auditoria")
-);
+        listaAuditoria.innerHTML = "Nenhum registro encontrado.";
 
+        return;
 
+    }
 
-if(logs.empty){
+    logs.forEach((log)=>{
 
-    listaAuditoria.innerHTML =
-    "Nenhum registro encontrado.";
+        logsCache.push(log.data());
 
-    return;
+    });
 
-}
-
-
-
-logs.forEach((log)=>{
-
-
-const l = log.data();
-
-
-
-listaAuditoria.innerHTML += `
-
-<div class="log">
-
-
-<span>
-${mostrarGravidade(l.gravidade)}
-</span>
-<br>
-<span>
-<b>⚡ Evento:</b> ${l.evento}
-</span>
-
-
-<span>
-<b>🛡️ Administrador:</b> ${l.administrador}
-</span>
-
-
-<span>
-<b>👤 Usuário:</b> ${l.usuario}
-</span>
-
-
-
-<span>
-<b>📝 Descrição:</b> ${l.descricao}
-</span>
-
-
-<span>
-<b>📌 Tipo:</b> ${mostrarTipo(l.tipo)}
-</span>
-
-
-</div>
-
-`;
-
-
-
-});
-
+    mostrarLogs(logsCache);
 
 }
 
@@ -1484,6 +1436,51 @@ pesquisa.addEventListener("input", function(){
 
 
 });
+
+
+function mostrarLogs(lista){
+
+    listaAuditoria.innerHTML = "";
+
+    lista.forEach((l)=>{
+
+        listaAuditoria.innerHTML += `
+
+<div class="log">
+
+<span>
+${mostrarGravidade(l.gravidade)}
+</span>
+
+<br>
+
+<span>
+<b>⚡ Evento:</b> ${l.evento}
+</span>
+
+<span>
+<b>🛡️ Administrador:</b> ${l.administrador}
+</span>
+
+<span>
+<b>👤 Usuário:</b> ${l.usuario}
+</span>
+
+<span>
+<b>📝 Descrição:</b> ${l.descricao}
+</span>
+
+<span>
+<b>📌 Tipo:</b> ${mostrarTipo(l.tipo)}
+</span>
+
+</div>
+
+        `;
+
+    });
+
+}
 
     
 </script>
