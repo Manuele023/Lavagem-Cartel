@@ -485,6 +485,28 @@ let usuariosCache = [];
 let usuarioEditando = null;
 
 
+function temCargo(cargo){
+
+    return dadosAdmin.cargos &&
+    dadosAdmin.cargos.includes(cargo);
+
+}
+
+
+function ehDono(){
+
+    return temCargo("Dono");
+
+}
+
+
+function ehAdmin(){
+
+    return temCargo("Admin") || ehDono();
+
+}
+
+
 onAuthStateChanged(auth, async(user)=>{
 
 
@@ -516,16 +538,10 @@ if(!adminSnap.exists()){
 }
 
 
-const dadosAdmin = adminSnap.data();
+dadosAdmin = adminSnap.data();
 
 
-if(
-!dadosAdmin.cargos ||
-(
-!dadosAdmin.cargos.includes("Admin") &&
-!dadosAdmin.cargos.includes("Dono")
-)
-){
+if(!ehAdmin()){
 
     alert("Acesso negado.");
 
