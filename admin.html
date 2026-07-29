@@ -234,6 +234,33 @@ button{
     color:white;
 }
 
+#pesquisaUsuario{
+
+    width:100%;
+
+    padding:12px;
+
+    margin-bottom:20px;
+
+    background:#111;
+
+    border:1px solid #333;
+
+    border-radius:8px;
+
+    color:white;
+
+    outline:none;
+
+}
+
+
+#pesquisaUsuario:focus{
+
+    border-color:#b30000;
+
+}
+
 </style>
 
 </head>
@@ -264,7 +291,7 @@ PAINEL ADMINISTRATIVO
 Usuários
 </h2>
 
-
+    
 <button 
 class="voltar"
 onclick="voltar()">
@@ -273,10 +300,13 @@ onclick="voltar()">
 
 </button>
 
-
 </div>
 
-
+<input 
+id="pesquisaUsuario"
+placeholder="🔎 Buscar usuário..."
+>
+    
 <div id="listaUsuarios">
 
 Carregando...
@@ -332,7 +362,11 @@ const lista =
 document.getElementById("listaUsuarios");
 
 
+const pesquisa =
+document.getElementById("pesquisaUsuario");
 
+
+let usuariosCache = [];
 
 
 onAuthStateChanged(auth, async(user)=>{
@@ -406,6 +440,8 @@ lista.innerHTML="";
 
 const usuarios =
 await getDocs(collection(db,"usuarios"));
+    
+usuariosCache = [];
 
 
 console.log("Total usuários:", usuarios.size);
@@ -416,11 +452,26 @@ usuarios.forEach((usuario)=>{
 
 
 const u = usuario.data();
-
+    
+usuariosCache.push({
+    id: usuario.id,
+    dados: u
+});
 
 console.log("Usuário:", u);
 
+usuarios.forEach((usuario)=>{
 
+
+const u = usuario.data();
+
+
+const dataCadastro = u.criadoEm 
+    ? u.criadoEm.toDate().toLocaleDateString("pt-BR")
+    : "-";
+
+
+console.log("Usuário:", u);
 
 lista.innerHTML += `
 
@@ -459,6 +510,10 @@ ${u.aprovado ? "✅ Sim" : "⏳ Pendente"}
 ${u.cargos ? u.cargos.join(" • ") : "Membro"}
 </span>
 
+<span>
+<b>Cadastro:</b>
+${dataCadastro}
+</span>
 
 <br>
 
@@ -536,49 +591,40 @@ onclick="resetarSenha('${usuario.id}')">
 
 window.aprovar = async function(id){
 
+    if(!confirm("Aprovar este usuário?")){
+        return;
+    }
 
-await updateDoc(
+    await updateDoc(
+        doc(db,"usuarios",id),
+        {
+            aprovado:true
+        }
+    );
 
-doc(db,"usuarios",id),
-
-{
-
-aprovado:true
-
-}
-
-);
-
-
-carregarUsuarios();
-
+    carregarUsuarios();
 
 }
-
-
-
-
-
 
 
 window.alterarStatus = async function(id,status){
 
+    const acao = status ? "bloquear" : "ativar";
 
-await updateDoc(
-
-doc(db,"usuarios",id),
-
-{
-
-ativo:!status
-
-}
-
-);
+    if(!confirm(`Deseja ${acao} este usuário?`)){
+        return;
+    }
 
 
-carregarUsuarios();
+    await updateDoc(
+        doc(db,"usuarios",id),
+        {
+            ativo:!status
+        }
+    );
 
+
+    carregarUsuarios();
 
 }
 
@@ -602,6 +648,33 @@ window.resetarSenha = function(id){
     alert("Redefinição de senha será feita depois.");
 
 }
+
+pesquisa.addEventListener("input", function(){
+
+    const termo = pesquisa.value.toLowerCase();
+
+
+    const cards = document.querySelectorAll(".usuario");
+
+
+    cards.forEach((card)=>{
+
+        const texto = card.innerText.toLowerCase();
+
+
+        if(texto.includes(termo)){
+
+            card.style.display = "";
+
+        }else{
+
+            card.style.display = "none";
+
+        }
+
+    });
+
+});
 
 </script>
 
