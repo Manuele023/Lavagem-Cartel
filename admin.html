@@ -950,17 +950,7 @@ listaAuditoria.innerHTML += `
 
 
 <span>
-<b>Tipo:</b> ${l.tipo}
-</span>
-
-
-<span>
 ${mostrarGravidade(l.gravidade)}
-</span>
-
-
-<span>
-<b>📌 Tipo:</b> ${l.tipo}
 </span>
 
 
@@ -970,17 +960,23 @@ ${mostrarGravidade(l.gravidade)}
 
 
 <span>
-<b>👤 Usuário:</b> ${l.usuario}
-</span>
-
-
-<span>
 <b>🛡️ Administrador:</b> ${l.administrador}
 </span>
 
 
 <span>
+<b>👤 Usuário:</b> ${l.usuario}
+</span>
+
+
+
+<span>
 <b>📝 Descrição:</b> ${l.descricao}
+</span>
+
+
+<span>
+<b>📌 Tipo:</b> ${mostrarTipo(l.tipo)}
 </span>
 
 
