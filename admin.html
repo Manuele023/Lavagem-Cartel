@@ -614,6 +614,26 @@ Carregando...
         <option value="administracao">⚙️ Administração</option>
     </select>
 
+<select id="filtroPeriodo">
+
+    <option value="">
+        📅 Todo período
+    </option>
+
+    <option value="hoje">
+        📅 Hoje
+    </option>
+
+    <option value="7dias">
+        📅 Últimos 7 dias
+    </option>
+
+    <option value="30dias">
+        📅 Últimos 30 dias
+    </option>
+
+</select>
+
 </div>
     
 <div id="listaAuditoria">
@@ -1513,6 +1533,9 @@ document.getElementById("filtroGravidade")
 document.getElementById("filtroTipo")
 .addEventListener("change", filtrarAuditoria);
 
+document.getElementById("filtroPeriodo")
+.addEventListener("change", filtrarAuditoria);
+
 
 function filtrarAuditoria(){
 
@@ -1529,50 +1552,147 @@ function filtrarAuditoria(){
         .getElementById("filtroTipo")
         .value;
 
-
-    const filtrados = logsCache.filter((l)=>{
-
-        const passouBusca =
-
-            busca === "" ||
-
-            (l.usuario || "")
-            .toLowerCase()
-            .includes(busca) ||
-
-            (l.descricao || "")
-            .toLowerCase()
-            .includes(busca) ||
-
-            (l.evento || "")
-            .toLowerCase()
-            .includes(busca);
+    const periodo = document
+    .getElementById("filtroPeriodo")
+    .value;
+    
+const filtrados = logsCache.filter((l)=>{
 
 
-        const passouGravidade =
+    const passouBusca =
 
-            gravidade === "" ||
+        busca === "" ||
 
-            l.gravidade === gravidade;
+        (l.usuario || "")
+        .toLowerCase()
+        .includes(busca) ||
 
+        (l.descricao || "")
+        .toLowerCase()
+        .includes(busca) ||
 
-        const passouTipo =
-
-            tipo === "" ||
-
-            l.tipo === tipo;
-
-
-        return (
-            passouBusca &&
-            passouGravidade &&
-            passouTipo
-        );
-
-    });
+        (l.evento || "")
+        .toLowerCase()
+        .includes(busca);
 
 
-    mostrarLogs(filtrados);
+
+    const passouGravidade =
+
+        gravidade === "" ||
+
+        l.gravidade === gravidade;
+
+
+
+    const passouTipo =
+
+        tipo === "" ||
+
+        l.tipo === tipo;
+
+
+
+    const passouPeriodo = (()=>{
+
+
+        if(periodo === ""){
+
+            return true;
+
+        }
+
+
+        if(!l.data){
+
+            return false;
+
+        }
+
+
+        const dataLog = l.data.toDate();
+
+        const agora = new Date();
+
+
+
+        if(periodo === "hoje"){
+
+
+            return (
+
+                dataLog.getDate() === agora.getDate() &&
+
+                dataLog.getMonth() === agora.getMonth() &&
+
+                dataLog.getFullYear() === agora.getFullYear()
+
+            );
+
+
+        }
+
+
+
+        if(periodo === "7dias"){
+
+
+            const limite = new Date();
+
+
+            limite.setDate(
+                agora.getDate() - 7
+            );
+
+
+            return dataLog >= limite;
+
+
+        }
+
+
+
+        if(periodo === "30dias"){
+
+
+            const limite = new Date();
+
+
+            limite.setDate(
+                agora.getDate() - 30
+            );
+
+
+            return dataLog >= limite;
+
+
+        }
+
+
+        return true;
+
+
+    })();
+
+
+
+    return (
+
+        passouBusca &&
+
+        passouGravidade &&
+
+        passouTipo &&
+
+        passouPeriodo
+
+    );
+
+
+});
+
+
+mostrarLogs(filtrados);
 
 }
 
