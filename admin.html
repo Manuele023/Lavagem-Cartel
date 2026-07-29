@@ -419,6 +419,51 @@ button{
 }
 
 
+.filtrosAuditoria{
+
+    display:flex;
+
+    gap:12px;
+
+    margin:15px 0 20px;
+
+    flex-wrap:wrap;
+
+}
+
+
+.filtrosAuditoria input,
+.filtrosAuditoria select{
+
+    flex:1;
+
+    min-width:220px;
+
+    padding:12px;
+
+    background:#111;
+
+    color:white;
+
+    border:1px solid #333;
+
+    border-radius:8px;
+
+    outline:none;
+
+    font-size:14px;
+
+}
+
+
+.filtrosAuditoria input:focus,
+.filtrosAuditoria select:focus{
+
+    border-color:#b30000;
+
+}
+
+
 /* ---------------- SCROLL TRANSPARENTE ---------------- */
 
 #listaUsuarios::-webkit-scrollbar,
@@ -550,55 +595,27 @@ Carregando...
 
 <div class="filtrosAuditoria">
 
-<input 
-id="buscarAuditoria"
-placeholder="🔎 Buscar usuário ou descrição..."
->
+    <input
+    id="buscarAuditoria"
+    placeholder="🔎 Buscar..."
+    >
 
+    <select id="filtroGravidade">
+        <option value="">🚦 Todas as gravidades</option>
+        <option value="informacao">🟢 Informação</option>
+        <option value="atencao">🟡 Atenção</option>
+        <option value="critico">🔴 Crítico</option>
+    </select>
 
-<select id="filtroGravidade">
-
-<option value="">
-🚦 Todas as gravidades
-</option>
-
-<option value="informacao">
-🟢 Informação
-</option>
-
-<option value="atencao">
-🟡 Atenção
-</option>
-
-<option value="critico">
-🔴 Crítico
-</option>
-
-</select>
-
-
-<select id="filtroTipo">
-
-<option value="">
-📌 Todos os tipos
-</option>
-
-<option value="usuario">
-👥 Usuário
-</option>
-
-<option value="seguranca">
-🔐 Segurança
-</option>
-
-<option value="administracao">
-⚙️ Administração
-</option>
-
-</select>
+    <select id="filtroTipo">
+        <option value="">📌 Todos os tipos</option>
+        <option value="usuario">👤 Usuário</option>
+        <option value="seguranca">🔐 Segurança</option>
+        <option value="administracao">⚙️ Administração</option>
+    </select>
 
 </div>
-
+    
 <div id="listaAuditoria">
 
 Carregando logs...
