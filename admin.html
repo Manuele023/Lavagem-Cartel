@@ -608,12 +608,13 @@ doc,
 
 getDoc,
 
-updateDoc
+updateDoc,
+addDoc,
+serverTimestamp
 
 }
 
 from
-
 "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
 
@@ -658,6 +659,43 @@ function ehAdmin(){
 
 }
 
+
+async function registrarAuditoria(
+    tipo,
+    evento,
+    gravidade,
+    usuario,
+    usuarioId,
+    descricao
+){
+
+    await addDoc(
+        collection(db,"auditoria"),
+        {
+
+            tipo: tipo,
+
+            evento: evento,
+
+            gravidade: gravidade,
+
+            usuario: usuario || "-",
+
+            usuarioId: usuarioId || "-",
+
+            administrador: dadosAdmin.nomeUsuario || "-",
+
+            administradorId: auth.currentUser.uid,
+
+            descricao: descricao,
+
+            data: serverTimestamp()
+
+        }
+    );
+
+}
+    
 
 onAuthStateChanged(auth, async(user)=>{
 
