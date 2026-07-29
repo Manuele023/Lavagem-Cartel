@@ -419,47 +419,52 @@ button{
 }
 
 
-/* barra de rolagem */
+/* ---------------- SCROLL TRANSPARENTE ---------------- */
 
-#listaUsuarios::-webkit-scrollbar{
+#listaUsuarios::-webkit-scrollbar,
+#listaAuditoria::-webkit-scrollbar{
 
-    width:8px;
+    width:6px;
 
 }
 
 
-#listaUsuarios::-webkit-scrollbar-track{
+#listaUsuarios::-webkit-scrollbar-track,
+#listaAuditoria::-webkit-scrollbar-track{
 
     background:transparent;
 
+}
+
+
+#listaUsuarios::-webkit-scrollbar-thumb,
+#listaAuditoria::-webkit-scrollbar-thumb{
+
+    background:rgba(255,255,255,0.12);
+
     border-radius:10px;
 
 }
 
 
-#listaUsuarios::-webkit-scrollbar-thumb{
+#listaUsuarios::-webkit-scrollbar-thumb:hover,
+#listaAuditoria::-webkit-scrollbar-thumb:hover{
 
-    background:#8b0000;
-
-    border-radius:10px;
-
-}
-
-
-#listaUsuarios::-webkit-scrollbar-thumb:hover{
-
-    background:#b30000;
+    background:rgba(255,255,255,0.25);
 
 }
 
 
+/* Firefox */
 
-#listaAuditoria::-webkit-scrollbar{
+#listaUsuarios,
+#listaAuditoria{
 
-    width:8px;
+    scrollbar-width:thin;
+
+    scrollbar-color:rgba(255,255,255,0.12) transparent;
 
 }
-
 
 #listaAuditoria::-webkit-scrollbar-track{
 
