@@ -538,9 +538,9 @@ onAuthStateChanged(auth, async(user)=>{
 
 if(!user){
 
-window.location.href="login.html";
+    window.location.replace("login.html");
 
-return;
+    return;
 
 }
 
@@ -557,7 +557,7 @@ if(!adminSnap.exists()){
 
     alert("Usuário não encontrado.");
 
-    window.location.href="index.html";
+    window.location.replace("index.html");
 
     return;
 
@@ -571,18 +571,17 @@ if(!ehAdmin()){
 
     alert("Acesso negado.");
 
-    window.location.href="index.html";
+    window.location.replace("index.html");
 
     return;
 
 }
 
-    
+
 document.getElementById("bloqueioInicial")?.remove();
 
-    
-carregarUsuarios();
 
+carregarUsuarios();
 
 
 });
