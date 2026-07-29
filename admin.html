@@ -805,12 +805,64 @@ window.fecharModal = function(){
 }
 
 
-window.salvarCargos = function(){
+window.salvarCargos = async function(){
 
-    alert("Salvar cargos será feito na próxima parte.");
+
+    const cargos = [];
+
+
+    if(document.getElementById("cargoDono").checked){
+        cargos.push("Dono");
+    }
+
+
+    if(document.getElementById("cargoAdmin").checked){
+        cargos.push("Admin");
+    }
+
+
+    if(document.getElementById("cargoProducao").checked){
+        cargos.push("Produção");
+    }
+
+
+    if(document.getElementById("cargoMembro").checked){
+        cargos.push("Membro");
+    }
+
+
+
+    if(cargos.length === 0){
+
+        alert("O usuário precisa ter pelo menos um cargo.");
+
+        return;
+
+    }
+
+
+
+    await updateDoc(
+
+        doc(db,"usuarios",usuarioEditando),
+
+        {
+            cargos:cargos
+        }
+
+    );
+
+
+    alert("Cargos atualizados com sucesso!");
+
+
+    document.getElementById("modalCargos").style.display="none";
+
+
+    carregarUsuarios();
+
 
 }
-
 
 window.resetarSenha = function(id){
 
