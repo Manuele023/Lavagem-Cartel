@@ -821,6 +821,20 @@ window.editarCargos = async function(id){
     document.getElementById("cargoDono").checked =
         cargos.includes("Dono");
 
+    const checkboxDono =
+document.getElementById("cargoDono");
+
+
+if(!ehDono()){
+
+    checkboxDono.disabled = true;
+
+}
+else{
+
+    checkboxDono.disabled = false;
+
+}
 
     document.getElementById("cargoAdmin").checked =
         cargos.includes("Admin");
@@ -855,7 +869,15 @@ window.salvarCargos = async function(){
 
     const cargos = [];
 
+    if(!ehDono() && document.getElementById("cargoDono").checked){
 
+    alert("Apenas o Dono pode atribuir esse cargo.");
+
+    return;
+
+    }
+    
+    
     if(document.getElementById("cargoDono").checked){
         cargos.push("Dono");
     }
@@ -882,7 +904,6 @@ window.salvarCargos = async function(){
         alert("O usuário precisa ter pelo menos um cargo.");
 
         return;
-
     }
 
 
