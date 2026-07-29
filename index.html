@@ -965,8 +965,15 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById("nomeUsuarioTopo").textContent = "@" + dados.nomeUsuario;
 
     document.getElementById("btnAdmin").style.display = "none";
-    
-    if (dados.admin) {
+
+
+if (
+    dados.cargos &&
+    (
+        dados.cargos.includes("Admin") ||
+        dados.cargos.includes("Dono")
+    )
+) {
 
     document.getElementById("btnAdmin").style.display = "flex";
 
