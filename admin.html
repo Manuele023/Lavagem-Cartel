@@ -768,11 +768,7 @@ window.location.href="index.html";
     
 window.editarCargos = async function(id){
 
-    usuarioEditando = id;
-
-
     const usuarioRef = doc(db,"usuarios",id);
-
 
     const usuarioSnap = await getDoc(usuarioRef);
 
@@ -785,6 +781,16 @@ window.editarCargos = async function(id){
 
     }
 
+
+    const usuario = usuarioSnap.data();
+
+
+    alert(
+        "Editando cargos de: " + usuario.nomeUsuario
+    );
+
+
+}
 
     const u = usuarioSnap.data();
 
