@@ -866,6 +866,36 @@ dadosAdmin = adminSnap.data();
 
 if(!ehAdmin()){
 
+
+    await addDoc(
+
+        collection(db,"auditoria"),
+
+        {
+
+            tipo:"seguranca",
+
+            evento:"Acesso negado ao painel administrativo",
+
+            gravidade:"critico",
+
+            usuario:dadosAdmin.nomeUsuario || "-",
+
+            usuarioId:user.uid,
+
+            administrador:"-",
+
+            administradorId:"-",
+
+            descricao:`${dadosAdmin.nomeUsuario || "Usuário"} tentou acessar o painel administrativo sem permissão.`,
+
+            data:serverTimestamp()
+
+        }
+
+    );
+
+
     alert("Acesso negado.");
 
     window.location.replace("index.html");
