@@ -802,30 +802,40 @@ async function registrarAuditoria(
     descricao
 ){
 
-    await addDoc(
-        collection(db,"auditoria"),
-        {
+    try{
 
-            tipo: tipo,
+        await addDoc(
+            collection(db,"auditoria"),
+            {
+                tipo: tipo,
+                evento: evento,
+                gravidade: gravidade,
 
-            evento: evento,
+                usuario: usuario || "-",
+                usuarioId: usuarioId || "-",
 
-            gravidade: gravidade,
+                administrador:
+                dadosAdmin?.nomeUsuario || "-",
 
-            usuario: usuario || "-",
+                administradorId:
+                auth.currentUser?.uid || "-",
 
-            usuarioId: usuarioId || "-",
+                descricao: descricao,
 
-            administrador: dadosAdmin.nomeUsuario || "-",
+                data: serverTimestamp()
+            }
+        );
 
-            administradorId: auth.currentUser.uid,
+        console.log("Auditoria registrada:", evento);
 
-            descricao: descricao,
+    }catch(error){
 
-            data: serverTimestamp()
+        console.error(
+            "Falha ao registrar auditoria:",
+            error
+        );
 
-        }
-    );
+    }
 
 }
     
