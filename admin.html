@@ -1085,11 +1085,44 @@ window.aprovar = async function(id){
         return;
     }
 
+    const usuarioRef = doc(db,"usuarios",id);
+
+    const usuarioSnap = await getDoc(usuarioRef);
+
+    if(!usuarioSnap.exists()){
+
+        alert("Usuário não encontrado.");
+
+        return;
+
+    }
+
+    const usuario = usuarioSnap.data();
+
     await updateDoc(
-        doc(db,"usuarios",id),
+
+        usuarioRef,
+
         {
-            aprovado:true
+            aprovado: true
         }
+
+    );
+
+    await registrarAuditoria(
+
+        "administracao",
+
+        "Conta aprovada",
+
+        "informacao",
+
+        usuario.nomeUsuario,
+
+        id,
+
+        `A conta de ${usuario.nomeUsuario} foi aprovada.`
+
     );
 
     carregarUsuarios();
