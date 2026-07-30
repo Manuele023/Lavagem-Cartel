@@ -728,14 +728,55 @@ window.entrar = async function(){
         const dados = usuarioDoc.data();
 
 
-        if(!dados.aprovado){
+    if(!dados.ativo){
 
-            await signOut(auth);
 
-            mensagem("⏳ Sua conta está aguardando aprovação de um administrador");
-            return;
+    await addDoc(
+        collection(db,"auditoria"),
+        {
+
+            tipo:"seguranca",
+
+            evento:"Tentativa de login de usuário bloqueado",
+
+            gravidade:"critico",
+
+            usuario:dados.nomeUsuario || "-",
+
+            usuarioId:resultado.user.uid,
+
+            administrador:"Sistema",
+
+            administradorId:"-",
+
+            descricao:
+            `O usuário ${dados.nomeUsuario || "desconhecido"} tentou acessar o sistema, mas a conta está bloqueada.`,
+
+            data:serverTimestamp()
 
         }
+    );
+
+
+    await signOut(auth);
+
+    mensagem("❌ Sua conta foi bloqueada.");
+
+    return;
+
+}
+
+
+
+if(!dados.aprovado){
+
+    await signOut(auth);
+
+    mensagem("⏳ Sua conta está aguardando aprovação de um administrador");
+
+    return;
+
+}
 
 
         if(!dados.ativo){
