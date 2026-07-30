@@ -864,6 +864,65 @@ if(!adminSnap.exists()){
 
     alert("Usuário não encontrado.");
 
+    window.location.replace("login.html");
+
+    return;
+
+}
+
+
+dadosAdmin = adminSnap.data();
+
+
+// 🚨 Usuário bloqueado tentando entrar
+if(dadosAdmin.ativo === false){
+
+
+    await addDoc(
+        collection(db,"auditoria"),
+        {
+
+            tipo:"seguranca",
+
+            evento:"Tentativa de login de usuário bloqueado",
+
+            gravidade:"critico",
+
+            usuario:dadosAdmin.nomeUsuario || "-",
+
+            usuarioId:user.uid,
+
+            administrador:"Sistema",
+
+            administradorId:"-",
+
+            descricao:
+            `O usuário ${dadosAdmin.nomeUsuario || "desconhecido"} tentou acessar o sistema, mas a conta está bloqueada.`,
+
+            data:serverTimestamp()
+
+        }
+    );
+
+
+    alert("Sua conta está bloqueada.");
+
+    
+    await auth.signOut();
+
+
+    window.location.replace("login.html");
+
+
+    return;
+
+}
+
+
+if(!adminSnap.exists()){
+
+    alert("Usuário não encontrado.");
+
     window.location.replace("index.html");
 
     return;
@@ -878,33 +937,6 @@ await updateDoc(
     doc(db,"usuarios",user.uid),
     {
         ultimoAcesso: serverTimestamp()
-    }
-);
-
-
-await addDoc(
-    collection(db,"auditoria"),
-    {
-
-        tipo:"seguranca",
-
-        evento:"Login realizado",
-
-        gravidade:"informacao",
-
-        usuario:dadosAdmin.nomeUsuario || "-",
-
-        usuarioId:user.uid,
-
-        administrador:dadosAdmin.nomeUsuario || "-",
-
-        administradorId:user.uid,
-
-        descricao:
-        `Login realizado com sucesso por ${dadosAdmin.nomeUsuario}.`,
-
-        data:serverTimestamp()
-
     }
 );
 
