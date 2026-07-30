@@ -723,25 +723,26 @@ from
 
 
 import {
-
-collection,
     
-getDocs,
+    collection,
     
-doc,
+    getDocs,
     
-getDoc,
+    doc,
     
-updateDoc,
+    getDoc,
     
-addDoc,
+    updateDoc,
     
-serverTimestamp,
-
-query,
-
-orderBy
-
+    addDoc,
+    
+    serverTimestamp,
+    
+    query,
+    
+    orderBy,
+    
+    onSnapshot
 }
 
 from
@@ -1042,37 +1043,38 @@ onclick="resetarSenha('${usuario.id}')">
 }
 
 
-async function carregarAuditoria(){
+function carregarAuditoria(){
 
-    const logs = await getDocs(
-
-    query(
+    const q = query(
 
         collection(db,"auditoria"),
 
         orderBy("data", "desc")
 
-    )
+    );
 
-);
+    onSnapshot(q, (snapshot)=>{
 
-    logsCache = [];
+        logsCache = [];
 
-    if(logs.empty){
+        if(snapshot.empty){
 
-        listaAuditoria.innerHTML = "Nenhum registro encontrado.";
+            listaAuditoria.innerHTML = "Nenhum registro encontrado.";
 
-        return;
+            return;
 
-    }
+        }
 
-    logs.forEach((log)=>{
+        snapshot.forEach((doc)=>{
 
-        logsCache.push(log.data());
+            logsCache.push(doc.data());
+
+        });
+
+        // mantém os filtros aplicados automaticamente
+        filtrarAuditoria();
 
     });
-
-    mostrarLogs(logsCache);
 
 }
 
