@@ -1357,7 +1357,6 @@ await registrarAuditoria(
 
 window.resetarSenha = async function(id){
 
-
     const usuarioRef = doc(db,"usuarios",id);
 
 
@@ -1390,33 +1389,47 @@ window.resetarSenha = async function(id){
 
     try{
 
-
         await sendPasswordResetEmail(
-    auth,
-    usuario.email
-);
+            auth,
+            usuario.email
+        );
 
-await registrarAuditoria(
 
-    "seguranca",
+        await registrarAuditoria(
 
-    "Redefinição de senha enviada",
+            "seguranca",
 
-    "atencao",
+            "Redefinição de senha enviada",
 
-    usuario.nomeUsuario,
+            "atencao",
 
-    id,
+            usuario.nomeUsuario,
 
-    `Foi enviado um e-mail de redefinição de senha para ${usuario.email}.`
+            id,
 
-);
+            `Foi enviado um e-mail de redefinição de senha para ${usuario.email}.`
 
-alert(
-    "✅ E-mail de redefinição enviado com sucesso."
-    );
+        );
 
-}
+
+        alert(
+            "✅ E-mail de redefinição enviado com sucesso."
+        );
+
+
+    }catch(e){
+
+
+        console.error(e);
+
+
+        alert(
+            "❌ Não foi possível enviar o e-mail."
+        );
+
+
+    }
+
 
 }
 
