@@ -1392,31 +1392,29 @@ window.resetarSenha = async function(id){
 
 
         await sendPasswordResetEmail(
-            auth,
-            usuario.email
-        );
+    auth,
+    usuario.email
+);
 
+await registrarAuditoria(
 
-        alert(
-            "✅ E-mail de redefinição enviado com sucesso."
-        );
+    "seguranca",
 
+    "Redefinição de senha enviada",
 
-    }catch(e){
+    "atencao",
 
+    usuario.nomeUsuario,
 
-        console.error(e);
+    id,
 
+    `Foi enviado um e-mail de redefinição de senha para ${usuario.email}.`
 
-        alert(
-            "❌ Não foi possível enviar o e-mail."
-        );
+);
 
-
-    }
-
-
-}
+alert(
+    "✅ E-mail de redefinição enviado com sucesso."
+);
 
     
 function mostrarCargo(cargo){
