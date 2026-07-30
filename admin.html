@@ -863,19 +863,52 @@ if(!adminSnap.exists()){
 
 dadosAdmin = adminSnap.data();
 
+    
+await updateDoc(
+    doc(db,"usuarios",user.uid),
+    {
+        ultimoAcesso: serverTimestamp()
+    }
+);
+
+
+await addDoc(
+    collection(db,"auditoria"),
+    {
+
+        tipo:"seguranca",
+
+        evento:"Login realizado",
+
+        gravidade:"informacao",
+
+        usuario:dadosAdmin.nomeUsuario || "-",
+
+        usuarioId:user.uid,
+
+        administrador:dadosAdmin.nomeUsuario || "-",
+
+        administradorId:user.uid,
+
+        descricao:
+        `Login realizado com sucesso por ${dadosAdmin.nomeUsuario}.`,
+
+        data:serverTimestamp()
+
+    }
+);
+
 
 if(!ehAdmin()){
 
 
     await addDoc(
-
         collection(db,"auditoria"),
-
         {
 
             tipo:"seguranca",
 
-            evento:"Acesso negado ao painel administrativo",
+            evento:"Tentativa de acesso administrativo negada",
 
             gravidade:"critico",
 
@@ -887,12 +920,12 @@ if(!ehAdmin()){
 
             administradorId:"-",
 
-            descricao:`${dadosAdmin.nomeUsuario || "Usuário"} tentou acessar o painel administrativo sem permissão.`,
+            descricao:
+            `${dadosAdmin.nomeUsuario} tentou acessar o painel administrativo sem permissão.`,
 
             data:serverTimestamp()
 
         }
-
     );
 
 
