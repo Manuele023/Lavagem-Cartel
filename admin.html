@@ -1269,6 +1269,16 @@ window.salvarCargos = async function(){
 
     const cargos = [];
 
+
+    const usuarioRef = doc(db, "usuarios", usuarioEditando);
+
+    const usuarioSnap = await getDoc(usuarioRef);
+
+    const usuario = usuarioSnap.data();
+
+    const cargosAntigos = usuario.cargos || ["Membro"];
+    
+
     if(!ehDono() && document.getElementById("cargoDono").checked){
 
     await registrarAuditoria(
@@ -1322,15 +1332,6 @@ window.salvarCargos = async function(){
 
         return;
     }
-
-    
-    const usuarioRef = doc(db, "usuarios", usuarioEditando);
-
-    const usuarioSnap = await getDoc(usuarioRef);
-
-    const usuario = usuarioSnap.data();
-
-    const cargosAntigos = usuario.cargos || ["Membro"];
 
     
     await updateDoc(
