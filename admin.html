@@ -1224,18 +1224,6 @@ window.editarCargos = async function(id){
     const checkboxDono =
 document.getElementById("cargoDono");
 
-
-if(!ehDono()){
-
-    checkboxDono.disabled = true;
-
-}
-else{
-
-    checkboxDono.disabled = false;
-
-}
-
     document.getElementById("cargoAdmin").checked =
         cargos.includes("Admin");
 
@@ -1281,6 +1269,7 @@ window.salvarCargos = async function(){
 
     if(!ehDono() && document.getElementById("cargoDono").checked){
 
+
     await registrarAuditoria(
 
         "seguranca",
@@ -1293,7 +1282,7 @@ window.salvarCargos = async function(){
 
         usuarioEditando,
 
-        `O administrador ${dadosAdmin.nomeUsuario} tentou atribuir o cargo Dono sem permissão.`
+        `${dadosAdmin.nomeUsuario} tentou atribuir o cargo Dono sem permissão.`
 
     );
 
