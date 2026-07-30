@@ -1271,11 +1271,28 @@ window.salvarCargos = async function(){
 
     if(!ehDono() && document.getElementById("cargoDono").checked){
 
+    await registrarAuditoria(
+
+        "seguranca",
+
+        "Tentativa de atribuir cargo Dono",
+
+        "critico",
+
+        usuario.nomeUsuario,
+
+        usuarioEditando,
+
+        `O administrador ${dadosAdmin.nomeUsuario} tentou atribuir o cargo Dono sem permissão.`
+
+    );
+
+
     alert("Apenas o Dono pode atribuir esse cargo.");
 
     return;
 
-    }
+}
     
     
     if(document.getElementById("cargoDono").checked){
