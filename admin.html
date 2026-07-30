@@ -1273,19 +1273,44 @@ window.salvarCargos = async function(){
         return;
     }
 
+    
+    const usuarioRef = doc(db, "usuarios", usuarioEditando);
 
+    const usuarioSnap = await getDoc(usuarioRef);
 
+    const usuario = usuarioSnap.data();
+
+    const cargosAntigos = usuario.cargos || ["Membro"];
+
+    
     await updateDoc(
 
-        doc(db,"usuarios",usuarioEditando),
+    usuarioRef,
 
-        {
-            cargos:cargos
-        }
+    {
+        cargos
+    }
 
-    );
+);
 
 
+await registrarAuditoria(
+
+    "administracao",
+
+    "Cargos alterados",
+
+    "informacao",
+
+    usuario.nomeUsuario,
+
+    usuarioEditando,
+
+    `Cargos alterados de "${cargosAntigos.map(mostrarCargo).join(" • ")}" para "${cargos.map(mostrarCargo).join(" • ")}".`
+
+);
+
+    
     alert("Cargos atualizados com sucesso!");
 
 
