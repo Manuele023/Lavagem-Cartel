@@ -899,12 +899,13 @@ import {
     
 import {
     collection,
-    addDoc,
     getDocs,
+    addDoc,
     deleteDoc,
     doc,
-    getDoc,
-    serverTimestamp
+    serverTimestamp,
+    query,
+    orderBy
 } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
 let registros = [];
