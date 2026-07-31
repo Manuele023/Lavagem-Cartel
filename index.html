@@ -1934,7 +1934,12 @@ async function carregarHistoricoProducao(){
     div.innerHTML="";
 
 
-    const consulta = await getDocs(collection(db,"producao"));
+  const consulta = await getDocs(
+    query(
+        collection(db,"producao"),
+        orderBy("criadoEm","desc")
+    )
+);
 
 
     if(consulta.empty){
@@ -1949,6 +1954,22 @@ async function carregarHistoricoProducao(){
     consulta.forEach((docu)=>{
 
         const p = docu.data();
+
+
+        let dataProducao = "";
+
+if(p.criadoEm){
+
+    const data = p.criadoEm.toDate();
+
+    dataProducao =
+    data.toLocaleDateString("pt-BR")
+    +
+    " às "
+    +
+    data.toLocaleTimeString("pt-BR");
+
+}
 
 
         let solicitacoes="";
@@ -1991,6 +2012,12 @@ async function carregarHistoricoProducao(){
         ${solicitacoes}
 
 
+        <br>
+
+        📅 <b>Data e hora:</b> ${dataHora}
+
+        <br><br>
+         
         💰 <b>Valor total lavado:</b> $ ${formatar(p.valorProducao)}
 
         <br>
@@ -2053,6 +2080,19 @@ window.excluirProducao = async function(id){
     carregarHistoricoProducao();
 
 };
+
+
+window.confirmarExclusao = function(id){
+
+    const confirmar = confirm(
+        "⚠️ Tem certeza que deseja excluir este registro?\n\nEssa ação não poderá ser desfeita."
+    );
+
+    if(!confirmar) return;
+
+    excluirRegistro(id);
+
+}
 
 
 /* ---------------- INIT ---------------- */
