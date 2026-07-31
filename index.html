@@ -1955,26 +1955,27 @@ async function carregarHistoricoProducao(){
 
     consulta.forEach((docu)=>{
 
-        const p = docu.data();
+    const p = docu.data();
 
 
-        let dataProducao = "";
-
-if(p.criadoEm){
-
-    const data = p.criadoEm.toDate();
-
-    dataProducao =
-    data.toLocaleDateString("pt-BR")
-    +
-    " às "
-    +
-    data.toLocaleTimeString("pt-BR");
-
-}
+    let dataHora = "Data não disponível";
 
 
-        let solicitacoes="";
+    if(p.criadoEm){
+
+        const data = p.criadoEm.toDate();
+
+        dataHora =
+        data.toLocaleDateString("pt-BR")
+        +
+        " às "
+        +
+        data.toLocaleTimeString("pt-BR");
+
+    }
+
+
+    let solicitacoes="";
 
 
         if(p.lavagensFaccao){
