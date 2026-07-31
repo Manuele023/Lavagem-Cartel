@@ -675,14 +675,19 @@ window.entrar = async function(){
     const login = document.getElementById("loginUsuario").value.trim();
     const senha = document.getElementById("senhaLogin").value;
 
+
     try{
 
+
         await configurarPersistencia();
+
 
         let email = login;
 
 
+
         if(!login.includes("@")){
+
 
             const loginDoc = await getDoc(
                 doc(db, "loginUsuarios", login.toLowerCase())
@@ -696,11 +701,14 @@ window.entrar = async function(){
             }else{
 
                 mensagem("❌ Usuário não encontrado");
+
                 return;
 
             }
 
+
         }
+
 
 
         const resultado = await signInWithEmailAndPassword(
@@ -710,52 +718,159 @@ window.entrar = async function(){
         );
 
 
+
         const usuarioDoc = await getDoc(
             doc(db, "usuarios", resultado.user.uid)
         );
 
 
+
         if(!usuarioDoc.exists()){
+
 
             await signOut(auth);
 
+
             mensagem("❌ Cadastro não encontrado");
+
+
             return;
 
+
         }
+
+
 
 
         const dados = usuarioDoc.data();
 
 
-    if(!dados.ativo){
 
 
-    await addDoc(
-        collection(db,"auditoria"),
-        {
+        // =========================
+        // USUÁRIO BLOQUEADO
+        // =========================
 
-            tipo:"seguranca",
+        if(!dados.ativo){
 
-            evento:"Tentativa de login de usuário bloqueado",
 
-            gravidade:"critico",
 
-            usuario:dados.nomeUsuario || "-",
+            await addDoc(
+                collection(db,"auditoria"),
+                {
 
-            usuarioId:resultado.user.uid,
 
-            administrador:"Sistema",
+                    tipo:"seguranca",
 
-            administradorId:"-",
 
-            descricao:
-            `O usuário ${dados.nomeUsuario || "desconhecido"} tentou acessar o sistema, mas a conta está bloqueada.`,
+                    evento:"Tentativa de login de usuário bloqueado",
 
-            data:serverTimestamp()
+
+                    gravidade:"critico",
+
+
+
+                    usuario:dados.nomeUsuario || "-",
+
+
+                    usuarioId:resultado.user.uid,
+
+
+
+                    administrador:"Sistema",
+
+
+                    administradorId:"-",
+
+
+
+                    descricao:
+
+                    `O usuário ${dados.nomeUsuario || "desconhecido"} tentou acessar o sistema, mas a conta está bloqueada.`,
+
+
+
+                    data:serverTimestamp()
+
+
+                }
+            );
+
+
+
+            await signOut(auth);
+
+
+
+            mensagem("❌ Sua conta foi bloqueada.");
+
+
+
+            return;
+
 
         }
-    );
+
+
+
+
+
+        // =========================
+        // AGUARDANDO APROVAÇÃO
+        // =========================
+
+
+        if(!dados.aprovado){
+
+
+
+            await signOut(auth);
+
+
+
+            mensagem(
+                "⏳ Sua conta está aguardando aprovação de um administrador"
+            );
+
+
+
+            return;
+
+
+        }
+
+
+
+
+
+        // =========================
+        // LOGIN LIBERADO
+        // =========================
+
+
+        window.location.href = "index.html";
+
+
+
+
+
+    }catch(e){
+
+
+        console.error(e);
+
+
+        mensagem("❌ Usuário ou senha incorretos.");
+
+
+        console.log(e.code);
+
+
+
+    }
+
+
+}
 
 
     await signOut(auth);
