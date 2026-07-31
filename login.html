@@ -871,50 +871,6 @@ window.entrar = async function(){
 
 }
 
-
-    await signOut(auth);
-
-    mensagem("❌ Sua conta foi bloqueada.");
-
-    return;
-
-}
-
-
-
-if(!dados.aprovado){
-
-    await signOut(auth);
-
-    mensagem("⏳ Sua conta está aguardando aprovação de um administrador");
-
-    return;
-
-}
-
-
-    await signOut(auth);
-
-
-    mensagem("❌ Sua conta foi desativada");
-
-    return;
-
-}
-
-
-        window.location.href = "index.html";
-
-
-    }catch(e){
-
-    console.error(e);
-
-    mensagem("ERRO: " + e.code);
-
-}
-
-}
     
 window.mostrarCadastro = function(){
 
