@@ -828,13 +828,11 @@ if(!dados.aprovado){
 
     }catch(e){
 
-        console.error(e);
+    console.error(e);
 
-        mensagem("❌ Usuário ou senha incorretos.");
+    mensagem("ERRO: " + e.code);
 
-console.log(e.code);
-        
-    }
+}
 
 }
     
