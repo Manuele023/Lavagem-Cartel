@@ -779,40 +779,6 @@ if(!dados.aprovado){
 }
 
 
-        if(!dados.ativo){
-
-
-    await addDoc(
-        collection(db,"auditoria"),
-        {
-
-            tipo:"seguranca",
-
-            evento:"Tentativa de login de usuário bloqueado",
-
-            gravidade:"critico",
-
-            usuario:dados.nomeUsuario || "-",
-
-
-            usuarioId:resultado.user.uid,
-
-
-            administrador:"Sistema",
-
-            administradorId:"-",
-
-
-            descricao:
-            `O usuário ${dados.nomeUsuario || "desconhecido"} tentou acessar o sistema, mas a conta está bloqueada.`,
-
-
-            data:serverTimestamp()
-
-        }
-    );
-
-
     await signOut(auth);
 
 
