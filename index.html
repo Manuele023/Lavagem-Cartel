@@ -1440,6 +1440,12 @@ async function carregar(){
 /* ---------------- EXCLUIR ---------------- */
 async function excluir(id, origem){
 
+    const confirmar = confirm(
+        "⚠️ Tem certeza que deseja excluir este registro?\n\nEssa ação não poderá ser desfeita."
+    );
+
+    if(!confirmar) return;
+
     let colecao;
 
     if(origem === "pista"){
@@ -1457,7 +1463,6 @@ async function excluir(id, origem){
 }
 
 window.excluir = excluir;
-
 /* ---------------- LISTA ---------------- */
 function atualizarLista(){
     const lista = document.getElementById('lista');
@@ -2083,20 +2088,6 @@ window.excluirProducao = async function(id){
     carregarHistoricoProducao();
 
 };
-
-
-window.confirmarExclusao = function(id){
-
-    const confirmar = confirm(
-        "⚠️ Tem certeza que deseja excluir este registro?\n\nEssa ação não poderá ser desfeita."
-    );
-
-    if(!confirmar) return;
-
-    excluirRegistro(id);
-
-}
-
 
 /* ---------------- INIT ---------------- */
 initFiltros();
