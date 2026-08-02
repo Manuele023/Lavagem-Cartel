@@ -1726,7 +1726,7 @@ function mostrarToast() {
     }, 2500);
 }
     
-function selecionarModo(modo){
+async function selecionarModo(modo){
     modoLavagem = modo;
 
     const faccao = document.getElementById("boxFaccao");
@@ -1753,11 +1753,10 @@ function selecionarModo(modo){
         vapo.style.opacity = "1";
     }
 
-        // Atualiza automaticamente o próximo número
+    // Atualiza automaticamente o próximo número
     await atualizarNumeroLavagem();
-    
 }
-
+    
 window.selecionarModo = selecionarModo;
 
 function calcularSemana(dataTexto){
