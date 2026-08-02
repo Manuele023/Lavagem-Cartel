@@ -1435,6 +1435,7 @@ async function carregar(){
     atualizarLista();
     atualizarMensal();
     atualizarTudo();
+    await atualizarNumeroLavagem();
 }
 
 /* ---------------- EXCLUIR ---------------- */
@@ -1460,6 +1461,7 @@ async function excluir(id, origem){
 
     await deleteDoc(doc(db, colecao, id));
     await carregar();
+    await atualizarNumeroLavagem();
 }
 
 window.excluir = excluir;
@@ -1750,6 +1752,10 @@ function selecionarModo(modo){
         vapo.style.border = "2px solid #8B1E1E";
         vapo.style.opacity = "1";
     }
+
+        // Atualiza automaticamente o próximo número
+    await atualizarNumeroLavagem();
+    
 }
 
 window.selecionarModo = selecionarModo;
@@ -2088,6 +2094,37 @@ window.excluirProducao = async function(id){
     carregarHistoricoProducao();
 
 };
+
+async function atualizarNumeroLavagem(){
+
+    let colecao = "lavagens";
+
+if (modoLavagem === "pista") {
+    colecao = "lavagens_pista";
+}
+else if (modoLavagem === "vapo") {
+    colecao = "lavagens_vapo";
+}
+
+    const snap = await getDocs(collection(db, colecao));
+
+    let maiorNumero = 0;
+
+    snap.forEach(docu => {
+
+        const dados = docu.data();
+
+        const numero = Number(dados.numeroLavagem || 0);
+
+        if(numero > maiorNumero){
+            maiorNumero = numero;
+        }
+
+    });
+
+    document.getElementById("numeroLavagem").value = maiorNumero + 1;
+
+}
 
 /* ---------------- INIT ---------------- */
 initFiltros();
